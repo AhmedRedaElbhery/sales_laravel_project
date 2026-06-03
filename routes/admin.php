@@ -26,6 +26,12 @@ Route::group([
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('logout', [LoginController::class, 'logout'])->name('admin.logout');
     Route::get('/adminpanelsettings/show', [Admin_panel_settingsController::class, 'index'])->name('admin.adminpanelsettings.index');
+    Route::get('/adminpanelsettings/edit', [Admin_panel_settingsController::class, 'edit'])->name('admin.adminpanelsettings.edit');
+    Route::post('/adminpanelsettings/update', [Admin_panel_settingsController::class, 'update'])->name('admin.adminpanelsettings.update');
+
+
+
+
 });
 
 
