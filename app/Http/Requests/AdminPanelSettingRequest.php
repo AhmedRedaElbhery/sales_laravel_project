@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Admin_panel_setting_Request extends FormRequest
+class AdminPanelSettingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

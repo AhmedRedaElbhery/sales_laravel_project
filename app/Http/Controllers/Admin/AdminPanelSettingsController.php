@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Admin_panal_settings;
-use App\Http\Requests\Admin_panel_setting_Request;
+use App\Http\Requests\AdminPanelSettingRequest;
 
 class AdminPanelSettingsController extends Controller
 {
@@ -27,7 +27,7 @@ class AdminPanelSettingsController extends Controller
     }
 
 
-    public function update(Admin_panel_setting_Request $request)
+    public function update(AdminPanelSettingRequest $request)
     {
         $data = Admin_panal_settings::where('com_code', auth()->user()->com_code)->first();
 
