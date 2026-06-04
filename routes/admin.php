@@ -3,7 +3,8 @@
 use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LoginController;
-use App\Http\Controllers\Admin\Admin_panel_settingsController;
+use App\Http\Controllers\Admin\AdminPanelSettingsController;
+use App\Http\Controllers\Admin\TreasuriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +26,12 @@ Route::group([
 
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('logout', [LoginController::class, 'logout'])->name('admin.logout');
-    Route::get('/adminpanelsettings/show', [Admin_panel_settingsController::class, 'index'])->name('admin.adminpanelsettings.index');
-    Route::get('/adminpanelsettings/edit', [Admin_panel_settingsController::class, 'edit'])->name('admin.adminpanelsettings.edit');
-    Route::post('/adminpanelsettings/update', [Admin_panel_settingsController::class, 'update'])->name('admin.adminpanelsettings.update');
-
+    Route::get('/adminpanelsettings/show', [AdminPanelSettingsController::class, 'index'])->name('admin.adminpanelsettings.index');
+    Route::get('/adminpanelsettings/edit', [AdminPanelSettingsController::class, 'edit'])->name('admin.adminpanelsettings.edit');
+    Route::post('/adminpanelsettings/update', [AdminPanelSettingsController::class, 'update'])->name('admin.adminpanelsettings.update');
+    Route::get('/treasuries/index', [TreasuriesController::class, 'index'])->name('admin.treasuries.index');
+    Route::get('/treasuries/create', [TreasuriesController::class, 'create'])->name('admin.treasuries.create');
+    Route::post('/treasuries/store', [TreasuriesController::class, 'store'])->name('admin.treasuries.store');
 
 
 
@@ -41,6 +44,6 @@ Route::group([
     'middleware' => 'guest:admin'
 ], function () {
 
-    Route::get('login', [LoginController::class, 'show_login_view'])->name('admin.showlogin');
+    Route::get('login', [LoginController::class, 'showLoginView'])->name('admin.showlogin');
     Route::post('login', [LoginController::class, 'login'])->name('admin.login');
 });

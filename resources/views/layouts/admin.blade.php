@@ -20,6 +20,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/css/mycustomstyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/bootstrap/css/bootstrap.min.css') }}">
 
 </head>
 
@@ -48,7 +49,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('assets/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/admin/dist/js/adminlte.min.js') }}"></script>
-    <script src="{{ asset('assets/admin/js/general.js') }}"></script>
 </body>
 
 </html>

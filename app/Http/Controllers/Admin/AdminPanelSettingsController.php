@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Admin_panal_settings;
-use App\Http\Requests\Admin_panel_setting_Requist;
+use App\Http\Requests\Admin_panel_setting_Request;
 
-class Admin_panel_settingsController extends Controller
+class AdminPanelSettingsController extends Controller
 {
     public function index()
     {
@@ -28,7 +27,7 @@ class Admin_panel_settingsController extends Controller
     }
 
 
-    public function update(Admin_panel_setting_Requist $request)
+    public function update(Admin_panel_setting_Request $request)
     {
         $data = Admin_panal_settings::where('com_code', auth()->user()->com_code)->first();
 
