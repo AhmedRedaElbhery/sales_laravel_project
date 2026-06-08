@@ -32,7 +32,12 @@ Route::group([
     Route::get('/treasuries/index', [TreasuriesController::class, 'index'])->name('admin.treasuries.index');
     Route::get('/treasuries/create', [TreasuriesController::class, 'create'])->name('admin.treasuries.create');
     Route::post('/treasuries/store', [TreasuriesController::class, 'store'])->name('admin.treasuries.store');
-
+    Route::get('/treasuries/edit/{id}', [TreasuriesController::class, 'edit'])->name('admin.treasuries.edit');
+    Route::put('/treasuries/update/{id}', [TreasuriesController::class, 'update'])->name('admin.treasuries.update');
+    Route::get('/treasuries/details/{id}', [TreasuriesController::class, 'details'])->name('admin.treasuries.details');
+    Route::delete('/treasuries/delete/{id}', [TreasuriesController::class, 'delete'])->name('admin.treasuries.delete');
+    Route::get('/treasuries/add_treasuries_branch/{id}', [TreasuriesController::class, 'add_treasuries_branch'])->name('admin.treasuries.add_treasuries_branch');
+    Route::post('/treasuries/store_treasuries_branch/{id}', [TreasuriesController::class, 'store_treasuries_branch'])->name('admin.treasuries.store_treasuries_branch');
 
 
 });
