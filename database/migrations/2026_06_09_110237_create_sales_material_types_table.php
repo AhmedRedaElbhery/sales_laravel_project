@@ -13,17 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('admin_panal_settings', function (Blueprint $table) {
-            $table->id();
-            $table->string('system_name', 250);
-            $table->string('photo', 225);
-            $table->boolean('active')->default(1);
-            $table->string('general_alert', 150)->nullable();
-            $table->string('address', 250);
-            $table->string('phone', 100);
-            $table->integer('added_by')->nullable();
+        Schema::create('sales_material_types', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string('name');
+            $table->integer('added_by');
             $table->integer('updated_by')->nullable();
             $table->integer('com_code');
+            $table->date('date');
+            $table->boolean('active');
             $table->timestamps();
             $table->engine = 'InnoDB';
         });
@@ -36,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('admin_panal_settings');
+        Schema::dropIfExists('sales_material_types');
     }
 };
