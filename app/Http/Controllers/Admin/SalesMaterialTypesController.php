@@ -12,7 +12,7 @@ class SalesMaterialTypesController extends Controller
 {
     public function index()
     {
-        $data = SalesMaterialType::select()->orderby('id', 'DESC')->paginate(5);
+        $data = SalesMaterialType::orderby('id', 'DESC')->paginate(5);
         if (!empty($data)) {
             foreach ($data as $item) {
                 $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');

@@ -166,7 +166,8 @@
                                             <td>
                                                 <form action="{{ route('admin.treasuries.delete', $item->id) }}"
                                                     method="POST"
-                                                    style="display:inline;">
+                                                    style="display:inline;"
+                                                    onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                   @csrf
                                                   @method('DELETE')
 

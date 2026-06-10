@@ -5,11 +5,11 @@
 @endsection
 
 @section('contentheader')
-    فئات الفواتير
+    الوحدات
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.sales_material.index') }}"> فئات الفواتير </a>
+    <a href="{{ route('unit.index') }}"> الوحدات </a>
 @endsection
 
 
@@ -23,11 +23,24 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات فئات الفواتير</h3>
-                    <a class="btn btn-success" href="{{ route('admin.sales_material.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">بيانات الوحدات </h3>
+                    <a class="btn btn-success" href="{{ route('unit.create') }}">اضافه وحده جديده</a>
                 </div>
 
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                        </div>
+
+                        <div class="col-md-4">
+                            <select id="search_by_type" class="form-control mb-3">
+                                <option value="">بحث بالنوع</option>
+                            </select>
+                        </div>
+                    </div>
+
+
 
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
@@ -36,7 +49,8 @@
                                 <thead class="custom_head">
                                     <tr>
                                         <th>التسلسل</th>
-                                        <th>اسم الفئه</th>
+                                        <th>اسم الوحده</th>
+                                        <th>رئيسيه؟</th>
                                         <th>حاله التفعيل</th>
                                         <th>تاريخ الاضافه</th>
                                         <th>تاريخ التحديث</th>
@@ -50,6 +64,13 @@
                                             <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $item->name }}</td>
+                                            <td>
+                                                @if ($item->is_master == 1)
+                                                    وحده رئيسية
+                                                @else
+                                                    وحده فرعية
+                                                @endif
+                                            </td>
 
                                             <td>
                                                 @if ($item->active == 1)
@@ -82,10 +103,10 @@
 
 
                                             <td>
-                                                <a href="{{ route('admin.sales_material.edit', $item->id) }}"
+                                                <a href="{{ route('unit.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('admin.sales_material.delete', $item->id) }}"
+                                                <form action="{{ route('unit.destroy', $item->id) }}"
                                                     method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf

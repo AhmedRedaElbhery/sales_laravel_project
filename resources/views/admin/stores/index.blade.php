@@ -5,11 +5,11 @@
 @endsection
 
 @section('contentheader')
-    فئات الفواتير
+    المخازن
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.sales_material.index') }}"> فئات الفواتير </a>
+    <a href="{{ route('admin.store.index') }}"> المخازن </a>
 @endsection
 
 
@@ -23,8 +23,8 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات فئات الفواتير</h3>
-                    <a class="btn btn-success" href="{{ route('admin.sales_material.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">بيانات المخازن </h3>
+                    <a class="btn btn-success" href="{{ route('admin.store.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
@@ -36,7 +36,9 @@
                                 <thead class="custom_head">
                                     <tr>
                                         <th>التسلسل</th>
-                                        <th>اسم الفئه</th>
+                                        <th>اسم المخزن</th>
+                                        <th>الهاتف</th>
+                                        <th>العنوان</th>
                                         <th>حاله التفعيل</th>
                                         <th>تاريخ الاضافه</th>
                                         <th>تاريخ التحديث</th>
@@ -50,6 +52,8 @@
                                             <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $item->name }}</td>
+                                            <td>{{ $item->phone }}</td>
+                                            <td>{{ $item->address }}</td>
 
                                             <td>
                                                 @if ($item->active == 1)
@@ -82,10 +86,10 @@
 
 
                                             <td>
-                                                <a href="{{ route('admin.sales_material.edit', $item->id) }}"
+                                                <a href="{{ route('admin.store.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('admin.sales_material.delete', $item->id) }}"
+                                                <form action="{{ route('admin.store.delete', $item->id) }}"
                                                     method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf

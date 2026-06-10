@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\AdminPanelSettingsController;
 use App\Http\Controllers\Admin\SalesMaterialTypesController;
+use App\Http\Controllers\Admin\StoresController;
 use App\Http\Controllers\Admin\TreasuriesController;
+use App\Http\Controllers\Admin\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +22,6 @@ use App\Http\Controllers\Admin\TreasuriesController;
 
 
 Route::group([
-    'namespace' => 'admin',
     'prefix' => 'admin',
     'middleware' => 'auth:admin'
 ], function () {
@@ -50,6 +51,18 @@ Route::group([
     Route::put('/sales/update/{id}', [SalesMaterialTypesController::class, 'update'])->name('admin.sales_material.update');
     Route::delete('/sales/delete/{id}', [SalesMaterialTypesController::class, 'delete'])->name('admin.sales_material.delete');
 
+    /*start Stores */
+
+    Route::get('/store/index', [StoresController::class, 'index'])->name('admin.store.index');
+    Route::get('/store/create', [StoresController::class, 'create'])->name('admin.store.create');
+    Route::post('/store/store', [StoresController::class, 'store'])->name('admin.store.store');
+    Route::get('/store/edit/{id}', [StoresController::class, 'edit'])->name('admin.store.edit');
+    Route::put('/store/update/{id}', [StoresController::class, 'update'])->name('admin.store.update');
+    Route::delete('/store/delete/{id}', [StoresController::class, 'delete'])->name('admin.store.delete');
+
+    /* start unites */
+
+    Route::resource('unit', UnitController::class);
 
 
 });
