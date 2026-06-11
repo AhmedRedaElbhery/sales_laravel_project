@@ -128,4 +128,22 @@ class UnitController extends Controller
         unit::destroy($id);
         return redirect()->route('unit.index');
     }
+
+    public function filter(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+        $type = $request->type;
+
+        if($request->type == 1 || $request->type == 0)
+        {
+            $data = unit::where(['is_master'=>$request->type , 'com_code'=>$com_code])->paginate(5);
+        }
+        else
+        {
+            $data = unit::orderby('id', 'DESC')->paginate(5);
+
+        }
+        return view('admin.units.index',compact('data','type'));
+    }
+
 }

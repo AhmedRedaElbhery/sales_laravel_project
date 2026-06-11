@@ -5,11 +5,12 @@
 @endsection
 
 @section('contentheader')
-    المخازن
+فئات الاصناف
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.store.index') }}"> المخازن </a>
+    <a href="{{ route('category.index') }}"> فئات الاصناف
+    </a>
 @endsection
 
 
@@ -23,8 +24,8 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات المخازن </h3>
-                    <a class="btn btn-success" href="{{ route('admin.store.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">بيانات فئات الاصناف</h3>
+                    <a class="btn btn-success" href="{{ route('category.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
@@ -36,9 +37,7 @@
                                 <thead class="custom_head">
                                     <tr>
                                         <th>التسلسل</th>
-                                        <th>اسم المخزن</th>
-                                        <th>الهاتف</th>
-                                        <th>العنوان</th>
+                                        <th>اسم الصنف</th>
                                         <th>حاله التفعيل</th>
                                         <th>تاريخ الاضافه</th>
                                         <th>تاريخ التحديث</th>
@@ -52,8 +51,6 @@
                                             <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->phone }}</td>
-                                            <td>{{ $item->address }}</td>
 
                                             <td>
                                                 @if ($item->active == 1)
@@ -66,7 +63,7 @@
                                             <td>
                                                 @if ($item['created_at'] != null)
                                                 {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه<br>
+                                                    بواسطه
                                                     {{ $item['added_by_admin'] }}
                                                 @else
                                                     لا يوجد
@@ -77,7 +74,7 @@
                                             <td>
                                                 @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
                                                 {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه<br>
+                                                    بواسطه
                                                     {{ $item['updated_by_admin'] }}
                                                 @else
                                                     لا يوجد
@@ -86,10 +83,10 @@
 
 
                                             <td>
-                                                <a href="{{ route('admin.store.edit', $item->id) }}"
+                                                <a href="{{ route('category.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('admin.store.delete', $item->id) }}"
+                                                <form action="{{ route('category.destroy', $item->id) }}"
                                                     method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf

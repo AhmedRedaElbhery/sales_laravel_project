@@ -34,9 +34,30 @@
                         </div>
 
                         <div class="col-md-4">
-                            <select id="search_by_type" class="form-control mb-3">
-                                <option value="">بحث بالنوع</option>
-                            </select>
+                            <form action="{{ route('unit.filter') }}" method="POST">
+                                @csrf
+                                <select name="type" class="form-control" onchange="this.form.submit()">
+                                    @if (!isset($type))
+                                        <option value="all">عرض الكل</option>
+                                        <option value="1">وحدات رئيسيه</option>
+                                        <option value="0">وحدات فرعيه</option>
+                                    @else
+                                        @if ($type == 0)
+                                            <option value="all" >عرض الكل</option>
+                                            <option value="1">وحدات رئيسيه</option>
+                                            <option value="0" selected>وحدات فرعيه</option>
+                                        @elseif($type == 1)
+                                            <option value="all">عرض الكل</option>
+                                            <option value="1" selected>وحدات رئيسيه</option>
+                                            <option value="0">وحدات فرعيه</option>
+                                        @else
+                                            <option value="all" selected>عرض الكل</option>
+                                            <option value="1">وحدات رئيسيه</option>
+                                            <option value="0" >وحدات فرعيه</option>
+                                        @endif
+                                    @endif
+                                </select>
+                            </form>
                         </div>
                     </div>
 
@@ -82,7 +103,7 @@
 
                                             <td>
                                                 @if ($item['created_at'] != null)
-                                                {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
+                                                    {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
                                                     بواسطه
                                                     {{ $item['added_by_admin'] }}
                                                 @else
@@ -93,7 +114,7 @@
 
                                             <td>
                                                 @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
-                                                {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
+                                                    {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
                                                     بواسطه
                                                     {{ $item['updated_by_admin'] }}
                                                 @else
@@ -106,8 +127,7 @@
                                                 <a href="{{ route('unit.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('unit.destroy', $item->id) }}"
-                                                    method="POST"
+                                                <form action="{{ route('unit.destroy', $item->id) }}" method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf
                                                     @method('DELETE')

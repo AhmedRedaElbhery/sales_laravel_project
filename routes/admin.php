@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\SalesMaterialTypesController;
 use App\Http\Controllers\Admin\StoresController;
 use App\Http\Controllers\Admin\TreasuriesController;
 use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,11 @@ Route::group([
     /* start unites */
 
     Route::resource('unit', UnitController::class);
+    Route::post('/unit/filter', [UnitController::class, 'filter'])->name('unit.filter');
+
+    /* start categories */
+    Route::resource('category', CategoryController::class);
+
 
 
 });
