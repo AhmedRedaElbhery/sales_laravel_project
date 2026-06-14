@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\StoresController;
 use App\Http\Controllers\Admin\TreasuriesController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
+use App\Http\Controllers\ItemCardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +70,9 @@ Route::group([
 
     /* start categories */
     Route::resource('category', CategoryController::class);
+
+    /* start item card */
+    Route::resource('itemcard', AdminItemCardController::class);
 
 
 

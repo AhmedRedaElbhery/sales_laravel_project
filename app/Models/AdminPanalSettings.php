@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Admin_panal_settings extends Model
+class AdminPanalSettings extends Model
 {
     use HasFactory;
     protected $table = 'admin_panal_settings';
