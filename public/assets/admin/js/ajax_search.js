@@ -14,4 +14,10 @@ $(document).ready(function () {
 
     });
 
+    $('select[name="has_retail_unit"]').on('change', function () {
+
+        alert('hello');
+
+    });
+
 });

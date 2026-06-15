@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ItemCardRequest;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\ItemCard;
@@ -50,7 +51,9 @@ class ItemCardController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $categories = Category::select('id','name')->where(['com_code'=>$com_code ,'active'=>1 ])->get();
-        return view('admin.itemcard.create',compact('categories'));
+        $units = Unit::select('id','name')->where(['com_code'=>$com_code ,'active'=>1 ,'is_master'=>1 ])->get();
+        $retail_units = Unit::select('id','name')->where(['com_code'=>$com_code ,'active'=>1 ,'is_master'=>0 ])->get();
+        return view('admin.itemcard.create',compact('categories','units','retail_units'));
     }
 
     /**
@@ -59,9 +62,9 @@ class ItemCardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ItemCardRequest $request)
     {
-        //
+
     }
 
     /**

@@ -23,7 +23,24 @@ return new class extends Migration
             $table->integer('retail_unit_id'); // كود وحده قياس التجزئه
             $table->integer('parent_unit_id'); // كود وحده قياس الاب
             $table->decimal('retail_unit_to_parent' , 10,2); // عدد وحدات التجزئه بالنسبه للوحده الاب
+
+            $table->decimal('price' , 10,2); //السعر القطاعى لوحده القياس الاساسيه
+            $table->decimal('Wholesale_price' , 10,2); // السعرالجمله لوحده القياس الاساسيه
+            $table->decimal('half_Wholesale_price' , 10,2); //السعر النص جمله لوحده القياس الاساسيه
+
+            $table->decimal('retail_price' , 10,2); // السعر القطاعى لوحده القياس التجزئه
+            $table->decimal('retail_Wholesale_price' , 10,2); // السعرالجمله لوحده القياس التجزئه
+            $table->decimal('retail_half_Wholesale_price' , 10,2); //السعر النص جمله لوحده القياس التجزئه
+
+            $table->decimal('cost_price' , 10,2); // متوسط التكلفه للشراء بالوحده الاساسيه
+            $table->decimal('retail_cost_price' , 10,2); //متوسط التكلفه للشراء بالتجزئه
+
+            $table->decimal('quantity' , 10,2); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('retail_quantity' , 10,2); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('all_retail_quantity' , 10,2); //متوسط التكلفه للشراء بالتجزئه
+
             $table->integer('added_by');
+            $table->boolean('has_fixed_price');
             $table->integer('updated_by')->nullable();
             $table->boolean('active')->default(1);
             $table->date('date');
