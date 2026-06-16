@@ -1,7 +1,7 @@
 @extends('layouts.admin');
 
 @section('title')
-    ضبط المخان
+    الاصناف
 @endsection
 
 @section('contentheader')
@@ -41,7 +41,7 @@
                                         <th>الفئه </th>
                                         <th>الصنف الاب </th>
                                         <th>الوحده الاب </th>
-                                        <th>الوحده التحزئه </th>
+                                        <th>الوحده التجزئه </th>
                                         <th>حاله التفعيل</th>
                                         <th> </th>
                                     </tr>
@@ -66,8 +66,20 @@
                                             </td>
 
                                             <td>{{ $item->category_name }}</td>
-                                            <td>{{ $item->parent_name }}</td>
+                                            <td>
+                                                @if ($item->parent_id == 0)
+                                                    {{ 'هذا الصنف اساسي' }}
+                                                @else
+                                                    @foreach ($data as $items)
+                                                        @if ($items->id == $item->parent_id)
+                                                            {{ $items->name }}
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </td>
+
                                             <td>{{ $item->unit_name }}</td>
+
                                             <td>{{ $item->retail_unit_name }}</td>
 
                                             <td>

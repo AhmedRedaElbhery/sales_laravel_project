@@ -37,5 +37,6 @@ class ItemCard extends Model
         'com_code',
         'item_code',
         'barcode',
+        'photo',
     ];
 }

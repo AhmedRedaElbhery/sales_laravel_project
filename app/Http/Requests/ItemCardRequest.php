@@ -30,7 +30,6 @@ class ItemCardRequest extends FormRequest
             'item_type' => 'required',
             'category_id' => 'required',
 
-
             'unit_parent_id' => 'required',
             'Wholesale_price' => 'required_unless:unit_parent_id,null',
             'half_Wholesale_price' => 'required_unless:unit_parent_id,null',
@@ -50,8 +49,6 @@ class ItemCardRequest extends FormRequest
 
 
             'active' => 'required|boolean',
-
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png',
 
         ];
     }
@@ -82,9 +79,6 @@ class ItemCardRequest extends FormRequest
 
             'has_fixed_price.required'=>'ادخل الحاله',
             'active.required' => 'ادخل الحاله',
-
-            'photo.image' => 'يجب أن يكون الملف صورة.',
-            'photo.mimes' => 'الصورة يجب أن تكون بصيغة jpg أو jpeg أو png أو',
         ];
     }
 }

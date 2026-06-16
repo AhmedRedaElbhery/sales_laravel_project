@@ -54,7 +54,7 @@
 
 
                     <div class="row mb-2">
-                        <div class="form-group col-sm-4">
+                        <div class="form-group col-sm-3">
                             <label>النوع </label>
                             <select name="item_type" class="form-control" >
                                 <option value="" selected disabled>اختر النوع </option>
@@ -67,7 +67,7 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-sm-4">
+                        <div class="form-group col-sm-3">
                             <label>الفئه </label>
                             <select name="category_id" class="form-control" >
                                 <option value="" selected disabled>اختر الفئه </option>
@@ -82,7 +82,22 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-sm-4">
+                        <div class="form-group col-sm-3">
+                            <label>الصنف الاساسى له </label>
+                            <select name="parent_id" class="form-control" >
+                                <option value="0"> هذا الصنف اساسى </option>
+
+                                @foreach ($items as $item)
+                                    <option value="{{ $item->id }}" @selected(old('parent_id') == $item->id)>{{ $item->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-sm-3">
                             <label>وحده القياس الاساسيه للصنف </label>
                             <select name="unit_parent_id" id="unit_parent_id" class="form-control" >
                                 <option value="" selected disabled>اختر الوحده </option>

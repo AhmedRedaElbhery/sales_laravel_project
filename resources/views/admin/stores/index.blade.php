@@ -1,7 +1,7 @@
 @extends('layouts.admin');
 
 @section('title')
-    الضبط العام
+المخازن
 @endsection
 
 @section('contentheader')

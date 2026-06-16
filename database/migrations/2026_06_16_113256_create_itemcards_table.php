@@ -15,29 +15,30 @@ return new class extends Migration
     {
         Schema::create('itemcards', function (Blueprint $table) {
             $table->id()->autoIncrement();
+            $table->bigInteger('item_code');
             $table->string('name');
             $table->tinyInteger('item_type'); //عهده او استهلاكى او مخزني
             $table->unsignedBigInteger('categories_id'); //forign key on table categories
             $table->bigInteger('parent_id'); //رقم الصنف الاب التابع له
             $table->boolean('has_retail_unit'); //هل يوجد وحده تجزئه للصنف
-            $table->integer('retail_unit_id'); // كود وحده قياس التجزئه
+            $table->integer('retail_unit_id')->nullable(); // كود وحده قياس التجزئه
             $table->integer('parent_unit_id'); // كود وحده قياس الاب
-            $table->decimal('retail_unit_to_parent' , 10,2); // عدد وحدات التجزئه بالنسبه للوحده الاب
+            $table->decimal('retail_unit_to_parent' , 10,2)->nullable(); // عدد وحدات التجزئه بالنسبه للوحده الاب
 
             $table->decimal('price' , 10,2); //السعر القطاعى لوحده القياس الاساسيه
             $table->decimal('Wholesale_price' , 10,2); // السعرالجمله لوحده القياس الاساسيه
             $table->decimal('half_Wholesale_price' , 10,2); //السعر النص جمله لوحده القياس الاساسيه
 
-            $table->decimal('retail_price' , 10,2); // السعر القطاعى لوحده القياس التجزئه
-            $table->decimal('retail_Wholesale_price' , 10,2); // السعرالجمله لوحده القياس التجزئه
-            $table->decimal('retail_half_Wholesale_price' , 10,2); //السعر النص جمله لوحده القياس التجزئه
+            $table->decimal('retail_price' , 10,2)->nullable(); // السعر القطاعى لوحده القياس التجزئه
+            $table->decimal('retail_Wholesale_price' , 10,2)->nullable(); // السعرالجمله لوحده القياس التجزئه
+            $table->decimal('retail_half_Wholesale_price' , 10,2)->nullable(); //السعر النص جمله لوحده القياس التجزئه
 
             $table->decimal('cost_price' , 10,2); // متوسط التكلفه للشراء بالوحده الاساسيه
-            $table->decimal('retail_cost_price' , 10,2); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('retail_cost_price' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
 
-            $table->decimal('quantity' , 10,2); //متوسط التكلفه للشراء بالتجزئه
-            $table->decimal('retail_quantity' , 10,2); //متوسط التكلفه للشراء بالتجزئه
-            $table->decimal('all_retail_quantity' , 10,2); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('quantity' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('retail_quantity' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('all_retail_quantity' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
 
             $table->integer('added_by');
             $table->boolean('has_fixed_price');
@@ -45,8 +46,8 @@ return new class extends Migration
             $table->boolean('active')->default(1);
             $table->date('date');
             $table->integer('com_code');
-            $table->bigInteger('item_code');
-            $table->string('barcode');
+            $table->string('barcode')->nullable();
+            $table->string('photo')->nullable();
             $table->timestamps();
 
             $table->foreign('categories_id')
