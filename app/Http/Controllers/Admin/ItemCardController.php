@@ -19,6 +19,7 @@ class ItemCardController extends Controller
      */
     public function index()
     {
+        $categories = Category::select('id','name')->get();
         $data = ItemCard::orderby('id', 'DESC')->paginate(5);
         if (!empty($data)) {
             foreach ($data as $item) {
@@ -39,7 +40,7 @@ class ItemCardController extends Controller
                 }
             }
         }
-        return view('admin.itemcard.index', ['data' => $data]);
+        return view('admin.itemcard.index', compact('data', 'categories'));
     }
 
     /**
@@ -153,7 +154,15 @@ class ItemCardController extends Controller
      */
     public function show($id)
     {
-        //
+
+        $data = ItemCard::find($id);
+
+        $data['category'] = Category::select('name')->where(['id'=>$data->categories_id])->first();
+        $data['units'] = Unit::select('name')->where(['id'=>$data->parent_unit_id])->first();
+        $data['retail_units'] = Unit::select('id', 'name')->where(['id'=>$data->retail_unit_id])->first();
+        $data['items'] = ItemCard::select('id', 'name')->where(['id'=>$data->id])->first();
+
+        return view('admin.itemcard.show', compact('data'));
     }
 
     /**

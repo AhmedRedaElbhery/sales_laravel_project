@@ -29,6 +29,10 @@
 
                 <div class="card-body">
 
+                    <div class="col-md-4">
+                        <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                    </div>
+
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
 
@@ -93,6 +97,9 @@
                                             <td>
                                                 <a href="{{ route('itemcard.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
+
+                                                    <a href="{{ route('itemcard.show', $item->id) }}"
+                                                        class="btn btn-info">عرض</a>
 
                                                 <form action="{{ route('itemcard.destroy', $item->id) }}" method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
