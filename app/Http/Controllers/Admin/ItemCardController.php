@@ -117,10 +117,10 @@ class ItemCardController extends Controller
 
         $data['parent_id'] = $request->parent_id;
         $data['parent_unit_id'] = $request->unit_parent_id;
-        $data['Wholesale_price'] = $request->Wholesale_price;
-        $data['half_Wholesale_price'] = $request->half_Wholesale_price;
-        $data['price'] = $request->price;
-        $data['cost_price'] = $request->cost_price;
+        $data['Wholesale_price'] = $request->Wholesale_price * 100;
+        $data['half_Wholesale_price'] = $request->half_Wholesale_price * 100;
+        $data['price'] = $request->price * 100;
+        $data['cost_price'] = $request->cost_price * 100;
 
 
 
@@ -129,10 +129,10 @@ class ItemCardController extends Controller
         if ($request->has_retail_unit == 1) {
             $data['retail_unit_id'] = $request->retail_units;
             $data['retail_unit_to_parent'] = $request->retail_unit_to_parent;
-            $data['retail_Wholesale_price'] = $request->retail_Wholesale_price;
-            $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price;
-            $data['retail_price'] = $request->retail_price;
-            $data['retail_cost_price'] = $request->retail_cost_price;
+            $data['retail_Wholesale_price'] = $request->retail_Wholesale_price * 100;
+            $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price * 100;
+            $data['retail_price'] = $request->retail_price * 100;
+            $data['retail_cost_price'] = $request->retail_cost_price * 100;
         }
 
         $data['has_fixed_price'] = $request->has_fixed_price;

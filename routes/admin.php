@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AccountTypes;
+use App\Http\Controllers\Admin\AccountsController;
+use App\Http\Controllers\Admin\AccountTypesController;
 use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LoginController;
@@ -74,7 +77,12 @@ Route::group([
     /* start item card */
     Route::resource('itemcard', AdminItemCardController::class);
 
+    //for account types
 
+    Route::get('/accounttypes/index', [AccountTypesController::class, 'index'])->name('admin.accounttypes.index');
+
+    /* start accounts */
+    Route::resource('accounts', AccountsController::class);
 
 });
 

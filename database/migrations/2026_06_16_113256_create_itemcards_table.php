@@ -23,22 +23,22 @@ return new class extends Migration
             $table->boolean('has_retail_unit'); //هل يوجد وحده تجزئه للصنف
             $table->integer('retail_unit_id')->nullable(); // كود وحده قياس التجزئه
             $table->integer('parent_unit_id'); // كود وحده قياس الاب
-            $table->decimal('retail_unit_to_parent' , 10,2)->nullable(); // عدد وحدات التجزئه بالنسبه للوحده الاب
+            $table->integer('retail_unit_to_parent')->nullable(); // عدد وحدات التجزئه بالنسبه للوحده الاب
 
-            $table->decimal('price' , 10,2); //السعر القطاعى لوحده القياس الاساسيه
-            $table->decimal('Wholesale_price' , 10,2); // السعرالجمله لوحده القياس الاساسيه
-            $table->decimal('half_Wholesale_price' , 10,2); //السعر النص جمله لوحده القياس الاساسيه
+            $table->integer('price' ); //السعر القطاعى لوحده القياس الاساسيه
+            $table->integer('Wholesale_price' ); // السعرالجمله لوحده القياس الاساسيه
+            $table->integer('half_Wholesale_price' ); //السعر النص جمله لوحده القياس الاساسيه
 
-            $table->decimal('retail_price' , 10,2)->nullable(); // السعر القطاعى لوحده القياس التجزئه
-            $table->decimal('retail_Wholesale_price' , 10,2)->nullable(); // السعرالجمله لوحده القياس التجزئه
-            $table->decimal('retail_half_Wholesale_price' , 10,2)->nullable(); //السعر النص جمله لوحده القياس التجزئه
+            $table->integer('retail_price' )->nullable(); // السعر القطاعى لوحده القياس التجزئه
+            $table->integer('retail_Wholesale_price' )->nullable(); // السعرالجمله لوحده القياس التجزئه
+            $table->integer('retail_half_Wholesale_price' )->nullable(); //السعر النص جمله لوحده القياس التجزئه
 
-            $table->decimal('cost_price' , 10,2); // متوسط التكلفه للشراء بالوحده الاساسيه
-            $table->decimal('retail_cost_price' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
+            $table->integer('cost_price' ); // متوسط التكلفه للشراء بالوحده الاساسيه
+            $table->integer('retail_cost_price' )->nullable(); //متوسط التكلفه للشراء بالتجزئه
 
-            $table->decimal('quantity' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
-            $table->decimal('retail_quantity' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
-            $table->decimal('all_retail_quantity' , 10,2)->nullable(); //متوسط التكلفه للشراء بالتجزئه
+            $table->decimal('quantity' , 10,2)->nullable();
+            $table->decimal('retail_quantity' , 10,2)->nullable();
+            $table->decimal('all_retail_quantity' , 10,2)->nullable();
 
             $table->integer('added_by');
             $table->boolean('has_fixed_price');

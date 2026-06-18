@@ -62,8 +62,8 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                        <li class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index' , 'accounts.*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link  {{ request()->routeIs('admin.accounttypes.index' , 'accounts.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                      الحسابات
@@ -72,6 +72,24 @@
                             </a>
 
                             <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.accounttypes.index') }}" class="nav-link  {{ request()->routeIs('admin.accounttypes.index') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            انواع الحسابات الماليه
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('accounts.index') }}" class="nav-link  {{ request()->routeIs('accounts.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                         الحسابات الماليه
+                                        </p>
+                                    </a>
+                                </li>
 
                             </ul>
                         </li>

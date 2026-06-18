@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Admin_panal_settings;
+use App\Models\AdminPanalSettings;
 
 class AdminPanelSettingsSeeder extends Seeder
 {
     public function run(): void
     {
-        $setting = new Admin_panal_settings();
+        $setting = new AdminPanalSettings();
         $setting->system_name = 'company name';
         $setting->photo = '';
         $setting->active = 1;
