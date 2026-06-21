@@ -9,8 +9,8 @@ class Accounts extends Model
 {
     use HasFactory;
     protected $table="accounts";
-    protected $fillable = ['name','account_type ','parent_account_number',
+    protected $fillable = ['name','account_type', 'start_balance_status' ,'parent_account_number',
     'account_number','start_balance','current_balance','added_by','updated_by',
-    'date','is_archived','com_code','notce','other_table_fk','is_parent'];
+    'date','is_archived','com_code','notes','other_table_fk','is_parent'];
 
 }

@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    إضافة صنف جديد
+    إضافة حساب جديد
 @endsection
 
 @section('contentheader')
-    الاصناف
+الحسابات الماليه
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('itemcard.index') }}"> الاصناف </a>
+    <a href="{{ route('itemcard.index') }}"> الحسابات الماليه </a>
 @endsection
 
 @section('contentheaderactive')
@@ -20,7 +20,7 @@
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">إضافة صنف جديد</h3>
+            <h3 class="card-title card_title_center">إضافة حساب جديد</h3>
         </div>
 
         <div class="card-body">
@@ -30,84 +30,30 @@
                 </div>
             @endif
 
-            <form action="{{ route('itemcard.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('accounts.store') }}" method="POST">
                 @csrf
                 <div>
                     <div class="row mb-2">
-                        <div class="form-group col-sm-6">
-                            <label>باركود الصنف <span class="text-muted">(ف حاله عدم الادخال سيتم ادخاله اليا) </span>
-                            </label>
-                            <input type="text" name="barcode" class="form-control" value="{{ old('barcode') }}">
-                            @error('barcode')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
 
                         <div class="form-group col-sm-6">
-                            <label>اسم الصنف </label>
+                            <label>اسم الحساب </label>
                             <input type="text" name="name" class="form-control"  value="{{ old('name') }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                    </div>
 
+                        <div class="form-group col-sm-6">
+                            <label>نوع الحساب </label>
+                            <select name="account_type" class="form-control" >
+                                <option value="" selected disabled>اختر نوع الحساب </option>
 
-                    <div class="row mb-2">
-                        <div class="form-group col-sm-3">
-                            <label>النوع </label>
-                            <select name="item_type" class="form-control" >
-                                <option value="" selected disabled>اختر النوع </option>
-                                <option value="1" @selected(old('item_type') == '1')>تجزئه </option>
-                                <option value="2" @selected(old('item_type') == '2')> استهلاكى بصلاحيه</option>
-                                <option value="3" @selected(old('item_type') == '3')>عهده</option>
-                            </select>
-                            @error('item_type')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group col-sm-3">
-                            <label>الفئه </label>
-                            <select name="category_id" class="form-control" >
-                                <option value="" selected disabled>اختر الفئه </option>
-
-                                @foreach ($categories as $item)
-                                    <option value="{{ $item->id }}" @selected(old('category_id') == $item->id)>{{ $item->name }}
+                                @foreach ($account_type as $item)
+                                    <option value="{{ $item->id }}" @selected(old('account_type') == $item->id)>{{ $item->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('category_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group col-sm-3">
-                            <label>الصنف الاساسى له </label>
-                            <select name="parent_id" class="form-control" >
-                                <option value="0"> هذا الصنف اساسى </option>
-
-                                @foreach ($items as $item)
-                                    <option value="{{ $item->id }}" @selected(old('parent_id') == $item->id)>{{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group col-sm-3">
-                            <label>وحده القياس الاساسيه للصنف </label>
-                            <select name="unit_parent_id" id="unit_parent_id" class="form-control" >
-                                <option value="" selected disabled>اختر الوحده </option>
-
-                                @foreach ($units as $item)
-                                    <option value="{{ $item->id }}" @selected(old('unit_parent_id') == $item->id)>{{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('unit_parent_id')
+                            @error('account_type')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -115,182 +61,72 @@
 
 
                     <div class="row mb-2">
-                        <div class="form-group col-sm-3 parent_divs"
-                            @if (old('unit_parent_id') == '') style="display:none" @endif>
-                            @php
-                                $unitName = $units->where('id', old('unit_parent_id'))->first()?->name;
-                            @endphp
-                            <label>السعر الجمله لل (<span class="text-muted name_parent_unit">{{ $unitName }}
-                                </span>) </label>
-                            <input type="text"  name="Wholesale_price" class="form-control"
-                                value="{{ old('Wholesale_price') }}">
-                            @error('Wholesale_price')
+
+                        <div class="form-group col-sm-6">
+                            <label>الحساب الاساسى له  </label>
+                            <select name="parent_account_number" class="form-control" >
+
+                                <option value="" selected disabled>اختر الحساب الاب له </option>
+
+                                <option value="0" @selected(old('parent_account_number') === '0')>هذا الحساب اساسى </option>
+
+                                @foreach ($accounts as $item)
+                                    <option value="{{ $item->id }}" @selected(old('parent_account_number') == $item->id)>{{ $item->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('parent_account_number')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div
-                            class="form-group col-sm-3 parent_divs"@if (old('unit_parent_id') == '') style="display:none" @endif>
-                            <label>السعر النص جمله لل (<span class="name_parent_unit text-muted">
-                                    {{ $unitName }}</span>) </label>
-                            <input type="text" name="half_Wholesale_price" class="form-control"
-                                value="{{ old('half_Wholesale_price') }}">
-                            @error('half_Wholesale_price')
+
+                        <div class="form-group col-sm-6">
+                            <label>حاله التفعيل </label>
+                            <select name="is_archived" class="form-control" >
+                                <option value="" selected disabled>اختر الحاله </option>
+                                <option value="0"  @selected(old('is_archived') == 0)> مفعل </option>
+                                <option value="1"  @selected(old('is_archived') == 1)> مؤرشف وغير مفعل </option>
+                            </select>
+                            @error('is_archived')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div
-                            class="form-group col-sm-3 parent_divs"@if (old('unit_parent_id') == '') style="display:none" @endif>
-                            <label>السعر القطاعى لل (<span class="name_parent_unit text-muted">{{ $unitName }} </span>)
-                            </label>
-                            <input type="text" name="price" class="form-control"
-                                value="{{ old('price') }}">
-                            @error('price')
+                    </div>
+
+                    <div class="row mb-2">
+
+                        <div class="form-group col-sm-6">
+                            <label>حاله الحساب </label>
+                            <select name="start_balance_status" id="start_balance_status" class="form-control" >
+                                <option value="" selected disabled>اختر حاله الحساب </option>
+                                <option value="1"  @selected(old('start_balance_status') == 1)> دائن </option>
+                                <option value="2" @selected(old('start_balance_status') == 2)> مدين </option>
+                                <option value="3" @selected(old('start_balance_status') == 3)> متزن </option>
+                            </select>
+                            @error('start_balance_status')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div
-                            class="form-group col-sm-3 parent_divs"@if (old('unit_parent_id') == '') style="display:none" @endif>
-                            <label>السعر تكلفه الشراء لل (<span class="name_parent_unit text-muted">{{ $unitName }}
-                                </span>)</label>
-                            <input type="text" name="cost_price" class="form-control" value="{{ old('cost_price') }}">
-                            @error('cost_price')
+                        <div class="form-group col-sm-5">
+                            <label>رصيد اول المده </label> <br>
+                            <input style="width: 570px; height: 38px" type="number" name="start_balance" id="start_balance"
+                            placeholder="رصيد الحساب" value="{{ old('start_balance') }}">
+                            @error('start_balance')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
 
-                    <div class="form-group col-5">
-                        <label>هل للصنف وحده تجزئه ؟</label>
-                        <select name="has_retail_unit" id="retail_options" class="form-control" >
-                            <option value="" selected disabled>اختر النوع </option>
-                            <option value="1" @selected(old('has_retail_unit') == '1')>نعم </option>
-                            <option value="0" @selected(old('has_retail_unit') == '0')> لا</option>
-                        </select>
-                        @error('has_retail_unit')
+                    <div class="form-group col-sm-5">
+                        <label>الملاحظات </label> <br>
+                        <textarea name="notes" style="height: 100px; width: 420px"></textarea>
+                        @error('notes')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
-                    <div class="row mb-2">
-                        <div class="form-group col-sm-4 retail_divs"
-                            @if (old('has_retail_unit') != '1') style="display:none" @endif>
-                            <label>وحده القياس التجزئه </label>
-                            <select id="retail_unit_id" name="retail_units" class="form-control" >
-                                <option value="" selected disabled>اختر الوحده </option>
-
-                                @foreach ($retail_units as $item)
-                                    <option value="{{ $item->id }}" @selected(old('retail_units') == $item->id)>{{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('retail_units')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group col-sm-4 retail_divs"
-                            @if (old('has_retail_unit') != '1') style="display:none" @endif>
-                            @php
-                                $retailName = $retail_units->where('id', old('retail_units'))->first()?->name;
-                            @endphp
-                            <label>عدد وحدات القياس التجزئه (<span class="name_retail_unit text-muted ">{{ $retailName }} </span>) لل (<span
-                                    class="name_parent_unit text-muted ">{{ $unitName }} </span>)
-                            </label>
-                            <input type="text" name="retail_unit_to_parent" class="form-control"
-                                value="{{ old('retail_unit_to_parent') }}">
-                            @error('retail_unit_to_parent')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div
-                            class="form-group col-sm-4 retail_divs"@if (old('has_retail_unit') != '1') style="display:none" @endif>
-                            <label>السعر الجمله لل (<span class="name_retail_unit text-muted"> {{ $retailName }}</span>)</label>
-                            <input type="text" name="retail_Wholesale_price" class="form-control"
-                                value="{{ old('retail_Wholesale_price') }}">
-                            @error('retail_Wholesale_price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-
-                    <div class="row mb-2">
-                        <div
-                            class="form-group col-sm-4 retail_divs"@if (old('has_retail_unit') != '1') style="display:none" @endif>
-                            <label>السعر النص جمله لل (<span class="name_retail_unit text-muted"> {{ $retailName }}</span>)</label>
-                            <input type="text" name="retail_half_Wholesale_price" class="form-control"
-                                value="{{ old('retail_half_Wholesale_price') }}">
-                            @error('retail_half_Wholesale_price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div
-                            class="form-group col-sm-4 retail_divs"@if (old('has_retail_unit') != '1') style="display:none" @endif>
-                            <label>السعر القطاعى لل (<span class="name_retail_unit text-muted">{{ $retailName }}</span>)</label>
-                            <input type="text" name="retail_price" class="form-control"
-                                value="{{ old('retail_price') }}">
-                            @error('retail_price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div
-                            class="form-group col-sm-4 retail_divs"@if (old('has_retail_unit') != '1') style="display:none" @endif>
-                            <label>السعر تكلفه الشراء لل (<span class="name_retail_unit text-muted">{{ $retailName }}</span>)</label>
-                            <input type="text" name="retail_cost_price" class="form-control"
-                                value="{{ old('retail_cost_price') }}">
-                            @error('retail_cost_price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-
-                        <div
-                            class="form-group col-sm-4 parent_divs"@if (old('unit_parent_id') == '') style="display:none" @endif>
-                            <label> هل للصنف سعر ثابت؟ </label>
-                            <select name="has_fixed_price" class="form-control" >
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1">ثابت وغير قابل للتغير</option>
-                                <option value="0">قابل للتغير بالفواتير</option>
-                            </select>
-                            @error('has_fixed_price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="form-group col-sm-5">
-                            <label>حالة التفعيل</label>
-                            <select name="active" class="form-control" >
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1" @selected(old('active') == '1')>مفعل</option>
-                                <option value="0" @selected(old('active') == '0')>معطل</option>
-                            </select>
-                            @error('active')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group col-sm-5 ml-5">
-                            <label>صوره الصنف ان وجدت </label>
-
-                            <input type="file" name="photo" class="form-control">
-
-                            @error('photo')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
 
                 </div>
 
@@ -298,7 +134,7 @@
                     حفظ
                 </button>
 
-                <a href="{{ route('itemcard.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                <a href="{{ route('accounts.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
                     رجوع
                 </a>
 
@@ -315,35 +151,11 @@
     <script>
         $(document).ready(function() {
 
-            $('#retail_options').change(function() {
+            $('#start_balance_status').change(function() {
 
-                if ($(this).val() == 1) {
-                    $('.retail_divs').css('display', 'block');
-                } else {
-                    $('.retail_divs').css('display', 'none');
+                if ($(this).val() == 3) {
+                    $('#start_balance').val(0);
                 }
-
-            });
-
-            $('#unit_parent_id').change(function() {
-
-                let text = $(this).find('option:selected').text();
-
-                $('.name_parent_unit').text(text);
-
-                if ($(this).val() != '') {
-                    $('.parent_divs').css('display', 'block');
-                } else {
-                    $('.parent_divs').css('display', 'none');
-                }
-
-
-            });
-
-            $('#retail_unit_id').change(function() {
-
-                let text = $(this).find('option:selected').text();
-                $('.name_retail_unit').text(text);
 
             });
 

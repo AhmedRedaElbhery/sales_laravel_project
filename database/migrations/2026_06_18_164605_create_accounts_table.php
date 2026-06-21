@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('parent_account_number')->nullable();
             $table->integer('account_number')->default(0);
             $table->integer('start_balance');
+            $table->tinyInteger('start_balance_status');
             $table->integer('current_balance');
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->boolean('is_archived')->default(0);
             $table->boolean('is_parent')->default(0);
             $table->integer('com_code');
-            $table->string('notce')->nullable();
+            $table->string('notes')->nullable();
             $table->bigInteger('other_table_fk')->nullable(); // التغيرات ف كل الحسابات هتبعت رقم هنا عشان نعرف التغيير
             $table->timestamps();
 

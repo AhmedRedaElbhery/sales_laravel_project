@@ -83,6 +83,8 @@ Route::group([
 
     /* start accounts */
     Route::resource('accounts', AccountsController::class);
+    Route::post('/accounts/filter', [AccountsController::class, 'filter'])->name('accounts.filter');
+
 
 });
 

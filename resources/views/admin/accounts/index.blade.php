@@ -24,13 +24,42 @@
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">الحسابات الماليه </h3>
-                    <a class="btn btn-success" href="{{ route('itemcard.create') }}">اضافه جديد</a>
+                    <a class="btn btn-success" href="{{ route('accounts.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
 
-                    <div class="col-md-4">
-                        <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                        </div>
+
+                        <div class="col-md-4">
+                            <form action="{{ route('accounts.filter') }}" method="POST">
+                                @csrf
+                                <select name="type" class="form-control" onchange="this.form.submit()">
+                                    @if (!isset($type))
+                                        <option value="all">عرض الكل</option>
+                                        <option value="1">الحسابات رئيسيه</option>
+                                        <option value="0">الحسابات فرعيه</option>
+                                    @else
+                                        @if ($type == 0)
+                                            <option value="all">عرض الكل</option>
+                                            <option value="1">الحسابات رئيسيه</option>
+                                            <option value="0" selected>الحسابات فرعيه</option>
+                                        @elseif($type == 1)
+                                            <option value="all">عرض الكل</option>
+                                            <option value="1" selected>الحسابات رئيسيه</option>
+                                            <option value="0">الحسابات فرعيه</option>
+                                        @else
+                                            <option value="all" selected>عرض الكل</option>
+                                            <option value="1">الحسابات رئيسيه</option>
+                                            <option value="0">الحسابات فرعيه</option>
+                                        @endif
+                                    @endif
+                                </select>
+                            </form>
+                        </div>
                     </div>
 
                     @if (isset($data) && count($data) > 0)
@@ -44,7 +73,7 @@
                                         <th>نوع الحساب</th>
                                         <th>هل اب </th>
                                         <th>الحساب الاب له</th>
-                                        <th>الرصيد </th>
+                                        <th>الرصيد الحالى </th>
                                         <th>حاله التفعيل</th>
                                         <th> </th>
                                     </tr>
@@ -60,7 +89,7 @@
                                             </td>
 
                                             <td>
-                                                @if ( $item->is_parent == 1)
+                                                @if ($item->is_parent == 1)
                                                     <span class="badge badge-success">نعم</span>
                                                 @else
                                                     <span class="badge badge-danger">لا</span>
@@ -78,7 +107,7 @@
                                                 @if ($item->is_archived == 0)
                                                     <span class="badge badge-success">مفعل</span>
                                                 @else
-                                                    <span class="badge badge-danger">معطل</span>
+                                                    <span class="badge badge-danger">مؤرشف وغير مفعل</span>
                                                 @endif
                                             </td>
 
