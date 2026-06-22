@@ -57,6 +57,22 @@
                                 @enderror
                             </div>
 
+                            <div class="form-group">
+                                <label>الحساب الاساسى للعملاء  </label>
+                                <select name="customer_parent_account_number" class="form-control" >
+
+                                    <option value="" selected disabled>اختر الحساب  </option>
+
+                                    @foreach ($accounts as $item)
+                                        <option value="{{ $item->id }}" @selected(old('customer_parent_account_number') == $item->id)>{{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('customer_parent_account_number')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
                             <div class="form-group mb-3">
                                 <label>رساله التنبيه اعلى الشاشه للشركه</label>
                                 <textarea name="general_alert" class="form-control" rows="4">{{ $data['general_alert'] }}</textarea>

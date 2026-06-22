@@ -27,6 +27,7 @@ class AdminPanelSettingRequest extends FormRequest
             'system_name'=>'required',
             'address'=> 'required',
             'phone'=> 'required',
+            'customer_parent_account_number'=> 'required',
         ];
     }
     public function messages(){
@@ -34,6 +35,7 @@ class AdminPanelSettingRequest extends FormRequest
             'system_name.required'=>'اسم المستخدم مطلوب',
             'address.required'=>' العنوان مطلوب',
             'phone.required'=>' الهاتف مطلوب',
+            'customer_parent_account_number.required'=>'  اختر الحساب',
         ];
     }
 }

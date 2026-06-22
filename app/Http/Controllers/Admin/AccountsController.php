@@ -231,6 +231,26 @@ class AccountsController extends Controller
             $data = Accounts::orderby('id', 'DESC')->paginate(5);
 
         }
+        foreach ($data as $item) {
+
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+
+            $item['parent_name'] = Accounts::where(['id' => $item->parent_account_number])->value('name');
+
+            $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
+
+            if ($item->updated_by > 0 && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
+            }
+
+            if($item->parent_account_number != null && $item->parent_account_number > 0)
+            {
+                $item['parent_account_name'] = Accounts::where(['id'=>$item->parent_account_number])->value('name');
+            }
+            else{
+                $item['parent_account_name'] = "لا يوجد";
+            }
+        }
         return view('admin.accounts.index',compact('data','type'));
     }
 }

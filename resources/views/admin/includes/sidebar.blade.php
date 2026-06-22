@@ -27,8 +27,10 @@
                         data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin.adminpanelsettings.*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin.adminpanelsettings.*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin.adminpanelsettings.*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin.adminpanelsettings.*', 'admin.treasuries.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الضبط العام
@@ -62,11 +64,13 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index' , 'accounts.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin.accounttypes.index' , 'accounts.*') ? 'active' : '' }} ">
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*' , 'customers.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
-                                     الحسابات
+                                    الحسابات
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -74,7 +78,8 @@
                             <ul class="nav nav-treeview">
 
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.accounttypes.index') }}" class="nav-link  {{ request()->routeIs('admin.accounttypes.index') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.accounttypes.index') }}"
+                                        class="nav-link  {{ request()->routeIs('admin.accounttypes.index') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             انواع الحسابات الماليه
@@ -83,10 +88,21 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('accounts.index') }}" class="nav-link  {{ request()->routeIs('accounts.*') ? 'active' : '' }}">
+                                    <a href="{{ route('accounts.index') }}"
+                                        class="nav-link  {{ request()->routeIs('accounts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                         الحسابات الماليه
+                                            الحسابات الماليه
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('customers.index') }}"
+                                        class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            حسابات العملاء
                                         </p>
                                     </a>
                                 </li>
@@ -95,8 +111,10 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview  {{ request()->routeIs('admin.sales_material.*', 'admin.store.*', 'unit.*', 'category.*', 'itemcard.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->routeIs('admin.sales_material.*', 'admin.store.*', 'unit.*', 'category.*', 'itemcard.*') ? 'active' : '' }}">
+                        <li
+                            class="nav-item has-treeview  {{ request()->routeIs('admin.sales_material.*', 'admin.store.*', 'unit.*', 'category.*', 'itemcard.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link {{ request()->routeIs('admin.sales_material.*', 'admin.store.*', 'unit.*', 'category.*', 'itemcard.*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     ضبط الخزن
@@ -108,7 +126,8 @@
 
 
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.sales_material.index') }}" class="nav-link  {{ request()->routeIs('admin.sales_material.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.sales_material.index') }}"
+                                        class="nav-link  {{ request()->routeIs('admin.sales_material.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             بيانات فئات الفواتير
@@ -117,7 +136,8 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.store.index') }}" class="nav-link {{ request()->routeIs('admin.store.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.store.index') }}"
+                                        class="nav-link {{ request()->routeIs('admin.store.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             بيانات المخازن
@@ -126,7 +146,8 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('unit.index') }}" class="nav-link {{ request()->routeIs('unit.*') ? 'active' : '' }}">
+                                    <a href="{{ route('unit.index') }}"
+                                        class="nav-link {{ request()->routeIs('unit.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             بيانات الوحدات
@@ -135,7 +156,8 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('category.index') }}" class="nav-link {{ request()->routeIs('category.*') ? 'active' : '' }}">
+                                    <a href="{{ route('category.index') }}"
+                                        class="nav-link {{ request()->routeIs('category.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             فئات الاصناف
@@ -144,23 +166,24 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('itemcard.index') }}" class="nav-link {{ request()->routeIs('itemcard.*') ? 'active' : '' }}">
+                                    <a href="{{ route('itemcard.index') }}"
+                                        class="nav-link {{ request()->routeIs('itemcard.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             الاصناف
                                         </p>
                                     </a>
                                 </li>
-
-
                             </ul>
                         </li>
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
-                                     حركات مخزنيه
+                                    حركات مخزنيه
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -171,44 +194,13 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
-                                     المبيعات
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-
-                            <ul class="nav nav-treeview">
-
-                            </ul>
-                        </li>
-
-
-
-
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                     خدمات داخليه وخارجيه
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-
-                            <ul class="nav nav-treeview">
-
-                            </ul>
-                        </li>
-
-
-
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                   حركه شفت الخزينه
+                                    المبيعات
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -221,11 +213,13 @@
 
 
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
-                                     الصلاحيات
+                                    خدمات داخليه وخارجيه
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -236,11 +230,14 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
-                                     التقارير
+                                    حركه شفت الخزينه
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -250,11 +247,49 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+
+
+
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
-                                     المراقبه والدعم الفنى
+                                    الصلاحيات
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+
+                            <ul class="nav nav-treeview">
+
+                            </ul>
+                        </li>
+
+
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    التقارير
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+
+                            <ul class="nav nav-treeview">
+
+                            </ul>
+                        </li>
+
+                        <li
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    المراقبه والدعم الفنى
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>

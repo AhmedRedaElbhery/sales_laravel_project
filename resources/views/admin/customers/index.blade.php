@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-    الحسابات
+حسابات العملاء
 @endsection
 
 @section('contentheader')
-    الحسابات الماليه
+ضبط المخازن
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('accounts.index') }}"> الحسابات الماليه </a>
+    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
 @endsection
 
 
@@ -23,8 +23,8 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">الحسابات الماليه </h3>
-                    <a class="btn btn-success" href="{{ route('accounts.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">حسابات العملاء </h3>
+                    <a class="btn btn-success" href="{{ route('customers.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
@@ -34,32 +34,7 @@
                             <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
                         </div>
 
-                        <div class="col-md-4">
-                            <form action="{{ route('accounts.filter') }}" method="POST">
-                                @csrf
-                                <select name="type" class="form-control" onchange="this.form.submit()">
-                                    @if (!isset($type))
-                                        <option value="all">عرض الكل</option>
-                                        <option value="1">الحسابات رئيسيه</option>
-                                        <option value="0">الحسابات فرعيه</option>
-                                    @else
-                                        @if ($type == 0)
-                                            <option value="all">عرض الكل</option>
-                                            <option value="1">الحسابات رئيسيه</option>
-                                            <option value="0" selected>الحسابات فرعيه</option>
-                                        @elseif($type == 1)
-                                            <option value="all">عرض الكل</option>
-                                            <option value="1" selected>الحسابات رئيسيه</option>
-                                            <option value="0">الحسابات فرعيه</option>
-                                        @else
-                                            <option value="all" selected>عرض الكل</option>
-                                            <option value="1">الحسابات رئيسيه</option>
-                                            <option value="0">الحسابات فرعيه</option>
-                                        @endif
-                                    @endif
-                                </select>
-                            </form>
-                        </div>
+
                     </div>
 
                     @if (isset($data) && count($data) > 0)
@@ -69,10 +44,8 @@
                                 <thead class="custom_head">
                                     <tr>
                                         <th>الاسم</th>
+                                        <th>كود او رقم العميل</th>
                                         <th>رقم الحساب </th>
-                                        <th>نوع الحساب</th>
-                                        <th>هل اب </th>
-                                        <th>الحساب الاب له</th>
                                         <th>الرصيد الحالى </th>
                                         <th>حاله التفعيل</th>
                                         <th> </th>
@@ -83,23 +56,9 @@
                                     @foreach ($data as $item)
                                         <tr>
                                             <td>{{ $item->name }}</td>
+                                            <td>{{ $item->customer_code }}</td>
+
                                             <td>{{ $item->account_number }}</td>
-                                            <td>
-                                                {{ $item->type }}
-                                            </td>
-
-                                            <td>
-                                                @if ($item->is_parent == 1)
-                                                    <span class="badge badge-success">نعم</span>
-                                                @else
-                                                    <span class="badge badge-danger">لا</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                {{ $item->parent_account_name }}
-
-                                            </td>
 
                                             <td>{{ $item->current_balance }}</td>
 
@@ -112,10 +71,13 @@
                                             </td>
 
                                             <td>
-                                                <a href="{{ route('accounts.edit', $item->id) }}"
+                                                <a href="{{ route('customers.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('accounts.destroy', $item->id) }}" method="POST"
+                                                <a href="{{ route('customers.show', $item->id) }}"
+                                                    class="btn btn-info">عرض</a>
+
+                                                <form action="{{ route('customers.destroy', $item->id) }}" method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf
                                                     @method('DELETE')

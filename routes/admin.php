@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\StoresController;
 use App\Http\Controllers\Admin\TreasuriesController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\ItemCardController;
 
@@ -84,6 +85,9 @@ Route::group([
     /* start accounts */
     Route::resource('accounts', AccountsController::class);
     Route::post('/accounts/filter', [AccountsController::class, 'filter'])->name('accounts.filter');
+
+    /* start customers */
+    Route::resource('customers', CustomerController::class);
 
 
 });

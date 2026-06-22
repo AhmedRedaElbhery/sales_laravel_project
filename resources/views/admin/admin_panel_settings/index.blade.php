@@ -75,6 +75,11 @@
                                 </tr>
 
                                 <tr>
+                                    <td>اسم الحساب المالى للموردين الاساسى </td>
+                                    <td>{{ $data['customer_parent_account_name'] }} رقم حساب مالى ({{ $data['customer_parent_account_number'] }})</td>
+                                </tr>
+
+                                <tr>
                                     <td>تاريخ اخر تحديث </td>
                                     <td>
                                         @if($data['updated_by']>0 && $data['updated_by']!= null)

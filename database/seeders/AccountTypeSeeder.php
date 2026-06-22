@@ -55,6 +55,11 @@ class AccountTypeSeeder extends Seeder
                 'relatedinternalaccounts' => 1,
                 'active' => 1,
             ],
+            [
+                'name' => 'عام',
+                'relatedinternalaccounts' => 0,
+                'active' => 1,
+            ],
         ];
 
         foreach ($data as $row) {
