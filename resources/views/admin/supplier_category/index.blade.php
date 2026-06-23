@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-حسابات العملاء
+فئات الموردين
 @endsection
 
 @section('contentheader')
-ضبط المخازن
+    الحسابات
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
+    <a href="{{ route('suppliers.index') }}"> فئات الموردين </a>
 @endsection
 
 
@@ -23,19 +23,11 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">حسابات العملاء </h3>
-                    <a class="btn btn-success" href="{{ route('customers.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">بيانات فئات الموردين</h3>
+                    <a class="btn btn-success" href="{{ route('suppliers.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
-                        </div>
-
-
-                    </div>
 
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
@@ -43,11 +35,11 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>الاسم</th>
-                                        <th>كود او رقم العميل</th>
-                                        <th>رقم الحساب </th>
-                                        <th>الرصيد الحالى </th>
+                                        <th>التسلسل</th>
+                                        <th>اسم الفئه</th>
                                         <th>حاله التفعيل</th>
+                                        <th>تاريخ الاضافه</th>
+                                        <th>تاريخ التحديث</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -55,29 +47,46 @@
                                 <tbody>
                                     @foreach ($data as $item)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
+
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->customer_code }}</td>
-
-                                            <td>{{ $item->account_number }}</td>
-
-                                            <td>{{ $item->current_balance }}</td>
 
                                             <td>
-                                                @if ($item->active == 0)
+                                                @if ($item->active == 1)
                                                     <span class="badge badge-success">مفعل</span>
                                                 @else
-                                                    <span class="badge badge-danger">مؤرشف وغير مفعل</span>
+                                                    <span class="badge badge-danger">معطل</span>
                                                 @endif
                                             </td>
 
                                             <td>
-                                                <a href="{{ route('customers.edit', $item->id) }}"
+                                                @if ($item['created_at'] != null)
+                                                {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
+                                                    بواسطه
+                                                    {{ $item['added_by_admin'] }}
+                                                @else
+                                                    لا يوجد
+                                                @endif
+
+                                            </td>
+
+                                            <td>
+                                                @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
+                                                {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
+                                                    بواسطه
+                                                    {{ $item['updated_by_admin'] }}
+                                                @else
+                                                    لا يوجد
+                                                @endif
+                                            </td>
+
+
+                                            <td>
+                                                <a href="{{ route('suppliers.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <a href="{{ route('customers.show', $item->id) }}"
-                                                    class="btn btn-info">عرض</a>
-
-                                                <form action="{{ route('customers.destroy', $item->id) }}" method="POST"
+                                                <form action="{{ route('suppliers.destroy', $item->id) }}"
+                                                    method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf
                                                     @method('DELETE')

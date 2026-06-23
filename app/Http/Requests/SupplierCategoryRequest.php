@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAccountsRequest extends FormRequest
+class SupplierCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,15 +25,13 @@ class UpdateAccountsRequest extends FormRequest
     {
         return [
             'name'=>'required',
-            'is_archived'=> 'required',
-            'parent_account_number'=> 'required',
+            'active'=>'required',
         ];
     }
     public function messages(){
         return[
-            'name.required'=>'ادخل اسم الحساب',
-            'is_archived.required'=> 'اختر الحاله',
-            'parent_account_number.required'=> 'ادخل نوع الحساب',
+            'name.required'=>'الاسم مطلوب',
+            'active.required'=>'  يجب اختيار النوع'
         ];
     }
 }

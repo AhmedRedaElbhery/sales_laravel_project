@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
+use App\Http\Controllers\Admin\SupplierCategoriesController;
 use App\Http\Controllers\ItemCardController;
 
 /*
@@ -88,6 +89,9 @@ Route::group([
 
     /* start customers */
     Route::resource('customers', CustomerController::class);
+
+    /* start suppliers */
+    Route::resource('suppliers', SupplierCategoriesController::class);
 
 
 });

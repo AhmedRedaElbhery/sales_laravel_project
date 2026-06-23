@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomersRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Accounts;
 use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminPanalSettings;
 use App\Models\Customer;
-use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
@@ -117,6 +117,7 @@ class CustomerController extends Controller
 
 
         if ($flage) {
+
             $data['is_archived'] = $request->active;
             $data['account_type'] = 3;
             $data['is_parent'] = 0;
@@ -147,7 +148,8 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Customer::find($id);
+        return view('admin.customers.edit', compact('data'));
     }
 
     /**
@@ -157,9 +159,33 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCustomerRequest $request, $id)
     {
-        //
+        $data = Customer::find($id);
+        $exists = Customer::where(['name' => $request->name])->where('id', '!=', $id)->first();
+        if ($exists) {
+            return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
+        }
+
+        $data['name'] = $request->name;
+        $data['address'] = $request->address;
+        $data['notes'] = $request->notes;
+        $data['active'] = $request->active;
+
+        $flage = $data->save();
+
+        if ($flage) {
+
+            Accounts::where(['other_table_fk'=> $data->customer_code ,'account_number'=>$data['account_number']])
+                ->update([
+                    'name' => $request->name,
+                    'is_archived' => $request->active,
+                    'notes' => $request->notes,
+                    'updated_by' => auth()->user()->id,
+                ]);
+        }
+
+        return redirect()->route('customers.index');
     }
 
     /**
@@ -170,11 +196,10 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $code = Customer::select('customer_code')->where(['id'=>$id])->value('customer_code');
+        $code = Customer::select('customer_code','account_number','com_code')->where(['id' => $id])->first();
+        $id_account = Accounts::select('id')->where(['other_table_fk'=>$code['customer_code'] , 'account_type'=>3,'account_number'=>$code['account_number'], 'com_code'=>$code['com_code'] ])->value('id');
         Customer::destroy($id);
-        $id_account = Accounts::select('id')->where(['other_table_fk'=>$code])->value('id');
         Accounts::destroy($id_account);
         return redirect()->route('customers.index');
-
     }
 }

@@ -65,9 +65,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*','suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*' , 'customers.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*' , 'customers.*','suppliers.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الحسابات
@@ -103,6 +103,16 @@
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             حسابات العملاء
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('suppliers.index') }}"
+                                        class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            فئات الموردين
                                         </p>
                                     </a>
                                 </li>

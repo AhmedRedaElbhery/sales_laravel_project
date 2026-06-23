@@ -52,14 +52,7 @@
                             <label>نوع الحساب </label>
 
                             <select name="account_type" class="form-control">
-                                <option value="" disabled>اختر نوع الحساب</option>
-
-                                @foreach ($account_type as $item)
-                                    <option value="{{ $item->id }}"
-                                        @selected(old('account_type', $data->account_type) == $item->id)>
-                                        {{ $item->name }}
-                                    </option>
-                                @endforeach
+                                <option value="" selected disabled>{{ $account_type->name }}</option>
                             </select>
 
                             @error('account_type')

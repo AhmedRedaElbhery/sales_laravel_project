@@ -1,15 +1,15 @@
-@extends('layouts.admin')
+@extends('layouts.admin');
 
 @section('title')
-    تعديل حساب
+تعديل حساب العميل
 @endsection
 
 @section('contentheader')
-تعديل حساب
+ضبط المخازن
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('accounts.index') }}"> الحسابات الماليه </a>
+    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
 @endsection
 
 @section('contentheaderactive')
@@ -20,7 +20,7 @@
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">تعديل حساب</h3>
+            <h3 class="card-title card_title_center">تعديل حساب العميل</h3>
         </div>
 
         <div class="card-body">
@@ -30,7 +30,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('accounts.update', $data->id) }}" method="POST">
+            <form action="{{ route('customers.update', $data->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -49,20 +49,11 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>نوع الحساب </label>
+                            <label>العنوان </label>
+                            <input type="text" name="address" class="form-control"
+                                value="{{ old('address', $data->address) }}">
 
-                            <select name="account_type" class="form-control">
-                                <option value="" disabled>اختر نوع الحساب</option>
-
-                                @foreach ($account_type as $item)
-                                    <option value="{{ $item->id }}"
-                                        @selected(old('account_type', $data->account_type) == $item->id)>
-                                        {{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            @error('account_type')
+                            @error('address')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -72,65 +63,40 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>الحساب الاساسى له</label>
+                            <label>حاله التفعيل</label>
 
-                            <select name="parent_account_number" class="form-control">
-                                <option value="" disabled>اختر الحساب الاب له</option>
+                            <select name="active" class="form-control">
+                                <option value="" disabled>اختر الحاله</option>
 
                                 <option value="0"
-                                    @selected(old('parent_account_number', $data->parent_account_number) == 0)>
-                                    هذا الحساب اساسى
+                                    @selected(old('active', $data->active) == 0)>
+                                    مفعل
                                 </option>
 
-                                @foreach ($accounts as $item)
-                                @if ($item->id != $data->id)
-                                <option value="{{ $item->id }}"
-                                    @selected(old('parent_account_number', $data->parent_account_number) == $item->id)>
-                                    {{ $item->name }}
+                                <option value="1"
+                                    @selected(old('active', $data->active) == 1)>
+                                    مؤرشف وغير مفعل
                                 </option>
-                                @endif
-
-                                @endforeach
                             </select>
 
-                            @error('parent_account_number')
+                            @error('active')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>حاله التفعيل</label>
+                            <label>الملاحظات</label> <br>
 
-                            <select name="is_archived" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                            <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
 
-                                <option value="0"
-                                    @selected(old('is_archived', $data->is_archived) == 0)>
-                                    مفعل
-                                </option>
-
-                                <option value="1"
-                                    @selected(old('is_archived', $data->is_archived) == 1)>
-                                    مؤرشف وغير مفعل
-                                </option>
-                            </select>
-
-                            @error('is_archived')
+                            @error('notes')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
                     </div>
 
-                    <div class="form-group col-sm-5">
-                        <label>الملاحظات</label> <br>
 
-                        <textarea name="notes" style="height: 100px; width: 420px">{{ old('notes', $data->notes) }}</textarea>
-
-                        @error('notes')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
 
                 </div>
 
@@ -138,7 +104,7 @@
                     تحديث
                 </button>
 
-                <a href="{{ route('accounts.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
                     رجوع
                 </a>
 
@@ -150,17 +116,4 @@
 @endsection
 
 @section('script')
-    <script>
-        $(document).ready(function() {
-
-            $('#start_balance_status').change(function() {
-
-                if ($(this).val() == 3) {
-                    $('#start_balance').val(0);
-                }
-
-            });
-
-        });
-    </script>
 @endsection

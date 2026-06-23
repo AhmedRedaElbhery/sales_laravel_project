@@ -39,7 +39,6 @@ class SalesMaterialTypesController extends Controller
         } else {
             $data['name'] = $request->name;
             $data['active'] = $request->active;
-            $data['active'] = $request->active;
             $data['added_by'] = auth()->user()->id;
             $data['com_code'] = $com_code;
             $data['date'] = date("Y-m-d");
