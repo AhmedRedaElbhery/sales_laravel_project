@@ -14,7 +14,8 @@ class AdminPanelSettingsController extends Controller
     public function index()
     {
         $data = AdminPanalSettings::where('com_code', auth()->user()->com_code)->first();
-        $data['customer_parent_account_name'] = Accounts::select('name')->where('id', $data['customer_parent_account_number'])->first()?->name;;
+        $data['customer_parent_account_name'] = Accounts::select('name')->where('id', $data['customer_parent_account_number'])->first()?->name;
+        $data['supplier_parent_account_name'] = Accounts::select('name')->where('id', $data['supplier_parent_account_number'])->value('name');
         if (!empty($data)) {
             if ($data['updated_by'] != null && $data['updated_by'] > 0) {
                 $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
@@ -39,6 +40,7 @@ class AdminPanelSettingsController extends Controller
         $data->address = $request->address;
         $data->phone = $request->phone;
         $data->customer_parent_account_number = $request->customer_parent_account_number;
+        $data->supplier_parent_account_number = $request->supplier_parent_account_number;
         $data->general_alert = $request->general_alert;
         $data->updated_by = auth()->guard('admin')->id();
         $data->updated_at = date("Y-m-d H:i:s");

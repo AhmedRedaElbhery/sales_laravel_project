@@ -1,7 +1,7 @@
 @extends('layouts.admin');
 
 @section('title')
-حسابات العملاء
+حسابات الموردين
 @endsection
 
 @section('contentheader')
@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
+    <a href="{{ route('customers.index') }}"> حسابات الموردين </a>
 @endsection
 
 
@@ -23,8 +23,8 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">حسابات العملاء </h3>
-                    <a class="btn btn-success" href="{{ route('customers.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">حسابات الموردين </h3>
+                    <a class="btn btn-success" href="{{ route('suppliers.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
@@ -46,6 +46,7 @@
                                         <th>الاسم</th>
                                         <th>كود او رقم العميل</th>
                                         <th>رقم الحساب </th>
+                                        <th>الفئه التابع لها </th>
                                         <th>الرصيد الحالى </th>
                                         <th>حاله التفعيل</th>
                                         <th> </th>
@@ -56,9 +57,10 @@
                                     @foreach ($data as $item)
                                         <tr>
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->customer_code }}</td>
+                                            <td>{{ $item->supplier_code }}</td>
 
                                             <td>{{ $item->account_number }}</td>
+                                            <td>{{ $item->supplier_category_name }}</td>
 
                                             <td>{{ $item->current_balance }}</td>
 
@@ -71,10 +73,10 @@
                                             </td>
 
                                             <td>
-                                                <a href="{{ route('customers.edit', $item->id) }}"
+                                                <a href="{{ route('suppliers.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('customers.destroy', $item->id) }}" method="POST"
+                                                <form action="{{ route('suppliers.destroy', $item->id) }}" method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf
                                                     @method('DELETE')

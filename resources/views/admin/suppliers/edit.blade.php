@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-تعديل حساب العميل
+    حسابات الموردين
 @endsection
 
 @section('contentheader')
-الحسابات
+    الحسابات
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
+    <a href="{{ route('customers.index') }}"> حسابات الموردين </a>
 @endsection
 
 @section('contentheaderactive')
@@ -20,7 +20,7 @@
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">تعديل حساب العميل</h3>
+            <h3 class="card-title card_title_center">تعديل حساب المورد</h3>
         </div>
 
         <div class="card-body">
@@ -30,7 +30,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('customers.update', $data->id) }}" method="POST">
+            <form action="{{ route('suppliers.update', $data->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -63,18 +63,32 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
+                            <label>الفئه التابع لها </label>
+                            <select name="category_id" class="form-control">
+                                <option value="" disabled>اختر الفئه </option>
+
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" @if ($category->id == $data['supplier_category_id']) selected @endif>
+                                        {{ $category->name }} </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-group col-sm-6">
                             <label>حاله التفعيل</label>
 
                             <select name="active" class="form-control">
                                 <option value="" disabled>اختر الحاله</option>
 
-                                <option value="0"
-                                    @selected(old('active', $data->active) == 0)>
+                                <option value="0" @selected(old('active', $data->active) == 0)>
                                     مفعل
                                 </option>
 
-                                <option value="1"
-                                    @selected(old('active', $data->active) == 1)>
+                                <option value="1" @selected(old('active', $data->active) == 1)>
                                     مؤرشف وغير مفعل
                                 </option>
                             </select>
@@ -84,16 +98,16 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-sm-6">
-                            <label>الملاحظات</label> <br>
+                    </div>
 
-                            <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
+                    <div class="form-group col-sm-6">
+                        <label>الملاحظات</label> <br>
 
-                            @error('notes')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
 
+                        @error('notes')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
 
@@ -104,7 +118,7 @@
                     تحديث
                 </button>
 
-                <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                <a href="{{ route('suppliers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
                     رجوع
                 </a>
 

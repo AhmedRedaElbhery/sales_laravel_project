@@ -9,6 +9,7 @@ use App\Models\Accounts;
 use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\Suppliers;
 use Illuminate\Http\Request;
 
 class AccountsController extends Controller
@@ -20,7 +21,7 @@ class AccountsController extends Controller
      */
     public function index()
     {
-        $data = Accounts::orderby('id', 'DESC')->paginate(5);
+        $data = Accounts::orderby('id', 'DESC')->paginate(10);
 
         if (!empty($data)) {
 
@@ -216,6 +217,17 @@ class AccountsController extends Controller
                 $customer_data['active'] = $request->is_archived;
                 $customer_data->save();
             }
+
+            if ($data['account_type'] == 2) {
+
+                $supplier_data = Suppliers::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
+
+                $supplier_data['name'] = $request->name;
+                $supplier_data['updated_by'] = auth()->user()->id;
+                $supplier_data['notes'] = $request->notes;
+                $supplier_data['active'] = $request->is_archived;
+                $supplier_data->save();
+            }
         }
 
         return redirect()->route('accounts.index');
@@ -237,9 +249,17 @@ class AccountsController extends Controller
                 'account_number' => $data['account_number'],
                 'com_code' => $data['com_code'],
                 'customer_code' => $data['other_table_fk'],
-            ])->first();
-            $customer_id = $customer_id['id'];
+            ])->value('id');
             Customer::destroy($customer_id);
+        }
+        if ($data['account_type'] == 2) {
+
+            $supplier_id = Suppliers::select('id')->where([
+                'account_number' => $data['account_number'],
+                'com_code' => $data['com_code'],
+                'supplier_code' => $data['other_table_fk'],
+            ])->value('id');
+            Suppliers::destroy($supplier_id);
         }
         Accounts::destroy($id);
         return redirect()->route('accounts.index');

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('updated_by')->nullable();
             $table->integer('com_code');
             $table->bigInteger('customer_parent_account_number');
+            $table->bigInteger('supplier_parent_account_number');
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

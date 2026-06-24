@@ -75,8 +75,13 @@
                                 </tr>
 
                                 <tr>
-                                    <td>اسم الحساب المالى للموردين الاساسى </td>
+                                    <td>اسم الحساب المالى للعملاء الاساسى </td>
                                     <td>{{ $data['customer_parent_account_name'] }} رقم حساب مالى ({{ $data['customer_parent_account_number'] }})</td>
+                                </tr>
+
+                                <tr>
+                                    <td>اسم الحساب المالى للموردين الاساسى </td>
+                                    <td>{{ $data['supplier_parent_account_name'] }} رقم حساب مالى ({{ $data['supplier_parent_account_number'] }})</td>
                                 </tr>
 
                                 <tr>

@@ -61,7 +61,7 @@ class SupplierCategoriesController extends Controller
             $data['com_code'] = $com_code;
             $data['date'] = date("Y-m-d");
             SupplierCategory::create($data);
-            return redirect()->route('suppliers.index');
+            return redirect()->route('suppliers_category.index');
         }
     }
 
@@ -114,13 +114,13 @@ class SupplierCategoriesController extends Controller
             'updated_by'          => auth()->user()->id,
         ]);
 
-        return redirect()->route('suppliers.index');
+        return redirect()->route('suppliers_category.index');
     }
 
     public function destroy($id)
     {
         SupplierCategory::destroy($id);
 
-        return redirect()->route('suppliers.index');
+        return redirect()->route('suppliers_category.index');
     }
 }

@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('suppliers.index') }}"> فئات الموردين </a>
+    <a href="{{ route('suppliers_category.index') }}"> فئات الموردين </a>
 @endsection
 
 
@@ -24,7 +24,7 @@
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">بيانات فئات الموردين</h3>
-                    <a class="btn btn-success" href="{{ route('suppliers.create') }}">اضافه جديد</a>
+                    <a class="btn btn-success" href="{{ route('suppliers_category.create') }}">اضافه جديد</a>
                 </div>
 
                 <div class="card-body">
@@ -82,10 +82,10 @@
 
 
                                             <td>
-                                                <a href="{{ route('suppliers.edit', $item->id) }}"
+                                                <a href="{{ route('suppliers_category.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('suppliers.destroy', $item->id) }}"
+                                                <form action="{{ route('suppliers_category.destroy', $item->id) }}"
                                                     method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf

@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CustomersRequest;
-use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Requests\SuppliersRequest;
+use App\Http\Requests\UpdateSupplierRequest;
 use App\Models\Accounts;
-use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminPanalSettings;
-use App\Models\Customer;
+use App\Models\SupplierCategory;
+use App\Models\Suppliers;
+use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class SuppliersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,22 +22,23 @@ class CustomerController extends Controller
     public function index()
     {
         $com_code = auth()->user()->com_code;
-        $data = Customer::where(['com_code'=>$com_code])->orderby('id', 'DESC')->paginate(5);
+        $data = Suppliers::where(['com_code'=>$com_code])->orderby('id', 'DESC')->paginate(10);
 
         if (!empty($data)) {
 
             foreach ($data as $item) {
 
                 $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+                $item['supplier_category_name'] = SupplierCategory::where(['id' => $item->supplier_category_id])->value('name');
 
-                $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
+                $item['supplier_category_name'] = SupplierCategory::where(['id' => $item->supplier_category_id])->value('name');
 
                 if ($item->updated_by > 0 && $item->updated_by != null) {
                     $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
                 }
             }
         }
-        return view('admin.customers.index', compact('data'));
+        return view('admin.suppliers.index', compact('data'));
     }
 
     /**
@@ -46,7 +48,9 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('admin.customers.create');
+        $com_code = auth()->user()->com_code;
+        $supplier_category = SupplierCategory::select('id','name')->where(['com_code'=>$com_code, 'active'=>1])->get();
+        return view('admin.suppliers.create',compact('supplier_category'));
     }
 
     /**
@@ -55,20 +59,20 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CustomersRequest $request)
+    public function store(SuppliersRequest $request)
     {
-        $customer_code = Customer::max('customer_code');
+        $supplier_code = Suppliers::max('supplier_code');
         $account_number = Accounts::max('account_number');
-        $exist = Customer::where(['name' => $request->name])->exists();
+        $exist = Suppliers::where(['name' => $request->name])->exists();
 
         if ($exist) {
             return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
         }
 
-        if ($customer_code == null) {
-            $data['customer_code'] = 1;
+        if ($supplier_code == null) {
+            $data['supplier_code'] = 1;
         } else {
-            $data['customer_code'] = $customer_code + 1;
+            $data['supplier_code'] = $supplier_code + 1;
         }
 
         if ($account_number == null) {
@@ -110,24 +114,24 @@ class CustomerController extends Controller
         $data['date'] = date('Y-m-d');
         $data['notes'] = $request->notes;
         $data['active'] = $request->active;
+        $data['supplier_category_id'] = $request->category_id;
         $data['current_balance'] = 0;
         $data['start_balance_status'] = $request->start_balance_status;
 
 
-        $flage = Customer::create($data);
-
+        $flage = Suppliers::create($data);
 
         if ($flage) {
 
             $data['is_archived'] = $request->active;
-            $data['account_type'] = 3;
+            $data['account_type'] = 2;
             $data['is_parent'] = 0;
-            $data['other_table_fk'] =  $data['customer_code'];
-            $data['parent_account_number'] = AdminPanalSettings::select('customer_parent_account_number')->where('com_code', $data['com_code'])->first()?->customer_parent_account_number;
+            $data['other_table_fk'] =  $data['supplier_code'];
+            $data['parent_account_number'] = AdminPanalSettings::select('supplier_parent_account_number')->where('com_code', $data['com_code'])->value('supplier_parent_account_number');
             Accounts::create($data);
         }
 
-        return redirect()->route('customers.index');
+        return redirect()->route('suppliers.index');
     }
 
     /**
@@ -149,8 +153,9 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $data = Customer::find($id);
-        return view('admin.customers.edit', compact('data'));
+        $data = Suppliers::find($id);
+        $categories = SupplierCategory::select('id','name')->where(['active'=>1])->get();
+        return view('admin.suppliers.edit', compact('data','categories'));
     }
 
     /**
@@ -160,10 +165,10 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCustomerRequest $request, $id)
+    public function update(UpdateSupplierRequest $request, $id)
     {
-        $data = Customer::find($id);
-        $exists = Customer::where(['name' => $request->name])->where('id', '!=', $id)->first();
+        $data = Suppliers::find($id);
+        $exists = Suppliers::where(['name' => $request->name])->where('id', '!=', $id)->first();
         if ($exists) {
             return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
         }
@@ -172,12 +177,13 @@ class CustomerController extends Controller
         $data['address'] = $request->address;
         $data['notes'] = $request->notes;
         $data['active'] = $request->active;
+        $data['supplier_category_id'] = $request->category_id;
 
         $flage = $data->save();
 
         if ($flage) {
 
-            Accounts::where(['other_table_fk'=> $data->customer_code ,'account_number'=>$data['account_number'] ,'com_code'=>$data['com_code']])
+            Accounts::where(['other_table_fk'=> $data->supplier_code ,'account_number'=>$data['account_number'],'com_code'=>$data['com_code'] ])
                 ->update([
                     'name' => $request->name,
                     'is_archived' => $request->active,
@@ -186,7 +192,7 @@ class CustomerController extends Controller
                 ]);
         }
 
-        return redirect()->route('customers.index');
+        return redirect()->route('suppliers.index');
     }
 
     /**
@@ -197,10 +203,10 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $code = Customer::select('customer_code','account_number','com_code')->where(['id' => $id])->first();
-        $id_account = Accounts::select('id')->where(['other_table_fk'=>$code['customer_code'] , 'account_type'=>3,'account_number'=>$code['account_number'], 'com_code'=>$code['com_code'] ])->value('id');
-        Customer::destroy($id);
+        $code = Suppliers::select('supplier_code','account_number','com_code')->where(['id' => $id])->first();
+        $id_account = Accounts::select('id')->where(['other_table_fk'=>$code['supplier_code'] , 'account_type'=>2,'account_number'=>$code['account_number'], 'com_code'=>$code['com_code'] ])->value('id');
+        Suppliers::destroy($id);
         Accounts::destroy($id_account);
-        return redirect()->route('customers.index');
+        return redirect()->route('suppliers.index');
     }
 }

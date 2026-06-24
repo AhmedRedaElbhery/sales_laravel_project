@@ -42,7 +42,7 @@
 
                                 <li class="nav-item">
                                     <a href="{{ route('admin.adminpanelsettings.index') }}"
-                                        class="nav-link {{ request()->routeIs('admin.adminpanelsettings.index') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.adminpanelsettings.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             الضبط العام
@@ -65,9 +65,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*','suppliers.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*','suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*' , 'customers.*','suppliers.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*' , 'customers.*','suppliers_category.*','suppliers.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الحسابات
@@ -108,11 +108,21 @@
                                 </li>
 
                                 <li class="nav-item">
+                                    <a href="{{ route('suppliers_category.index') }}"
+                                        class="nav-link {{ request()->routeIs('suppliers_category.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            فئات الموردين
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
                                     <a href="{{ route('suppliers.index') }}"
                                         class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            فئات الموردين
+                                            حسابات الموردين
                                         </p>
                                     </a>
                                 </li>

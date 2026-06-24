@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('suppliers.index') }}"> فئات الموردين </a>
+    <a href="{{ route('suppliers_category.index') }}"> فئات الموردين </a>
 @endsection
 
 
@@ -33,7 +33,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('suppliers.store') }}" method="POST">
+                    <form action="{{ route('suppliers_category.store') }}" method="POST">
                         @csrf
 
                         <div class="form-group">
@@ -60,7 +60,7 @@
                             حفظ
                         </button>
 
-                        <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">
+                        <a href="{{ route('suppliers_category.index') }}" class="btn btn-secondary">
                             رجوع
                         </a>
 

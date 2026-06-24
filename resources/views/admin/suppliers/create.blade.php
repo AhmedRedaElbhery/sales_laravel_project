@@ -1,7 +1,7 @@
 @extends('layouts.admin');
 
 @section('title')
-حسابات العملاء
+حسابات الموردين
 @endsection
 
 @section('contentheader')
@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
+    <a href="{{ route('customers.index') }}"> حسابات الموردين </a>
 @endsection
 
 @section('contentheaderactive')
@@ -20,7 +20,7 @@
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">إضافة حساب جديد</h3>
+            <h3 class="card-title card_title_center">إضافة حساب مورد جديد</h3>
         </div>
 
         <div class="card-body">
@@ -30,7 +30,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('customers.store') }}" method="POST">
+            <form action="{{ route('suppliers.store') }}" method="POST">
                 @csrf
                 <div>
                     <div class="row mb-2">
@@ -70,6 +70,25 @@
                         </div>
 
                         <div class="form-group col-sm-6">
+                            <label>الفئه التابع لها </label>
+                            <select name="category_id" class="form-control" >
+                                <option value="" selected disabled>اختر الفئه </option>
+
+                                @foreach($supplier_category as $category)
+                                <option value="{{ $category->id }}" >{{ $category->name }} </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                    </div>
+
+                    <div class="row mb-2">
+
+                        <div class="form-group col-sm-6">
                             <label>حاله الحساب </label>
                             <select name="start_balance_status" id="start_balance_status" class="form-control" >
                                 <option value="" selected disabled>اختر حاله الحساب </option>
@@ -83,11 +102,6 @@
                         </div>
 
 
-                    </div>
-
-                    <div class="row mb-2">
-
-
                         <div class="form-group col-sm-6">
                             <label>رصيد اول المده </label> <br>
                             <input style="width: 570px; height: 38px" type="number" name="start_balance" id="start_balance"
@@ -97,13 +111,15 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-sm-6">
-                            <label>الملاحظات </label> <br>
-                            <textarea name="notes" style="height: 100px; width: 580px"></textarea>
-                            @error('notes')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+
+                    </div>
+
+                    <div class="form-group col-sm-6">
+                        <label>الملاحظات </label> <br>
+                        <textarea name="notes" style="height: 100px; width: 560px"></textarea>
+                        @error('notes')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
 
                 </div>
@@ -112,7 +128,7 @@
                     حفظ
                 </button>
 
-                <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                <a href="{{ route('suppliers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
                     رجوع
                 </a>
 
