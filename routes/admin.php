@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AccountTypes;
 use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\Admin\AccountTypesController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -15,8 +14,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
+use App\Http\Controllers\Admin\SupplierOrdersController;
 use App\Http\Controllers\Admin\SuppliersController;
-use App\Http\Controllers\ItemCardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +95,9 @@ Route::group([
 
     /* start suppliers */
     Route::resource('suppliers', SuppliersController::class);
+
+    /* start supplier orders */
+    Route::resource('supplier_orders', SupplierOrdersController::class);
 
 
 });

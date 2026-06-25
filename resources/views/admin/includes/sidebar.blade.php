@@ -198,9 +198,9 @@
                         </li>
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'supplier_orders.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*', 'supplier_orders.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     حركات مخزنيه
@@ -209,6 +209,17 @@
                             </a>
 
                             <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('supplier_orders.index') }}"
+                                        class="nav-link {{ request()->routeIs('supplier_orders.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            فواتير الشراء
+                                        </p>
+                                    </a>
+                                </li>
+
 
                             </ul>
                         </li>
