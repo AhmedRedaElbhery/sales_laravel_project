@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SupplierOrderRequest;
 use App\Models\Admin;
-use App\Models\Category;
 use App\Models\ItemCard;
 use App\Models\SupplierOrders;
+use App\Models\SupplierOrdersDetails;
 use App\Models\Suppliers;
-use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class SupplierOrdersController extends Controller
@@ -27,7 +26,7 @@ class SupplierOrdersController extends Controller
         if (!empty($data)) {
             foreach ($data as $item) {
                 $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                $item['supplier_name'] = Suppliers::select('name')->where(['supplier_code'=>$item->supplier_code , 'com_code'=>$com_code])->value('name');
+                $item['supplier_name'] = Suppliers::select('name')->where(['supplier_code' => $item->supplier_code, 'com_code' => $com_code])->value('name');
                 if ($item->updated_at && $item->updated_at  != null) {
                     $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
                 }
@@ -63,7 +62,7 @@ class SupplierOrdersController extends Controller
             $data['auto_serial'] = $serial + 1;
         }
 
-        $account_number = Suppliers::select('account_number')->where(['supplier_code'=>$request->supplier_code , 'com_code'=>$com_code])->value('account_number');
+        $account_number = Suppliers::select('account_number')->where(['supplier_code' => $request->supplier_code, 'com_code' => $com_code])->value('account_number');
 
         $data['order_date'] = $request->order_date;
         $data['pill_type'] = $request->pill_type;
@@ -88,7 +87,34 @@ class SupplierOrdersController extends Controller
      */
     public function show($id)
     {
-        //
+        $com_code = auth()->user()->id;
+        $data = SupplierOrders::find($id);
+        if (!empty($data)) {
+            $details = SupplierOrdersDetails::where(['supplier_auto_serial' => $data['auto_serial'], 'com_code' => $data['com_code'], 'order_type' => $data['order_type']])->first();
+
+            $data['supplier_name'] = Suppliers::where('account_number', $data['account_number'])->value('name');
+
+            $data['added_by_admin'] = Admin::where('id', $data['added_by'])->value('name');
+
+            if ($data['updated_by'] != null && $data['updated_by'] > 0) {
+                $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
+            }
+
+            if ($details) {
+
+                $details['item_name'] = ItemCard::where(['item_code' => $details->item_code])->value('name');
+
+
+                $details['added_by_admin'] = Admin::where('id', $details['added_by'])->value('name');
+
+                if ($details['updated_by'] != null && $details['updated_by'] > 0) {
+                    $details['updated_by_admin'] = Admin::where('id', $details['updated_by'])->value('name');
+                }
+            }
+
+            return view('admin.supplier_orders.details', compact('data', 'details'));
+        }
+        return redirect()->route('supplier_orders.index');
     }
 
     /**

@@ -86,8 +86,8 @@
                                                 <a href="{{ route('supplier_orders.edit', $item->id) }}"
                                                     class="btn btn-success">اعتماد</a>
 
-                                                    <a href="{{ route('supplier_orders.edit', $item->id) }}"
-                                                        class="btn btn-info">عرض</a>
+                                                    <a href="{{ route('supplier_orders.show', $item->id) }}"
+                                                        class="btn btn-info">التفاصيل</a>
 
                                                         <a href="{{ route('supplier_orders.edit', $item->id) }}"
                                                             class="btn btn-primary">تعديل</a>
