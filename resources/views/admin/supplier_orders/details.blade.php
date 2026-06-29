@@ -4,6 +4,11 @@
     المشتريات
 @endsection
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+@endsection
+
 @section('contentheader')
     حركات مخزنيه
 @endsection
@@ -226,15 +231,104 @@
                 <div class="modal-content bg-info">
                     <div class="modal-header">
                         <h4 class="modal-title">اضافه اصناف للفاتوره</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
                     </div>
-                    <div class="modal-body" id="model_body" style="background-color: white !important">
-                        <p>One fine body&hellip;</p>
+
+                    <input type="hidden" id="token_search" value="{{ csrf_token() }}">
+                    <input type="hidden" id="ajax_getUnits_url" value="{{ route('supplier_orders.getUnits') }}">
+
+                    <div class="modal-body" id="model_body" style="background-color: white !important; color: black;">
+                        <div class="row">
+
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label>بيانات الاصناف </label>
+                                    <select id="item_card_add" name="items" class="form-control select2">
+                                        <option value="" selected disabled>اختر اسم الصنف</option>
+
+                                        @if (isset($items))
+                                            @foreach ($items as $item)
+                                                <option data-type="{{ $item->item_type }}" value="{{ $item->item_code }}">
+                                                    {{ $item->name }}</option>
+                                            @endforeach
+                                        @endif
+
+                                    </select>
+                                    @error('items')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-4 related_to_itemcard" style="display: none" id="unitsDiv">
+
+                            </div>
+
+                            <div class="col-4 related_to_itemcard" style="display: none">
+
+                                <div class="form-group">
+                                    <label>الكميه المستلمه</label>
+                                    <input type="number" id="quantity_add" name="quantity_add" class="form-control"
+                                        value="">
+
+                                </div>
+                            </div>
+
+                            <div class="col-4 related_to_itemcard" style="display: none">
+
+                                <div class="form-group">
+                                    <label>سعر الوحده </label>
+                                    <input type="number" id="price_add" name="price_add" class="form-control"
+                                        value="">
+
+                                </div>
+                            </div>
+
+                            <div class="col-4 related_to_date" style="display: none">
+
+                                <div class="form-group">
+                                    <label>تاريخ الانتاج </label>
+                                    <input type="date" id="production_date" name="production_date" class="form-control"
+                                        value="">
+
+                                </div>
+                            </div>
+
+                            <div class="col-4 related_to_date" style="display: none">
+
+                                <div class="form-group">
+                                    <label>تاريخ الانتهاء </label>
+                                    <input type="date" id="end_date" name="end_date" class="form-control"
+                                        value="">
+
+                                </div>
+                            </div>
+
+                            <div class="col-4 related_to_itemcard" style="display: none">
+
+                                <div class="form-group">
+                                    <label>الاجمالى </label>
+                                    <input readonly type="number" id="total_price" name="total_price" class="form-control"
+                                        value="">
+
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+
+                                <div class="form-group text-center">
+                                   <button type="button" class="btn btn-info">اضافه الاصناف للفاتوره</button>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-outline-light" data-dismiss="modal">اغلاق</button>
-                        <button type="button" class="btn btn-outline-light">اضافه الاصناف</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -246,5 +340,13 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('assets/admin/js/ajax_search.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/supplier_orders.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script>
+        $(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            })
+        })
+    </script>
 @endsection

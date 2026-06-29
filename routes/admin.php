@@ -98,6 +98,7 @@ Route::group([
 
     /* start supplier orders */
     Route::resource('supplier_orders', SupplierOrdersController::class);
+    Route::post('supplier_orders/getUnits', [SupplierOrdersController::class, 'getUnits'])->name('supplier_orders.getUnits');
 
 
 });

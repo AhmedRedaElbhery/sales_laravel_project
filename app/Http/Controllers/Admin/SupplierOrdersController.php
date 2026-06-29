@@ -9,6 +9,7 @@ use App\Models\ItemCard;
 use App\Models\SupplierOrders;
 use App\Models\SupplierOrdersDetails;
 use App\Models\Suppliers;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class SupplierOrdersController extends Controller
@@ -26,7 +27,7 @@ class SupplierOrdersController extends Controller
         if (!empty($data)) {
             foreach ($data as $item) {
                 $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                $item['supplier_name'] = Suppliers::select('name')->where(['supplier_code' => $item->supplier_code, 'com_code' => $com_code])->value('name');
+                $item['supplier_name'] = Suppliers::where(['supplier_code' => $item->supplier_code, 'com_code' => $com_code])->value('name');
                 if ($item->updated_at && $item->updated_at  != null) {
                     $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
                 }
@@ -87,7 +88,7 @@ class SupplierOrdersController extends Controller
      */
     public function show($id)
     {
-        $com_code = auth()->user()->id;
+        $com_code = auth()->user()->com_code;
         $data = SupplierOrders::find($id);
         if (!empty($data)) {
             $details = SupplierOrdersDetails::where(['supplier_auto_serial' => $data['auto_serial'], 'com_code' => $data['com_code'], 'order_type' => $data['order_type']])->first();
@@ -110,6 +111,10 @@ class SupplierOrdersController extends Controller
                 if ($details['updated_by'] != null && $details['updated_by'] > 0) {
                     $details['updated_by_admin'] = Admin::where('id', $details['updated_by'])->value('name');
                 }
+            }
+            if ($data['is_approved'] != 1) {
+                $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $com_code, 'active' => 1])->get();
+                return view('admin.supplier_orders.details', compact('data', 'details', 'items'));
             }
 
             return view('admin.supplier_orders.details', compact('data', 'details'));
@@ -149,5 +154,23 @@ class SupplierOrdersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getUnits(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $item_code = $request->item_code;
+
+            $data = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $item_code, 'com_code' => $com_code])->first();
+            if($data['has_retail_unit'] == 1){
+                $data['parent_unit_name'] = Unit::where(['id'=>$data['parent_unit_id']])->value('name');
+                $data['retail_unit_name'] = Unit::where(['id'=>$data['retail_unit_id']])->value('name');
+            }
+            else{
+                $data['parent_unit_name'] = Unit::where(['id'=>$data['parent_unit_id']])->value('name');
+            }
+        }
+        return view('admin.supplier_orders.getUnits',compact('data'));
     }
 }

@@ -83,8 +83,10 @@
                                             </td>
 
                                             <td>
+                                                @if ($item['is_approved'] != 1)
                                                 <a href="{{ route('supplier_orders.edit', $item->id) }}"
                                                     class="btn btn-success">اعتماد</a>
+                                                @endif
 
                                                     <a href="{{ route('supplier_orders.show', $item->id) }}"
                                                         class="btn btn-info">التفاصيل</a>
