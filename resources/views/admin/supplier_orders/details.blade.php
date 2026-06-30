@@ -143,12 +143,21 @@
 
                                 </td>
                             </tr>
-
+                            <tr>
+                                <td>
+                                    @if ($data['is_approved'] == 0)
+                                        <a href="#" class="btn btn-primary text-white" style="width: 100%; height: 100%;">تعديل</a>
+                                    @endif
+                                </td>
+                            </tr>
                         </table>
 
-                        <button type="button" class="btn btn-info m-2" data-toggle="modal" data-target="#add_item_model">
-                            اضافه صنف للفاتوره
-                        </button>
+                        @if ($data['is_approved'] == 0)
+                            <button type="button" class="btn btn-info m-2" data-toggle="modal"
+                                data-target="#add_item_model">
+                                اضافه صنف للفاتوره
+                            </button>
+                        @endif
 
                         <br>
                     @else
@@ -157,60 +166,58 @@
                         </div>
                     @endif
 
-                    @if (isset($treasuries_delivary) && count($treasuries_delivary) > 0)
+                    @if (isset($details) && count($details) > 0)
                         <div class="card-header">
-                            <h3 class="card-title card_title_center">الخزن الفرعيه للخزنه ({{ $data['name'] }})</h3>
+                            <h3 class="card-title card_title_center">الاصناف المضافه لهذه الفاتوره</h3>
                         </div>
-                        <a href="{{ route('admin.treasuries.add_treasuries_branch', $data->id) }}"
-                            class="btn btn-primary m-3"> اضافه جديد</a>
                         <table class="table table-bordered table-hover text-center">
                             <thead class="custom_head">
                                 <tr>
                                     <th>التسلسل</th>
-                                    <th>اسم الخزن</th>
-                                    <th>تاريخ الاضافه </th>
-                                    <th> </th>
+                                    <th>اسم الصنف</th>
+                                    <th>وحده الصنف</th>
+                                    <th>سعر وحده الصنف</th>
+                                    <th>الكميه</th>
+                                    <th>الاجمالى</th>
+                                    <th>تاريخ الانتاج </th>
+                                    <th>تاريخ انتهاء الصلاحيه </th>
+                                    @if ($data['is_approved'] == 0)
+                                        <th> </th>
+                                    @endif
                                 </tr>
                             </thead>
 
                             <tbody>
-                                @foreach ($treasuries_delivary as $item)
+                                @foreach ($details as $bill_item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
 
-                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $bill_item->item_name }}</td>
+                                        <td>{{ $bill_item->unit_name }}</td>
+                                        <td>{{ $bill_item->unit_price / 100 }}</td>
+                                        <td>{{ $bill_item->delivered_quantity * 1 }}</td>
+                                        <td>{{ $bill_item->total_price / 100 }}</td>
+                                        <td>{{ $bill_item->production_date }}</td>
+                                        <td>{{ $bill_item->end_date }}</td>
 
-                                        <td>
-                                            @if ($item['created_at'] != null)
-                                                @php
-                                                    $dt = new DateTime($data['created_at']);
-                                                    $date = $dt->format('Y-m-d');
-                                                    $time = $dt->format('h-i');
-                                                    $newdatetime = date('A', strtotime($time));
-                                                    $newdatetimetype = $newdatetime == 'PM' ? 'صباحا' : 'مساء';
-                                                @endphp
-                                                {{ $date }}
-                                                {{ $time }}
-                                                {{ $newdatetimetype }}
-                                                بواسطه
-                                                {{ $item['added_by_admin'] }}
-                                            @else
-                                                لا يوجد
-                                            @endif
+                                        @if ($data['is_approved'] == 0)
+                                            <td>
+                                                <a href="#" class="btn btn-primary text-white">تعديل</a>
+                                                <form
+                                                    action="{{ route('supplier_orders.destroy_details', $bill_item->id) }}"
+                                                    method="POST" style="display:inline;"
+                                                    onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    @csrf
+                                                    @method('DELETE')
 
-                                        </td>
-                                        <td>
-                                            <form action="{{ route('admin.treasuries.delete', $item->id) }}" method="POST"
-                                                style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
-                                                @csrf
-                                                @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">
+                                                        حذف
+                                                    </button>
+                                                </form>
 
-                                                <button type="submit" class="btn btn-danger">
-                                                    حذف
-                                                </button>
-                                            </form>
+                                            </td>
+                                        @endif
 
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -236,7 +243,9 @@
                     </div>
 
                     <input type="hidden" id="token_search" value="{{ csrf_token() }}">
+                    <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
                     <input type="hidden" id="ajax_getUnits_url" value="{{ route('supplier_orders.getUnits') }}">
+                    <input type="hidden" id="ajax_addunits" value="{{ route('supplier_orders.addunits') }}">
 
                     <div class="modal-body" id="model_body" style="background-color: white !important; color: black;">
                         <div class="row">
@@ -289,8 +298,8 @@
 
                                 <div class="form-group">
                                     <label>تاريخ الانتاج </label>
-                                    <input type="date" id="production_date" name="production_date" class="form-control"
-                                        value="">
+                                    <input type="date" id="production_date" name="production_date"
+                                        class="form-control" value="">
 
                                 </div>
                             </div>
@@ -309,8 +318,8 @@
 
                                 <div class="form-group">
                                     <label>الاجمالى </label>
-                                    <input readonly type="number" id="total_price" name="total_price" class="form-control"
-                                        value="">
+                                    <input readonly type="number" id="total_price" name="total_price"
+                                        class="form-control" value="">
 
                                 </div>
                             </div>
@@ -318,8 +327,8 @@
                             <div class="col-12">
 
                                 <div class="form-group text-center">
-                                   <button type="button" class="btn btn-info">اضافه الاصناف للفاتوره</button>
-
+                                    <button type="button" class="btn btn-info" id="addtobill">اضافه الاصناف
+                                        للفاتوره</button>
                                 </div>
                             </div>
 

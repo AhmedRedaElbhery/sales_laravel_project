@@ -14,7 +14,7 @@ class SupplierOrdersDetails extends Model
         'order_type',
         'com_code',
         'delivered_quantity',
-        'main_or_retail_unit',
+        'isparentunit',
         'unit_id',
         'unit_price',
         'total_price',
@@ -23,5 +23,8 @@ class SupplierOrdersDetails extends Model
         'updated_by',
         'item_code',
         'batch_id',
+        'end_date',
+        'production_date',
+        'item_card_type',
     ];
 }

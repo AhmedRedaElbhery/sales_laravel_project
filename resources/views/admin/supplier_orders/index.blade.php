@@ -91,9 +91,6 @@
                                                     <a href="{{ route('supplier_orders.show', $item->id) }}"
                                                         class="btn btn-info">التفاصيل</a>
 
-                                                        <a href="{{ route('supplier_orders.edit', $item->id) }}"
-                                                            class="btn btn-primary">تعديل</a>
-
                                                 <form action="{{ route('supplier_orders.destroy', $item->id) }}" method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf

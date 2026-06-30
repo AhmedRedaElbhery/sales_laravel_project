@@ -91,7 +91,7 @@ class SupplierOrdersController extends Controller
         $com_code = auth()->user()->com_code;
         $data = SupplierOrders::find($id);
         if (!empty($data)) {
-            $details = SupplierOrdersDetails::where(['supplier_auto_serial' => $data['auto_serial'], 'com_code' => $data['com_code'], 'order_type' => $data['order_type']])->first();
+            $details = SupplierOrdersDetails::where(['supplier_auto_serial' => $data['auto_serial'], 'com_code' => $data['com_code'], 'order_type' => $data['order_type']])->get();
 
             $data['supplier_name'] = Suppliers::where('account_number', $data['account_number'])->value('name');
 
@@ -103,13 +103,16 @@ class SupplierOrdersController extends Controller
 
             if ($details) {
 
-                $details['item_name'] = ItemCard::where(['item_code' => $details->item_code])->value('name');
+                foreach ($details as $unit) {
 
+                    $unit['item_name'] = ItemCard::where(['item_code' => $unit->item_code])->value('name');
+                    $unit['unit_name'] = Unit::where(['id' => $unit->unit_id])->value('name');
 
-                $details['added_by_admin'] = Admin::where('id', $details['added_by'])->value('name');
+                    $unit['added_by_admin'] = Admin::where('id', $unit->added_by)->value('name');
 
-                if ($details['updated_by'] != null && $details['updated_by'] > 0) {
-                    $details['updated_by_admin'] = Admin::where('id', $details['updated_by'])->value('name');
+                    if ($unit['updated_by'] != null && $unit['updated_by'] > 0) {
+                        $unit['updated_by_admin'] = Admin::where('id', $unit->updated_by)->value('name');
+                    }
                 }
             }
             if ($data['is_approved'] != 1) {
@@ -151,9 +154,12 @@ class SupplierOrdersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id) {}
+
+    public function destroy_details($id)
     {
-        //
+        SupplierOrdersDetails::destroy($id);
+        return redirect()->back();
     }
 
     public function getUnits(Request $request)
@@ -162,15 +168,45 @@ class SupplierOrdersController extends Controller
             $com_code = auth()->user()->com_code;
             $item_code = $request->item_code;
 
-            $data = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $item_code, 'com_code' => $com_code])->first();
-            if($data['has_retail_unit'] == 1){
-                $data['parent_unit_name'] = Unit::where(['id'=>$data['parent_unit_id']])->value('name');
-                $data['retail_unit_name'] = Unit::where(['id'=>$data['retail_unit_id']])->value('name');
-            }
-            else{
-                $data['parent_unit_name'] = Unit::where(['id'=>$data['parent_unit_id']])->value('name');
+            $data = ItemCard::where(['item_code' => $item_code, 'com_code' => $com_code])->first();
+            if ($data['has_retail_unit'] == 1) {
+                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
+                $data['retail_unit_name'] = Unit::where(['id' => $data['retail_unit_id']])->value('name');
+            } else {
+                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
             }
         }
-        return view('admin.supplier_orders.getUnits',compact('data'));
+        return view('admin.supplier_orders.getUnits', compact('data'));
+    }
+
+    public function addunits(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $parent_data = SupplierOrders::select('is_approved', 'order_date')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->first();
+            if ($parent_data->is_approved != 1) {
+                $data['supplier_auto_serial'] = $request->autoserialparent;
+                $data['order_type'] = 1;
+                $data['item_code'] = $request->item_card;
+                $data['delivered_quantity'] = $request->quantity;
+                $data['unit_price'] = $request->price * 100;
+                $data['total_price'] = $request->total_price * 100;
+                $data['com_code'] = $com_code;
+                $data['order_date'] = $parent_data->order_date;
+                $data['isparentunit'] = $request->isparent;
+                $data['unit_id'] = $request->unit;
+                $data['item_card_type'] = $request->type;
+                $data['added_by'] = auth()->user()->id;
+                if ($request->type == 2) {
+                    $data['production_date'] = $request->production_date;
+                    $data['end_date'] = $request->end_date;
+                }
+
+                $flage = SupplierOrdersDetails::create($data);
+                if ($flage) {
+                    echo json_encode("done");
+                }
+            }
+        }
     }
 }
