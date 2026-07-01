@@ -67,7 +67,7 @@
 
                             <tr>
                                 <td class="width30">اجمالى الفاتوره قبل الخصم</td>
-                                <td>{{ $data['total_before_discount'] }}</td>
+                                <td>{{ $data['total_before_discount'] /100 }}</td>
                             </tr>
 
                             @if ($data['descpunt_type'] != null)
@@ -96,6 +96,16 @@
                                 @else
                                     <td>نسبه الضرايب{{ $data['tax_percent'] }} وقيمتها {{ $data['tax_value'] }}</td>
                                 @endif
+                            </tr>
+
+                            <tr>
+                                <td class="width30">اجمالى الفاتوره بعد الخصم</td>
+                                <td>{{ $data['total_cost'] /100 }}</td>
+                            </tr>
+
+                            <tr>
+                                <td class="width30">المخزن</td>
+                                <td>{{ $data['store_name'] }}</td>
                             </tr>
 
                             <tr>

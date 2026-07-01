@@ -4,6 +4,12 @@
     المشتريات
 @endsection
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+@endsection
+
+
 @section('contentheader')
     حركات مخزنيه
 @endsection
@@ -41,7 +47,7 @@
 
                         <div class="form-group">
                             <label>اسم المورد </label> <br>
-                            <select name="supplier_code" class="form-control">
+                            <select name="supplier_code" class="form-control select2">
                                 <option value="" selected disabled>اختر الاسم</option>
 
                                 @foreach ($suppliers as $supplier)
@@ -70,6 +76,24 @@
                             <label>رقم الفاتوره المسجل باصل فاتوره المشتريات</label> <br>
                             <input name="doc_number" class="form-control" type="text">
                             @error('doc_number')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>اختر المخزن </label>
+                            <select id="store" name="store" class="form-control select2">
+                                <option value="" selected disabled>اختر المخزن</option>
+
+                                @if (isset($stores))
+                                    @foreach ($stores as $store)
+                                        <option value="{{ $store->id }}">
+                                            {{ $store->name }}</option>
+                                    @endforeach
+                                @endif
+
+                            </select>
+                            @error('store')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -114,4 +138,16 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script src="{{ asset('assets/admin/js/supplier_orders.js') }}"></script>
+    <script src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script>
+        $(function() {
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            })
+        })
+    </script>
 @endsection

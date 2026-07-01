@@ -38,7 +38,7 @@
                                         <th>كود الفاتوره</th>
                                         <th>اسم المورد</th>
                                         <th>نوع الفاتوره</th>
-                                        <th>حاله الفاتوره</th>
+                                        <th>المخزن</th>
                                         <th>تاريخ الفاتوره</th>
                                         <th>حاله الاعتماد </th>
                                         <th> </th>
@@ -62,11 +62,7 @@
                                             </td>
 
                                             <td>
-                                                @if ($item->pill_type == 1)
-                                                    <span class="badge badge-danger p-2">اجل</span>
-                                                @else
-                                                    <span class="badge badge-success p-2">كاش</span>
-                                                @endif
+                                                {{ $item->store_name }}
                                             </td>
 
                                             <td>

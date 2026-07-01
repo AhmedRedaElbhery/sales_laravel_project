@@ -14,6 +14,7 @@ class SupplierOrders extends Model
         'auto_serial',
         'doc_number',
         'order_date',
+        'store_id',
         'supplier_code',
         'is_approved',
         'com_code',

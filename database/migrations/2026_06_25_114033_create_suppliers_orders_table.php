@@ -39,6 +39,7 @@ return new class extends Migration
             $table->integer('supplier_balance_after_pill')->nullable();
             $table->string('notes')->nullable();
             $table->integer('added_by');
+            $table->integer('store_id');
             $table->integer('updated_by')->nullable();
 
             $table->timestamps();
