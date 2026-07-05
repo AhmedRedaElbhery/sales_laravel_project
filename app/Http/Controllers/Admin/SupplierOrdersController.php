@@ -43,8 +43,8 @@ class SupplierOrdersController extends Controller
     {
         $com_code = auth()->user()->com_code;
         $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $com_code])->get();
-        $stores = Store::select('name', 'id')->where(['com_code' => $com_code , 'active'=>1])->get();
-        return view('admin.supplier_orders.create', compact('suppliers','stores'));
+        $stores = Store::select('name', 'id')->where(['com_code' => $com_code, 'active' => 1])->get();
+        return view('admin.supplier_orders.create', compact('suppliers', 'stores'));
     }
 
     /**
@@ -137,7 +137,11 @@ class SupplierOrdersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $com_code = auth()->user()->com_code;
+        $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $com_code])->get();
+        $stores = Store::select('name', 'id')->where(['com_code' => $com_code, 'active' => 1])->get();
+        $data = SupplierOrders::find($id);
+        return view('admin.supplier_orders.edit', compact('data', 'suppliers', 'stores'));
     }
 
     /**
@@ -147,9 +151,22 @@ class SupplierOrdersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id, SupplierOrderRequest $request)
     {
-        //
+        $com_code = auth()->user()->com_code;
+
+        $data = SupplierOrders::where(['id' => $id, 'com_code' => $com_code])->first();
+        $account_number = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $com_code])->value('account_number');
+
+        $data->update([
+            'supplier_code' => $request->supplier_code,
+            'pill_type' => $request->pill_type,
+            'doc_number' => $request->doc_number,
+            'store_id' => $request->store,
+            'account_number' => $account_number,
+            'updated_by' => auth()->user()->id,
+        ]);
+        return redirect()->route('supplier_orders.show', $id);
     }
 
     /**
@@ -158,18 +175,21 @@ class SupplierOrdersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {}
+    public function destroy($id)
+    {
+        //
+    }
 
     public function destroy_details($id)
     {
-        $data = SupplierOrdersDetails::select('total_price','supplier_auto_serial','order_type','com_code')->where(['id'=>$id])->first();
+        $data = SupplierOrdersDetails::select('total_price', 'supplier_auto_serial', 'order_type', 'com_code')->where(['id' => $id])->first();
         $flage = SupplierOrdersDetails::destroy($id);
         if ($flage) {
 
-            $total = SupplierOrders::select('discount_value','tax_value','total_before_discount')->where(['auto_serial'=>$data->supplier_auto_serial ,'order_type'=>$data->order_type , 'com_code'=>$data->com_code])->first();
+            $total = SupplierOrders::select('discount_value', 'tax_value', 'total_before_discount')->where(['auto_serial' => $data->supplier_auto_serial, 'order_type' => $data->order_type, 'com_code' => $data->com_code])->first();
 
 
-            SupplierOrders::where(['auto_serial'=>$data->supplier_auto_serial ,'order_type'=>$data->order_type , 'com_code'=>$data->com_code])->update([
+            SupplierOrders::where(['auto_serial' => $data->supplier_auto_serial, 'order_type' => $data->order_type, 'com_code' => $data->com_code])->update([
                 'total_before_discount' => ($total->total_before_discount - $data->total_price),
                 'total_cost' => ($total->total_before_discount - $data->total_price) - $total->discount_value + $total->tax_value,
             ]);
@@ -199,7 +219,7 @@ class SupplierOrdersController extends Controller
     {
         if ($request->ajax()) {
             $com_code = auth()->user()->com_code;
-            $parent_data = SupplierOrders::select('is_approved', 'order_date' , 'tax_value','discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->first();
+            $parent_data = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->first();
             if ($parent_data->is_approved != 1) {
                 $data['supplier_auto_serial'] = $request->autoserialparent;
                 $data['order_type'] = 1;
@@ -221,8 +241,63 @@ class SupplierOrdersController extends Controller
                 $flage = SupplierOrdersDetails::create($data);
                 if ($flage) {
 
-                    $total = SupplierOrdersDetails::where(['com_code'=> $com_code , 'order_type'=>1,'supplier_auto_serial'=>$request->autoserialparent])->sum('total_price');
-                    SupplierOrders::where(['auto_serial'=>$request->autoserialparent ,'order_type'=>1 , 'com_code'=>$com_code])->update([
+                    $total = SupplierOrdersDetails::where(['com_code' => $com_code, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+                    SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $com_code])->update([
+                        'updated_by' => auth()->user()->id,
+                        'total_before_discount' => $total,
+                        'total_cost' => $total - $parent_data->discount_value + $parent_data->tax_value,
+                    ]);
+
+                    echo json_encode('done');
+                }
+            }
+        }
+    }
+
+    public function edititem(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->value('is_approved');
+
+            if ($isapproved != 1) {
+
+                $item_data = SupplierOrdersDetails::find($request->id);
+                $item_card_data = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $item_data->item_code, 'com_code' => $com_code])->first();
+                $item_cards = ItemCard::where(['active' => 1, 'com_code' => $com_code])->get();
+                if ($item_card_data->has_retail_unit == 1) {
+                    $item_card_data->parent_unit_name = Unit::where('id', $item_card_data->parent_unit_id)->value('name');
+                    $item_card_data->retail_unit_name = Unit::where('id', $item_card_data->retail_unit_id)->value('name');
+                } else {
+                    $item_card_data->parent_unit_name = Unit::where('id', $item_card_data->parent_unit_id)->value('name');
+                }
+                return view('admin.supplier_orders.edititem', compact('isapproved', 'item_card_data', 'item_data', 'item_cards'));
+            }
+        }
+    }
+
+
+    public function update_item(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $parent_data = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->first();
+            if ($parent_data->is_approved != 1) {
+
+
+                $flage = SupplierOrdersDetails::where('id', $request->id)->update([
+                    'delivered_quantity' => $request->quantity,
+                    'unit_price'         => $request->price * 100,
+                    'total_price'        => $request->total_price * 100,
+                    'isparentunit'       => $request->isparent,
+                    'unit_id'            => $request->unit,
+                    'production_date'    => $request->production_date,
+                    'end_date'           => $request->end_date,
+                ]);
+                if ($flage) {
+
+                    $total = SupplierOrdersDetails::where(['com_code' => $com_code, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+                    SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $com_code])->update([
                         'updated_by' => auth()->user()->id,
                         'total_before_discount' => $total,
                         'total_cost' => $total - $parent_data->discount_value + $parent_data->tax_value,

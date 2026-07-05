@@ -101,7 +101,8 @@ Route::group([
     Route::post('supplier_orders/getUnits', [SupplierOrdersController::class, 'getUnits'])->name('supplier_orders.getUnits');
     Route::post('supplier_orders/addunits', [SupplierOrdersController::class, 'addunits'])->name('supplier_orders.addunits');
     Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroy_details'])->name('supplier_orders.destroy_details');
-
+    Route::post('/supplier_orders/edititem',[SupplierOrdersController::class,'edititem'])->name('supplier_orders.edititem');
+    Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'update_item'])->name('supplier_orders.update_item');
 
 });
 

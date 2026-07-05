@@ -67,7 +67,7 @@
 
                             <tr>
                                 <td class="width30">اجمالى الفاتوره قبل الخصم</td>
-                                <td>{{ $data['total_before_discount'] /100 }}</td>
+                                <td>{{ $data['total_before_discount'] / 100 }}</td>
                             </tr>
 
                             @if ($data['descpunt_type'] != null)
@@ -100,7 +100,7 @@
 
                             <tr>
                                 <td class="width30">اجمالى الفاتوره بعد الخصم</td>
-                                <td>{{ $data['total_cost'] /100 }}</td>
+                                <td>{{ $data['total_cost'] / 100 }}</td>
                             </tr>
 
                             <tr>
@@ -156,7 +156,8 @@
                             <tr>
                                 <td>
                                     @if ($data['is_approved'] == 0)
-                                        <a href="#" class="btn btn-primary text-white" style="width: 100%; height: 100%;">تعديل</a>
+                                        <a href="{{ route('supplier_orders.edit', $data->id) }}"
+                                            class="btn btn-primary text-white" style="width: 100%; height: 100%;">تعديل</a>
                                     @endif
                                 </td>
                             </tr>
@@ -212,7 +213,10 @@
 
                                         @if ($data['is_approved'] == 0)
                                             <td>
-                                                <a href="#" class="btn btn-primary text-white">تعديل</a>
+
+                                                <button type="button" class="btn btn-primary edititem" data-toggle="modal"
+                                                    data-id = "{{ $bill_item->id }}" data-target="#edit_item_model">تعديل
+                                                </button>
                                                 <form
                                                     action="{{ route('supplier_orders.destroy_details', $bill_item->id) }}"
                                                     method="POST" style="display:inline;"
@@ -256,6 +260,8 @@
                     <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
                     <input type="hidden" id="ajax_getUnits_url" value="{{ route('supplier_orders.getUnits') }}">
                     <input type="hidden" id="ajax_addunits" value="{{ route('supplier_orders.addunits') }}">
+                    <input type="hidden" id="ajax_edititem" value="{{ route('supplier_orders.edititem') }}">
+                    <input type="hidden" id="ajax_updateitem" value="{{ route('supplier_orders.update_item') }}">
 
                     <div class="modal-body" id="model_body" style="background-color: white !important; color: black;">
                         <div class="row">
@@ -354,6 +360,37 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
+
+
+        <div class="modal fade" id="edit_item_model">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-info">
+                    <div class="modal-header">
+                        <h4 class="modal-title">تحديث الصنف</h4>
+                        <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                    </div>
+
+                    <input type="hidden" id="token_search" value="{{ csrf_token() }}">
+                    <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
+                    <input type="hidden" id="ajax_getUnits_url" value="{{ route('supplier_orders.getUnits') }}">
+                    <input type="hidden" id="ajax_addunits" value="{{ route('supplier_orders.addunits') }}">
+                    <input type="hidden" id="ajax_edititem" value="{{ route('supplier_orders.edititem') }}">
+
+                    <div class="modal-body" id="edit_item_model_body"
+                        style="background-color: white !important; color: black;">
+
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">اغلاق</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+
 
     </div>
 @endsection

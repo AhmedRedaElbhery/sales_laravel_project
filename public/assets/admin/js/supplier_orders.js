@@ -2,9 +2,7 @@ $(document).ready(function () {
     $(document).on("change", "#item_card_add", function () {
         var item_code = $(this).val();
 
-
         if (item_code != "") {
-
             var token_search = $("#token_search").val();
             var ajax_getUnits = $("#ajax_getUnits_url").val();
 
@@ -135,7 +133,7 @@ $(document).ready(function () {
             },
 
             error: function (xhr) {
-                alert('يوجد خطا ما');
+                alert("يوجد خطا ما");
             },
         });
     });
@@ -164,4 +162,150 @@ $(document).ready(function () {
     $(document).on("input", "#price_add", function () {
         calculate();
     });
+
+    $(document).on("click", ".edititem", function () {
+        var id = $(this).data("id");
+        var autoserialparent = $('#autoserialparent').val();
+        var token_search = $("#token_search").val();
+        var ajax_getUnits = $("#ajax_edititem").val();
+
+
+        $.ajax({
+            url: ajax_getUnits,
+            type: "POST",
+            dataType: "html",
+            cache: false,
+
+            data: {
+                autoserialparent: autoserialparent,
+                _token: token_search,
+                id: id,
+            },
+
+            success: function (data) {
+
+                $("#edit_item_model_body").html(data);
+                $("#edit_item_model").modal("show");
+            },
+
+            error: function (xhr, status, error) {
+                $("#edit_item_model_body").html("");
+                $("#edit_item_model").modal("hide");
+
+            }
+        });
+    });
+
+    $(document).on("click", "#update_items", function () {
+
+        var unit = $("#unit_id_edit").val();
+        if (unit == null) {
+            alert("من فضلك اختر الوحده");
+            $("#unit_id_edit").focus();
+            return false;
+        }
+
+        var quantity = $("#quantity_edit").val();
+        console.log(quantity);
+        if (quantity == "" || quantity <= "0") {
+            alert("من فضلك ادخل الكميه");
+            $("#quantity_edit").focus();
+            return false;
+        }
+
+        var price = $("#price_edit").val();
+        if (price == "" || price <= "0") {
+            alert("من فضلك ادخل السعر");
+            $("#price_edit").focus();
+            return false;
+        }
+
+        var type = $("#item_card_add").find(":selected").attr("data-type");
+
+        if (type == "2") {
+            var production_date = $("#production_date").val();
+
+            if (production_date == "") {
+                alert("من فضلك ادخل تاريخ الانتاج");
+                $("#production_date_edit").focus();
+                return false;
+            }
+
+            var end_date = $("#end_date").val();
+            if (end_date == "" || end_date <= production_date) {
+                alert("من فضلك ادخل تاريخ الانتهاء");
+                $("#end_date_edit").focus();
+                return false;
+            }
+        } else {
+            var production_date = $("#production_date_edit").val();
+            var end_date = $("#end_date_edit").val();
+        }
+
+        var autoserialparent = $("#autoserialparent").val();
+        var isparent = $("#unit_id_edit")
+            .find(":selected")
+            .attr("data-isparentunit");
+
+        var token_search = $("#token_search").val();
+        var ajax_addunits = $("#ajax_updateitem").val();
+        var total_price = $("#total_price_edit").val();
+        var id = $("#id").val();
+
+        $.ajax({
+            url: ajax_addunits,
+            type: "POST",
+            dataType: "json",
+            cache: false,
+
+            data: {
+                autoserialparent: autoserialparent,
+                _token: token_search,
+                unit: unit,
+                quantity: quantity,
+                price: price,
+                type: type,
+                id: id,
+                isparent: isparent,
+                end_date: end_date,
+                production_date: production_date,
+                total_price: total_price,
+            },
+
+            success: function (data) {
+                alert("تمت الاضافه بنجاح");
+                window.location.reload();
+            },
+
+            error: function (xhr) {
+                alert("يوجد خطا ما");
+            },
+        });
+    });
+
+
+    $(document).on("input", "#quantity_edit", function () {
+        calculateedit();
+    });
+
+    $(document).on("input", "#price_edit", function () {
+        calculateedit();
+    });
+
+    function calculateedit() {
+        var quantity = $("#quantity_edit").val();
+        var price = $("#price_edit").val();
+
+        if (quantity == "" || quantity <= "0") {
+            quantity = 0;
+        }
+
+        if (price == "" || price <= "0") {
+            price = 0;
+        }
+
+        price = price * 100;
+
+        $("#total_price_edit").val((price * quantity) / 100);
+    }
 });
