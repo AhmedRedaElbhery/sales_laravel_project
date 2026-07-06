@@ -177,7 +177,14 @@ class SupplierOrdersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = SupplierOrders::find($id);
+        $items = SupplierOrdersDetails::where(['supplier_auto_serial'=>$data->auto_serial ,'com_code'=>$data->com_code ,'order_type'=>1])->get();
+        foreach($items as $item)
+        {
+            SupplierOrdersDetails::destroy($item->id);
+        }
+        SupplierOrders::destroy($id);
+        return redirect()->route('supplier_orders.index');
     }
 
     public function destroy_details($id)

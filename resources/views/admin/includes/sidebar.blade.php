@@ -65,9 +65,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*','suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*' , 'customers.*','suppliers_category.*','suppliers.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الحسابات
@@ -282,9 +282,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin_accounts.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin_accounts.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الصلاحيات
@@ -292,9 +292,22 @@
                                 </p>
                             </a>
 
+
                             <ul class="nav nav-treeview">
 
+                                <li class="nav-item">
+                                    <a href="{{ route('admin_accounts.index') }}"
+                                        class="nav-link {{ request()->routeIs('admin_accounts.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                             المستخحدمين
+                                        </p>
+                                    </a>
+                                </li>
+
+
                             </ul>
+
                         </li>
 
 

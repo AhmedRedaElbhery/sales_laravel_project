@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AccountsController;
 use App\Http\Controllers\Admin\AccountTypesController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LoginController;
@@ -103,6 +104,14 @@ Route::group([
     Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroy_details'])->name('supplier_orders.destroy_details');
     Route::post('/supplier_orders/edititem',[SupplierOrdersController::class,'edititem'])->name('supplier_orders.edititem');
     Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'update_item'])->name('supplier_orders.update_item');
+
+
+    /* admin */
+    Route::resource('admin_accounts' , AdminController::class );
+    Route::post('admin_treasuries', [AdminController::class, 'add_treasuries'])->name('admin_treasuries.addtreasuries');
+    Route::delete('admin_treasuries/{id}', [AdminController::class, 'delete_treasuries'])->name('admin_treasuries.deletetreasuries');
+
+
 
 });
 
