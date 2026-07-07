@@ -134,6 +134,12 @@ class AdminController extends Controller
             $admin_id = $request->admin_id;
             $treasuries_id = $request->treasuries;
 
+            $exist = AdminTreasuries::where(['treasuries_id'=> $request->treasuries , 'admin_id'=>$request->admin_id , 'com_code'=>auth()->user()->com_code])->exists();
+            if(!empty($exist))
+            {
+                return redirect()->route('admin_accounts.show',$admin_id);
+            }
+
             $data['admin_id'] = $admin_id;
             $data['treasuries_id'] = $treasuries_id;
             $data['com_code'] = auth()->user()->com_code;

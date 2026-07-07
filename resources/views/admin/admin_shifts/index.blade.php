@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-
+    حركه شفتات الخزن
 @endsection
 
 @section('contentheader')
-
+    حركه شفتات الخزن
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('unit.index') }}"> الوحدات </a>
+    <a href="{{ route('admin_shifts.index') }}"> شفتات الخزن </a>
 @endsection
 
 
@@ -23,12 +23,12 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات الوحدات </h3>
-                    <a class="btn btn-success" href="{{ route('unit.create') }}">اضافه وحده جديده</a>
+                    <h3 class="card-title card_title_center">بيانات شفتات الخزن </h3>
+                    <a class="btn btn-success" href="{{ route('admin_shifts.create') }}">اضافه شفت جديده</a>
                 </div>
 
                 <div class="card-body">
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-4">
                             <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
                         </div>
@@ -59,10 +59,15 @@
                                 </select>
                             </form>
                         </div>
-                    </div>
+                    </div> --}}
 
 
 
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
 
@@ -70,12 +75,13 @@
                                 <thead class="custom_head">
                                     <tr>
                                         <th>التسلسل</th>
-                                        <th>اسم الوحده</th>
-                                        <th>رئيسيه؟</th>
-                                        <th>حاله التفعيل</th>
-                                        <th>تاريخ الاضافه</th>
-                                        <th>تاريخ التحديث</th>
-                                        <th> </th>
+                                        <th>اسم الخزنه</th>
+                                        <th>اسم المستخدم</th>
+                                        <th>حاله الاستخدام</th>
+                                        <th>وقت البدايه</th>
+                                        <th>وقت النهايه</th>
+                                        <th>حاله المراجعه</th>
+                                        {{-- <th> </th> --}}
                                     </tr>
                                 </thead>
 
@@ -86,26 +92,22 @@
 
                                             <td>{{ $item->name }}</td>
                                             <td>
-                                                @if ($item->is_master == 1)
-                                                    وحده رئيسية
+                                                {{ $item->added_by_admin }}
+                                            </td>
+
+                                            <td>
+                                                @if ($item->is_finished == 0 && $item->end_shift == null)
+                                                    <span class="badge badge-danger p-2">يتم الاستخدام</span>
+                                                @elseif($item->is_finished == 1 && $item->end_shift != null)
+                                                    <span class="badge badge-success p-2">انتهى</span>
                                                 @else
-                                                    وحده فرعية
+                                                    <span class="badge badge-danger p-2">يتم الاستخدام</span>
                                                 @endif
                                             </td>
 
                                             <td>
-                                                @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
-                                                @else
-                                                    <span class="badge badge-danger">معطل</span>
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                @if ($item['created_at'] != null)
-                                                    {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه
-                                                    {{ $item['added_by_admin'] }}
+                                                @if ($item->start_shift != null)
+                                                    {{ $item->start_shift }}
                                                 @else
                                                     لا يوجد
                                                 @endif
@@ -113,27 +115,33 @@
                                             </td>
 
                                             <td>
-                                                @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
-                                                    {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه
-                                                    {{ $item['updated_by_admin'] }}
+                                                @if ($item->end_shift != null)
+                                                    {{ $item->end_shift }}
                                                 @else
-                                                    لا يوجد
+                                                    مازال يعمل
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                @if ($item->is_delivered == 1)
+                                                    تمت المراجعه
+                                                @else
+                                                    لم تتمت المراجعه بعد
                                                 @endif
                                             </td>
 
 
-                                            <td>
-                                                <a href="{{ route('unit.edit', $item->id) }}"
+                                            {{-- <td>
+                                                <a href="{{ route('admin_shifts.edit', $item->id) }}"
                                                     class="btn btn-primary">تعديل</a>
 
-                                                <form action="{{ route('unit.destroy', $item->id) }}" method="POST"
+                                                <form action="{{ route('admin_shifts.destroy', $item->id) }}" method="POST"
                                                     class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger">حذف</button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 </tbody>

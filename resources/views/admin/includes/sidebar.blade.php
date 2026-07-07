@@ -263,9 +263,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin_shifts.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin_shifts.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     حركه شفت الخزينه
@@ -274,6 +274,17 @@
                             </a>
 
                             <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('admin_shifts.index') }}"
+                                        class="nav-link {{ request()->routeIs('admin_shifts.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                             شفتات الخزن
+                                        </p>
+                                    </a>
+                                </li>
+
 
                             </ul>
                         </li>
@@ -300,7 +311,7 @@
                                         class="nav-link {{ request()->routeIs('admin_accounts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                             المستخحدمين
+                                             المستخدمين
                                         </p>
                                     </a>
                                 </li>

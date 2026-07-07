@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\AdminPanelSettingsController;
+use App\Http\Controllers\Admin\AdminShiftsController;
 use App\Http\Controllers\Admin\SalesMaterialTypesController;
 use App\Http\Controllers\Admin\StoresController;
 use App\Http\Controllers\Admin\TreasuriesController;
@@ -111,7 +112,9 @@ Route::group([
     Route::post('admin_treasuries', [AdminController::class, 'add_treasuries'])->name('admin_treasuries.addtreasuries');
     Route::delete('admin_treasuries/{id}', [AdminController::class, 'delete_treasuries'])->name('admin_treasuries.deletetreasuries');
 
+//admin shifts
 
+Route::resource('admin_shifts', AdminShiftsController::class);
 
 });
 
