@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\StoresController;
 use App\Http\Controllers\Admin\TreasuriesController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CollectController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
@@ -115,6 +116,10 @@ Route::group([
 //admin shifts
 
 Route::resource('admin_shifts', AdminShiftsController::class);
+
+//collect transaction
+
+Route::resource('collect_transaction', CollectController::class);
 
 });
 

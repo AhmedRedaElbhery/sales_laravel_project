@@ -65,9 +65,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*','accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الحسابات
@@ -123,6 +123,17 @@
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             حسابات الموردين
+                                        </p>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a href="{{ route('collect_transaction.index') }}"
+                                        class="nav-link {{ request()->routeIs('collect_transaction.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            شاشه تحصيل النقديه
                                         </p>
                                     </a>
                                 </li>
@@ -280,7 +291,7 @@
                                         class="nav-link {{ request()->routeIs('admin_shifts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                             شفتات الخزن
+                                            شفتات الخزن
                                         </p>
                                     </a>
                                 </li>
@@ -311,7 +322,7 @@
                                         class="nav-link {{ request()->routeIs('admin_accounts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                             المستخدمين
+                                            المستخدمين
                                         </p>
                                     </a>
                                 </li>

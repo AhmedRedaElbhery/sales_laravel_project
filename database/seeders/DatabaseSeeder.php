@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             AdminPanelSettingsSeeder::class,
             AccountTypeSeeder::class,
+            MoveTypeSeeder::class,
         ]);
     }
 }

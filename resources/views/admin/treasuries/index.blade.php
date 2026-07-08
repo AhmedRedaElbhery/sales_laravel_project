@@ -23,11 +23,12 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title">بيانات الخزن</h3>
-                    <a class="btn btn-success" href="{{ route('admin.treasuries.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">بيانات الخزن</h3>
                 </div>
 
                 <div class="card-body">
+                    <a class="btn btn-success m-2" href="{{ route('admin.treasuries.create') }}">اضافه جديد</a>
+
 
                     <div class="col-md-4">
                         <input type="text" id="search_by_name" placeholder="بحث بالاسم" class=" form-control mb-3">
