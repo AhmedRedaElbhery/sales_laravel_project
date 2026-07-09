@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionsRequest;
 use App\Models\Accounts;
+use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminShifts;
 use App\Models\MoveType;
@@ -23,28 +24,32 @@ class CollectController extends Controller
     {
         $com_code = auth()->user()->com_code;
 
-        $data = TreasuriesTransaction::where(['com_code'=>$com_code])->orderby('id', 'DESC')->paginate(5);
+        $data = TreasuriesTransaction::where(['com_code' => $com_code])->where('money_for_account', '<', 0)->orderby('id', 'DESC')->paginate(5);
 
         if (!empty($data)) {
             foreach ($data as $item) {
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+                $item->treasuries_name = Treasuries::where(['id' => $item->treasuries_id])->value('name');
+                $item->admin_name = Admin::where(['com_code' => $com_code, 'id' => auth()->user()->id])->value('name');
+                $item->move_type_name = MoveType::where(['id'=>$item->move_type])->value('name');
             }
         }
 
-        $exist = AdminShifts::where(['com_code'=>$com_code , 'admin_id'=>auth()->user()->id , 'is_finished'=> 0])->whereNull('end_shift')->first();
-        if($exist != null)
-        {
-            $exist->treasuries_name = Treasuries::where(['id'=>$exist->treasuries_id])->value('name');
-            $exist->total = Treasuries::where(['id'=>$exist->treasuries_id])->value('name');
-            $treasuries_balance = TreasuriesTransaction::where(['com_code'=>$com_code , 'treasuries_id'=>$exist->treasuries_id , 'shift_id'=>$exist->id])->sum('money');
+        $exist = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($exist != null) {
+            $exist->treasuries_name = Treasuries::where(['id' => $exist->treasuries_id])->value('name');
+            $treasuries_balance = TreasuriesTransaction::where(['com_code' => $com_code, 'treasuries_id' => $exist->treasuries_id, 'shift_id' => $exist->id])->sum('money');
         }
 
 
-        $accounts = Accounts::select('name','account_number')->where(['com_code'=>$com_code , 'is_archived'=>0,'is_parent'=>0])->get();
-        $move_types = MoveType::select('name','id')->where(['active'=>1 , 'in_screen'=>1 ,'is_private_internal'=>0])->get();
+        $accounts = Accounts::select('name', 'account_type' ,'account_number')->where(['com_code' => $com_code, 'is_archived' => 0, 'is_parent' => 0])->get();
+        foreach ($accounts as $account) {
+            $account->account_type_name = AccountType::where(['id' => $account->account_type])->value('name');
+        }
+
+        $move_types = MoveType::select('name', 'id')->where(['active' => 1, 'in_screen' => 1, 'is_private_internal' => 0])->get();
 
 
-        return view('admin.collect_transaction.index', compact('data','exist','accounts','treasuries_balance','move_types'));
+        return view('admin.collect_transaction.index', compact('data', 'exist', 'accounts', 'treasuries_balance', 'move_types'));
     }
 
     /**
@@ -65,7 +70,37 @@ class CollectController extends Controller
      */
     public function store(TransactionsRequest $request)
     {
-        dd('test');
+        $com_code = auth()->user()->com_code;
+        $isal_number = Treasuries::where(['com_code' => $com_code , 'id' => $request->treasuries_id])->max('last_isal_collect');
+
+
+        $shift_id = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'treasuries_id' => $request->treasuries_id, 'is_finished' => 0])->whereNull('end_shift')->value('id');
+        if ($shift_id != null) {
+            $data['treasuries_id'] = $request->treasuries_id;
+            $data['isal_number'] = $isal_number + 1;
+            $data['move_type'] = $request->move_type;
+            $data['account_number'] = $request->account_number;
+            $data['money_for_account'] = $request->money * (-100);
+            $data['money'] = $request->money * (-100);
+            $data['byan'] = $request->byan;
+            $data['added_by'] = auth()->user()->id;
+            $data['date'] = $request->date;
+            $data['com_code'] = $com_code;
+            $data['shift_id'] = $shift_id;
+
+            Treasuries::where([
+                'id' => $request->treasuries_id,
+                'com_code' => $com_code,
+            ])->update([
+                'last_isal_collect' => $data['isal_number'],
+            ]);
+
+            TreasuriesTransaction::create($data);
+            return redirect()->route('collect_transaction.index');
+        }
+
+
+        return redirect()->back()->with(['error'=> 'حدث خطا ما']);
     }
 
     /**

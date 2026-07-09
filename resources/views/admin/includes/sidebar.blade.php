@@ -65,9 +65,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*','accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     الحسابات
@@ -134,6 +134,17 @@
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             شاشه تحصيل النقديه
+                                        </p>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a href="{{ route('exchange_transaction.index') }}"
+                                        class="nav-link {{ request()->routeIs('exchange_transaction.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            شاشه صرف النقديه
                                         </p>
                                     </a>
                                 </li>

@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-    شاشه التحصيل
+    شاشه الصرف
 @endsection
 
 @section('contentheader')
-    شاشه التحصيل
+    شاشه الصرف
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('collect_transaction.index') }}"> شاشه التحصيل </a>
+    <a href="{{ route('exchange_transaction.index') }}"> شاشه الصرف </a>
 @endsection
 
 
@@ -23,13 +23,12 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات شاشه التحصيل</h3>
+                    <h3 class="card-title card_title_center">بيانات شاشه الصرف</h3>
                 </div>
 
 
 
                 <div class="card-body">
-
 
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -39,7 +38,7 @@
 
 
                     @if ($exist != null)
-                        <form action="{{ route('collect_transaction.store') }}" method="POST"
+                        <form action="{{ route('exchange_transaction.store') }}" method="POST"
                             style="border: 1px solid gray; padding: 10px">
                             @csrf
 
@@ -59,26 +58,9 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group col-sm-4">
-                                        <label>نوع الحركه </label>
-                                        <select name="move_type" id="move_type" class="form-control">
-                                            <option value="" selected disabled>اختر نوع الحركه</option>
-                                            @foreach ($move_types as $move_type)
-                                            <option value="{{ $move_type->id }}"
-                                                {{ old('move_type') == $move_type->id ? 'selected' : '' }}>
-                                                {{ $move_type->name }}
-                                            </option>
-
-                                            @endforeach
-                                        </select>
-                                        @error('move_type')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group col-sm-4">
+                                     <div class="form-group col-sm-4">
                                         <label>اختر الحساب </label>
-                                        <select name="account_number" id="start_balance_status" class="form-control">
+                                        <select name="account_number" id="account_number" class="form-control">
                                             <option value="" disabled {{ old('account_number') ? '' : 'selected' }}>
                                                 اختر الحساب
                                             </option>
@@ -96,6 +78,24 @@
                                         @enderror
                                     </div>
 
+                                    <div class="form-group col-sm-4">
+                                        <label>نوع الحركه </label>
+                                        <select name="move_type" id="move_type" class="form-control">
+                                            <option value="" selected disabled>اختر نوع الحركه</option>
+                                            @foreach ($move_types as $move_type)
+                                                <option value="{{ $move_type->id }}"
+                                                    {{ old('move_type') == $move_type->id ? 'selected' : '' }}>
+                                                    {{ $move_type->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('move_type')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+
+
 
 
                                 </div>
@@ -105,7 +105,7 @@
                                     <div class="form-group col-4">
                                         <label>الرصيد المتاح بالخزنه</label>
                                         <input readonly class="form-control" type="number" name="treasuries_balance"
-                                            value="{{ old('treasuries_balance', $treasuries_balance/-100) }}">
+                                            value="{{ old('treasuries_balance', $treasuries_balance / -100) }}">
 
                                         @error('treasuries_balance')
                                             <span class="text-danger">{{ $message }}</span>
@@ -122,9 +122,12 @@
                                         @enderror
                                     </div>
 
+
                                     <div class="form-group col-4">
-                                        <label>الرصيد المحصل</label>
-                                        <input class="form-control" type="number" name="money" id="money"
+                                        <label>الرصيد المصروف</label>
+                                        <input
+                                            @if ($treasuries_balance / -100 <= 0) disabled placeholder="الرصيد لا يسمح" @endif
+                                            class="form-control" type="number" name="money" id="money"
                                             value="{{ old('money') }}">
 
                                         @error('money')
@@ -151,7 +154,7 @@
 
                             <div class="form-group text-center">
                                 <button type="submit" class="btn btn-primary m-2" style="padding: 8px 15px;">
-                                    تحصيل
+                                    صرف
                                 </button>
                             </div>
 
@@ -169,9 +172,9 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>كود ايصال التحصيل</th>
+                                        <th>كود ايصال الصرف</th>
                                         <th>الخزنه</th>
-                                        <th>المبلغ المحصل</th>
+                                        <th>المبلغ المصروف</th>
                                         <th>نوع الحركه</th>
                                         <th>بيان الحركه</th>
                                         <th>المستخدم</th>
@@ -183,12 +186,12 @@
                                 <tbody>
                                     @foreach ($data as $item)
                                         <tr>
-                                            <td>{{$item->isal_number }}</td>
+                                            <td>{{ $item->isal_number }}</td>
 
                                             <td>{{ $item->treasuries_name }}</td>
 
                                             <td>
-                                                {{ $item->money_for_account / -100 }}
+                                                {{ $item->money_for_account / 100 }}
                                             </td>
 
                                             <td>
@@ -202,10 +205,8 @@
                                             <td>{{ $item->created_at }} <br> بواسطه {{ $item->admin_name }}</td>
 
                                             <td>
-                                                <a href="#"
-                                                    class="btn btn-primary">طباعه</a>
-                                                <a href="#"
-                                                    class="btn btn-info">المزيد</a>
+                                                <a href="#" class="btn btn-primary">طباعه</a>
+                                                <a href="#" class="btn btn-info">المزيد</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -230,5 +231,5 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('assets/admin/js/ajax_search.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/transaction.js') }}"></script>
 @endsection

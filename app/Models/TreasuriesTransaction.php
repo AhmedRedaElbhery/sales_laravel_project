@@ -24,5 +24,6 @@ class TreasuriesTransaction extends Model
         'updated_by',
         'date',
         'com_code',
+        'isal_number',
     ];
 }

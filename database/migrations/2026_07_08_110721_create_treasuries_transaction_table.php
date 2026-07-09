@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('byan');
             $table->integer('added_by');
             $table->integer('updated_by');
+            $table->integer('isal_number')->nullable();
             $table->date('date');
             $table->integer('com_code');
             $table->timestamps();

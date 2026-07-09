@@ -26,10 +26,10 @@ class TransactionsRequest extends FormRequest
         return [
             'account_number'=>'required',
             'date'=> 'required',
-            'money'=> 'required',
-            'treasuries_balance'=> 'required',
-            'treasuries_id'=> 'required|numeric',
-            'byan'=> 'required|numeric',
+            'money' => 'required|numeric|gt:0',
+            'treasuries_balance'=> 'required|numeric',
+            'treasuries_id'=> 'required',
+            'byan'=> 'required',
             'move_type'=> 'required',
 
         ];
@@ -40,9 +40,12 @@ class TransactionsRequest extends FormRequest
             'move_type.required'=>'اختر نوع الحركه',
             'date.required'=> 'ادخل التاريخ',
             'money.required'=> 'ادخل المبلغ',
+            'money.numeric'=> 'ادخل رقم المبلغ صحيح',
+            'money.gt'=> 'ادخل رقم المبلغ صحيح اكبر من 0',
+            'money.treasuries_balance'=> 'ادخل رقم المبلغ صحيح',
             'treasuries_balance.required'=> 'ادخل المبلغ الخزنه',
             'treasuries_id.required'=> 'ادخل الخزنه',
-            'byan.numeric'=> 'ادخل بيان لهذه العمليه',
+            'byan.required'=> 'ادخل بيان لهذه العمليه',
         ];
     }
 }

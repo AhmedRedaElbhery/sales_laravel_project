@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CollectController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\ExchangeController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
 use App\Http\Controllers\Admin\SupplierOrdersController;
@@ -120,6 +121,10 @@ Route::resource('admin_shifts', AdminShiftsController::class);
 //collect transaction
 
 Route::resource('collect_transaction', CollectController::class);
+
+//exchange transaction
+
+Route::resource('exchange_transaction', ExchangeController::class);
 
 });
 
