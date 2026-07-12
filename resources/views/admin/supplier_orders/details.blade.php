@@ -157,8 +157,12 @@
                                 <td>
                                     @if ($data['is_approved'] == 0)
                                         <a href="{{ route('supplier_orders.edit', $data->id) }}"
-                                            class="btn btn-primary text-white" style="width: 100%; height: 100%;">تعديل</a>
+                                            class="btn btn-primary text-white">تعديل</a>
+
+                                        <button type="button" class="btn btn-success m-2" data-toggle="modal"
+                                            data-target="#load_model_approve">اعتماد</button>
                                     @endif
+
                                 </td>
                             </tr>
                         </table>
@@ -388,6 +392,141 @@
                 <!-- /.modal-content -->
             </div>
             <!-- /.modal-dialog -->
+        </div>
+
+        <div class="modal fade" id="load_model_approve">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-info">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">اعتماد الفاتوره</h4>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <input type="hidden" id="token_search" value="{{ csrf_token() }}">
+                    <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
+                    <input type="hidden" id="total" value="{{ $data['total_before_discount'] }}">
+                    <input type="hidden" id="model_approve_route"
+                        value="{{ route('supplier_orders.load_model_approve') }}">
+
+                    <div class="modal-body bg-white text-dark">
+
+                        <div class="row">
+
+                            <div class="form-group col-md-12">
+                                <label>الاجمالى بالفاتوره قبل الخصم والضريبه</label>
+                                <input class="form-control" readonly id="total" value="{{ $data['total_before_discount'] /100 }}">
+
+                                @error('total_value')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>ادخل نسبه الضريبه على الفاتوره</label>
+                                <input type="number" name="tax_percent" id="tax_percent" class="form-control">
+
+                                @error('tax_percent')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label> قيمه الضريبه </label>
+                                <input type="number" readonly name="tax_value" id="tax_value" class="form-control">
+
+                                @error('tax_value')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>ادخل نسبه الخصم على الفاتوره</label>
+                                <input type="number" name="discount_percent" id="discount_percent" class="form-control">
+
+                                @error('discount_percent')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>قيمه الخصم </label>
+                                <input type="number"  readonly name="discount_value" id="discount_value" class="form-control">
+
+                                @error('discount_value')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label>الاجمالى النهائى</label>
+                                <input type="number"  readonly name="total_value" id="total_value" class="form-control">
+
+                                @error('total_value')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label>الخزنه الحاليه</label>
+                                <input class="form-control" readonly id="total" value="{{ $shift->treasuries_name }}">
+
+                                @error('total_value')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label>الرصيد المتاح بالخزنه</label>
+                                <input class="form-control" readonly id="treasuries_balance" value="{{ $shift->treasuries_balance/-100 }}">
+
+                                @error('treasuries_balance')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+
+                            <div class="form-group col-md-6">
+                                <label>المبلغ المدفوع </label>
+                                <input class="form-control" id="what_paid" name="what_paid">
+
+                                @error('what_paid')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>المبلغ المتبقى </label>
+                                <input readonly class="form-control" id="what_remain" name="what_remain">
+
+                                @error('what_remain')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+
+
+                            <div class="col-12">
+
+                                <div class="form-group text-center">
+                                    <button type="button" class="btn btn-info" id="approve_bill"> اعتماد الفاتوره </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                            اغلاق
+                        </button>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
 

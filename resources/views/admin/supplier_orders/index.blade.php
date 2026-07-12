@@ -55,9 +55,9 @@
                                                 @if ($item->doc_type == 1)
                                                     فاتوره مشتريات
                                                 @elseif ($item->doc_type == 2)
-                                                فاتوره مرتحعات
+                                                    فاتوره مرتحعات
                                                 @else
-                                                فاتوره مشتريات
+                                                    فاتوره مشتريات
                                                 @endif
                                             </td>
 
@@ -79,16 +79,14 @@
                                             </td>
 
                                             <td>
-                                                @if ($item['is_approved'] != 1)
-                                                <a href="{{ route('supplier_orders.edit', $item->id) }}"
-                                                    class="btn btn-success">اعتماد</a>
-                                                @endif
 
-                                                    <a href="{{ route('supplier_orders.show', $item->id) }}"
-                                                        class="btn btn-info">التفاصيل</a>
 
-                                                <form action="{{ route('supplier_orders.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                <a href="{{ route('supplier_orders.show', $item->id) }}"
+                                                    class="btn btn-info">التفاصيل</a>
+
+                                                <form action="{{ route('supplier_orders.destroy', $item->id) }}"
+                                                    method="POST" class="d-inline"
+                                                    onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger">حذف</button>

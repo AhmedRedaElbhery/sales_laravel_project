@@ -107,6 +107,7 @@ Route::group([
     Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroy_details'])->name('supplier_orders.destroy_details');
     Route::post('/supplier_orders/edititem',[SupplierOrdersController::class,'edititem'])->name('supplier_orders.edititem');
     Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'update_item'])->name('supplier_orders.update_item');
+    Route::post('supplier_orders/load_model_approve', [SupplierOrdersController::class, 'load_model_approve'])->name('supplier_orders.load_model_approve');
 
 
     /* admin */

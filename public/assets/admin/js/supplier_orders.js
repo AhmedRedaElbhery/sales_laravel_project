@@ -165,10 +165,9 @@ $(document).ready(function () {
 
     $(document).on("click", ".edititem", function () {
         var id = $(this).data("id");
-        var autoserialparent = $('#autoserialparent').val();
+        var autoserialparent = $("#autoserialparent").val();
         var token_search = $("#token_search").val();
         var ajax_getUnits = $("#ajax_edititem").val();
-
 
         $.ajax({
             url: ajax_getUnits,
@@ -183,7 +182,6 @@ $(document).ready(function () {
             },
 
             success: function (data) {
-
                 $("#edit_item_model_body").html(data);
                 $("#edit_item_model").modal("show");
             },
@@ -191,13 +189,11 @@ $(document).ready(function () {
             error: function (xhr, status, error) {
                 $("#edit_item_model_body").html("");
                 $("#edit_item_model").modal("hide");
-
-            }
+            },
         });
     });
 
     $(document).on("click", "#update_items", function () {
-
         var unit = $("#unit_id_edit").val();
         if (unit == null) {
             alert("من فضلك اختر الوحده");
@@ -283,7 +279,6 @@ $(document).ready(function () {
         });
     });
 
-
     $(document).on("input", "#quantity_edit", function () {
         calculateedit();
     });
@@ -308,4 +303,130 @@ $(document).ready(function () {
 
         $("#total_price_edit").val((price * quantity) / 100);
     }
+
+    $(document).on("click", "#approve_bill", function () {
+        var tax = $("#tax_percent").val();
+
+        if (tax == null || tax == "") {
+            alert("من فضلك ادخل نسبه الضريبه");
+            $("#tax_percent").focus();
+            return false;
+        }
+
+        var discount = $("#discount_percent").val();
+
+        if (discount == null || discount == "") {
+            alert("من فضلك ادخل نسبه الخصم");
+            $("#discount_percent").focus();
+            return false;
+        }
+
+        var what_paid = $("#what_paid").val();
+        console.log(what_paid);
+        var treasuries_balance = $("#treasuries_balance").val();
+
+        if (what_paid > treasuries_balance) {
+            alert("الرصيد الحالى لا يسمح");
+            return false;
+        }
+
+        if (what_paid == null || what_paid == "") {
+            alert("ادخل الرصيد المدفوع");
+            $("#what_paid").focus();
+            return false;
+        }
+
+        var autoserialparent = $("#autoserialparent").val();
+
+        var token_search = $("#token_search").val();
+        var model_approve_route = $("#model_approve_route").val();
+
+        $.ajax({
+            url: model_approve_route,
+            type: "POST",
+            dataType: "json",
+            cache: false,
+
+            data: {
+                autoserialparent: autoserialparent,
+                _token: token_search,
+                tax: tax,
+                discount: discount,
+            },
+
+            success: function (data) {
+                alert("تمت الاضافه بنجاح");
+                window.location.reload();
+            },
+
+            error: function (xhr) {
+                alert("يوجد خطا ما");
+            },
+        });
+    });
+
+    $(document).on("input", "#tax_percent", function () {
+        $("#discount_percent").val("");
+        $("#discount_value").val("");
+        var tax_percent = $("#tax_percent").val();
+        if (tax_percent > 100 || tax_percent < 0) {
+            alert(" خطا بنسبه الضريبه ادخل نسبه صحيحه");
+            $("#tax_percent").val("");
+            $("#tax_value").val("");
+            return false;
+        }
+
+        var total = $("#total").val();
+
+        value = ((total / 100) * tax_percent) / 100;
+
+        $("#tax_value").val(value);
+        var total_value = parseFloat(total) / 100 + parseFloat(value);
+
+        $("#total_value").val(total_value);
+
+        var what_paid = $("#what_paid").val();
+        if (what_paid != null && what_paid != "") {
+            console.log(total_value);
+            $("#what_remain").val(total_value - what_paid);
+        }
+    });
+
+    $(document).on("input", "#discount_percent", function () {
+        var discount_percent = $("#discount_percent").val();
+        if (discount_percent > 100 || discount_percent < 0) {
+            alert(" خطا بنسبه الخصم ادخل نسبه صحيحه");
+            $("#discount_percent").val("");
+            $("#discount_value").val("");
+            return false;
+        }
+
+        var total = parseFloat($("#total").val());
+        var tax_value = parseFloat($("#tax_value").val() || 0);
+
+        value = ((total / 100 + tax_value) * discount_percent) / 100;
+
+        $("#discount_value").val(value);
+
+        var total_value = total / 100 + tax_value - value;
+        $("#total_value").val(total_value);
+
+        var what_paid = $("#what_paid").val();
+        if (what_paid != null && what_paid != "") {
+            console.log(total_value);
+            $("#what_remain").val(total_value - what_paid);
+        }
+    });
+
+    $(document).on("input", "#what_paid", function () {
+        var total = $("#total_value").val();
+
+        if (total == null || total == "") {
+            var total = $("#total").val();
+            var total = total / 100;
+        }
+        var what_paid = $("#what_paid").val();
+
+        $("#what_remain").val(total - what_paid);
+    });
 });

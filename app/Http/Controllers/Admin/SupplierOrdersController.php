@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SupplierOrderRequest;
 use App\Models\Admin;
+use App\Models\AdminShifts;
 use App\Models\ItemCard;
 use App\Models\Store;
 use App\Models\SupplierOrders;
 use App\Models\SupplierOrdersDetails;
 use App\Models\Suppliers;
+use App\Models\Treasuries;
+use App\Models\TreasuriesTransaction;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 
@@ -120,9 +123,18 @@ class SupplierOrdersController extends Controller
                 }
             }
             if ($data['is_approved'] != 1) {
+
+                $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+                if ($shift != null) {
+                    $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+                    $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id'=>$shift->id,'treasuries_id' => $shift->treasuries_id])->sum('money');
+                }
+
                 $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $com_code, 'active' => 1])->get();
-                return view('admin.supplier_orders.details', compact('data', 'details', 'items'));
+                return view('admin.supplier_orders.details', compact('data', 'details', 'items', 'shift'));
             }
+
+
 
             return view('admin.supplier_orders.details', compact('data', 'details'));
         }
@@ -178,9 +190,8 @@ class SupplierOrdersController extends Controller
     public function destroy($id)
     {
         $data = SupplierOrders::find($id);
-        $items = SupplierOrdersDetails::where(['supplier_auto_serial'=>$data->auto_serial ,'com_code'=>$data->com_code ,'order_type'=>1])->get();
-        foreach($items as $item)
-        {
+        $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $data->auto_serial, 'com_code' => $data->com_code, 'order_type' => 1])->get();
+        foreach ($items as $item) {
             SupplierOrdersDetails::destroy($item->id);
         }
         SupplierOrders::destroy($id);
@@ -313,6 +324,17 @@ class SupplierOrdersController extends Controller
                     echo json_encode('done');
                 }
             }
+        }
+    }
+
+
+    public function load_model_approve(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $tax_percent = $request->tax_percent;
+            $discount_percent = $request->discount_percent;
+            $data = SupplierOrders::where(['auto_serial' => $request->auto_serial])->first();
         }
     }
 }
