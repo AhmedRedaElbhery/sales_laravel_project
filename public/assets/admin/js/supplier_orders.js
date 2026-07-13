@@ -305,24 +305,23 @@ $(document).ready(function () {
     }
 
     $(document).on("click", "#approve_bill", function () {
-        var tax = $("#tax_percent").val();
+        var tax_percent = $("#tax_percent").val();
 
-        if (tax == null || tax == "") {
+        if (tax_percent == null || tax_percent == "") {
             alert("من فضلك ادخل نسبه الضريبه");
             $("#tax_percent").focus();
             return false;
         }
 
-        var discount = $("#discount_percent").val();
+        var discount_percent = $("#discount_percent").val();
 
-        if (discount == null || discount == "") {
+        if (discount_percent == null || discount_percent == "") {
             alert("من فضلك ادخل نسبه الخصم");
             $("#discount_percent").focus();
             return false;
         }
 
         var what_paid = $("#what_paid").val();
-        console.log(what_paid);
         var treasuries_balance = $("#treasuries_balance").val();
 
         if (what_paid > treasuries_balance) {
@@ -337,7 +336,11 @@ $(document).ready(function () {
         }
 
         var autoserialparent = $("#autoserialparent").val();
-
+        var what_remain = $("#what_remain").val();
+        var tax_value = $("#tax_value").val();
+        var discount_value = $("#discount_value").val();
+        var total_value = $("#total_value").val();
+        var treasuries_id = $("#treasuries_id").val();
         var token_search = $("#token_search").val();
         var model_approve_route = $("#model_approve_route").val();
 
@@ -348,14 +351,33 @@ $(document).ready(function () {
             cache: false,
 
             data: {
+
                 autoserialparent: autoserialparent,
                 _token: token_search,
-                tax: tax,
-                discount: discount,
+
+                tax_percent: tax_percent,
+                tax_value: tax_value,
+
+                discount_percent: discount_percent,
+                discount_value: discount_value,
+
+                what_paid: what_paid,
+                what_remain: what_remain,
+
+
+                treasuries_id: treasuries_id,
+                total_value: total_value,
+                treasuries_balance: treasuries_balance,
             },
 
             success: function (data) {
-                alert("تمت الاضافه بنجاح");
+                if (!data.status) {
+                    alert(data.message);
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                alert(data.message);
                 window.location.reload();
             },
 

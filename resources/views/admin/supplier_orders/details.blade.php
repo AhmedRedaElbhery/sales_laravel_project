@@ -26,6 +26,14 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                @endif
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">بيانات فاتوره المشتريات</h3>
@@ -408,8 +416,7 @@
                     <input type="hidden" id="token_search" value="{{ csrf_token() }}">
                     <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
                     <input type="hidden" id="total" value="{{ $data['total_before_discount'] }}">
-                    <input type="hidden" id="model_approve_route"
-                        value="{{ route('supplier_orders.load_model_approve') }}">
+                    <input type="hidden" id="model_approve_route" value="{{ route('supplier_orders.model_approve') }}">
 
                     <div class="modal-body bg-white text-dark">
 
@@ -417,7 +424,8 @@
 
                             <div class="form-group col-md-12">
                                 <label>الاجمالى بالفاتوره قبل الخصم والضريبه</label>
-                                <input class="form-control" readonly id="total" value="{{ $data['total_before_discount'] /100 }}">
+                                <input class="form-control" readonly id="total"
+                                    value="{{ $data['total_before_discount'] / 100 }}">
 
                                 @error('total_value')
                                     <span class="text-danger">{{ $message }}</span>
@@ -436,15 +444,12 @@
                             <div class="form-group col-md-6">
                                 <label> قيمه الضريبه </label>
                                 <input type="number" readonly name="tax_value" id="tax_value" class="form-control">
-
-                                @error('tax_value')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
                             </div>
 
                             <div class="form-group col-md-6">
                                 <label>ادخل نسبه الخصم على الفاتوره</label>
-                                <input type="number" name="discount_percent" id="discount_percent" class="form-control">
+                                <input type="number" name="discount_percent" id="discount_percent"
+                                    class="form-control">
 
                                 @error('discount_percent')
                                     <span class="text-danger">{{ $message }}</span>
@@ -453,16 +458,15 @@
 
                             <div class="form-group col-md-6">
                                 <label>قيمه الخصم </label>
-                                <input type="number"  readonly name="discount_value" id="discount_value" class="form-control">
+                                <input type="number" readonly name="discount_value" id="discount_value"
+                                    class="form-control">
 
-                                @error('discount_value')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
+
                             </div>
 
                             <div class="form-group col-md-12">
                                 <label>الاجمالى النهائى</label>
-                                <input type="number"  readonly name="total_value" id="total_value" class="form-control">
+                                <input type="number" readonly name="total_value" id="total_value" class="form-control">
 
                                 @error('total_value')
                                     <span class="text-danger">{{ $message }}</span>
@@ -470,21 +474,20 @@
                             </div>
 
                             <div class="form-group col-md-12">
-                                <label>الخزنه الحاليه</label>
-                                <input class="form-control" readonly id="total" value="{{ $shift->treasuries_name }}">
+                                <label>الخزنة الحالية</label>
+                                <select class="form-control" id="treasuries_id" disabled>
+                                    <option value="{{ $shift->treasuries_id }}" selected>
+                                        {{ $shift->treasuries_name }}
+                                    </option>
+                                </select>
 
-                                @error('total_value')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
+
                             </div>
 
                             <div class="form-group col-md-12">
                                 <label>الرصيد المتاح بالخزنه</label>
-                                <input class="form-control" readonly id="treasuries_balance" value="{{ $shift->treasuries_balance/-100 }}">
-
-                                @error('treasuries_balance')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                                <input class="form-control" readonly id="treasuries_balance"
+                                    value="{{ $shift->treasuries_balance / -100 }}">
                             </div>
 
 
@@ -511,7 +514,8 @@
                             <div class="col-12">
 
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-info" id="approve_bill"> اعتماد الفاتوره </button>
+                                    <button type="button" class="btn btn-info" id="approve_bill"> اعتماد الفاتوره
+                                    </button>
                                 </div>
                             </div>
 

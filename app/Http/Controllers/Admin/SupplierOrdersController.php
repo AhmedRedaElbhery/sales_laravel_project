@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApproveBillRequest;
 use App\Http\Requests\SupplierOrderRequest;
 use App\Models\Admin;
 use App\Models\AdminShifts;
@@ -122,13 +123,13 @@ class SupplierOrdersController extends Controller
                     }
                 }
             }
-            if ($data['is_approved'] != 1) {
+            $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+            if ($shift != null) {
+                $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+                $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+            }
 
-                $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
-                if ($shift != null) {
-                    $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
-                    $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id'=>$shift->id,'treasuries_id' => $shift->treasuries_id])->sum('money');
-                }
+            if ($data['is_approved'] != 1) {
 
                 $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $com_code, 'active' => 1])->get();
                 return view('admin.supplier_orders.details', compact('data', 'details', 'items', 'shift'));
@@ -136,7 +137,7 @@ class SupplierOrdersController extends Controller
 
 
 
-            return view('admin.supplier_orders.details', compact('data', 'details'));
+            return view('admin.supplier_orders.details', compact('data', 'details', 'shift'));
         }
         return redirect()->route('supplier_orders.index');
     }
@@ -328,13 +329,128 @@ class SupplierOrdersController extends Controller
     }
 
 
-    public function load_model_approve(Request $request)
+    public function model_approve(ApproveBillRequest $request)
     {
         if ($request->ajax()) {
             $com_code = auth()->user()->com_code;
+            $auto_serial = $request->autoserialparent;
+
             $tax_percent = $request->tax_percent;
+            $tax_value = $request->tax_value;
             $discount_percent = $request->discount_percent;
-            $data = SupplierOrders::where(['auto_serial' => $request->auto_serial])->first();
+            $discount_value = $request->discount_value;
+
+            $what_paid = $request->what_paid;
+            $what_remain = $request->what_remain;
+
+            $total_value = $request->total_value;
+            $treasuries_id = $request->treasuries_id;
+            $treasuries_balance = $request->treasuries_balance;
+
+            $data = SupplierOrders::where(['auto_serial' => $auto_serial, 'com_code' => $com_code])->first();
+            if ($data->is_approved == 1) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'هذه الفاتورة معتمدة من قبل',
+                    'redirect' => route('supplier_orders.show', $data->id),
+                ]);
+            }
+
+            if($data->pill_type == 0)
+            {
+                if($what_paid < $total_value)
+                {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
+                    ]);
+                }
+            }
+            else{
+
+                if($what_paid == $total_value)
+                {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
+
+                    ]);
+                }
+            }
+
+            $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+            if ($shift != null) {
+                $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+                $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+
+                $treasuries_balance = $shift->treasuries_balance /-100;
+
+                if($what_paid > $treasuries_balance)
+                {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ' الرصيد المتاح لا يسمح بالدفع',
+                        'redirect' => route('supplier_orders.show', $data->id),
+                    ]);
+                }
+            }
+            else
+            {
+                return response()->json([
+                    'status' => false,
+                    'message' => ' لا يوجد شفت مفتوح',
+                    'redirect' => route('supplier_orders.show', $data->id),
+                ]);
+            }
+
+            $flage = $data->update([
+                'is_approved'=> 1,
+                'discount_percent'=> $discount_percent,
+                'discount_value'=> $discount_value*100,
+                'tax_percent'=> $tax_percent,
+                'tax_value'=> $tax_value*100,
+                'total_cost'=> $total_value*100,
+                'what_paid'=> $what_paid*100,
+                'what_remain'=> $what_remain*100,
+                'updated_by'=> auth()->user()->id,
+            ]);
+
+            if($flage)
+            {
+                if($what_paid > 0)
+                {
+                    $treasuries = Treasuries::where(['id' => $shift->treasuries_id , 'com_code'=>$com_code])->first();
+                    if($treasuries->last_isal_exchange == null)
+                    {
+                        $$treasuries->last_isal_exchange = 0;
+                    }
+                    TreasuriesTransaction::create([
+                        'treasuries_id'=>$shift->treasuries_id,
+                        'bill_code'=>$data->auto_serial,
+                        'is_approved'=>1,
+                        'shift_id'=>$shift->id,
+                        'com_code'=>$com_code,
+                        'money'=>$what_paid * (100),
+                        'isal_number'=> $treasuries->last_isal_exchange+1,
+                        'date'=>date('Y-m-d'),
+                        'byan'=>'فاتوره مشتريات',
+                        'move_type'=>1,
+                        'account_number'=>$data->account_number,
+                        'money_for_account'=>$what_paid*100,
+                        'added_by'=>auth()->user()->id,
+                    ]);
+
+                    $treasuries->update([
+                        'last_isal_exchange'=> $treasuries->last_isal_exchange+1,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'تم اعتماد الفاتورة بنجاح',
+            ]);
+
         }
     }
 }
