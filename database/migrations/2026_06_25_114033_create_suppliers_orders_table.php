@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->tinyInteger('order_type'); //فاتوره شراء او مرتجع من الفاتوره او مرتجع عام
             $table->bigInteger('auto_serial');
-            $table->string('doc_number');
+            $table->string('doc_number')->nullable();
             $table->integer('supplier_code');
             $table->integer('account_number');
             $table->date('order_date');

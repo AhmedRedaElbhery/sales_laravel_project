@@ -7,7 +7,9 @@ use App\Http\Requests\ApproveBillRequest;
 use App\Http\Requests\SupplierOrderRequest;
 use App\Models\Admin;
 use App\Models\AdminShifts;
+use App\Models\Batche;
 use App\Models\ItemCard;
+use App\Models\ItemMovement;
 use App\Models\Store;
 use App\Models\SupplierOrders;
 use App\Models\SupplierOrdersDetails;
@@ -348,6 +350,7 @@ class SupplierOrdersController extends Controller
             $treasuries_balance = $request->treasuries_balance;
 
             $data = SupplierOrders::where(['auto_serial' => $auto_serial, 'com_code' => $com_code])->first();
+            $supplier_name = Suppliers::where(['account_number'=>$data->account_number])->value('name');
             if ($data->is_approved == 1) {
                 return response()->json([
                     'status' => false,
@@ -356,20 +359,16 @@ class SupplierOrdersController extends Controller
                 ]);
             }
 
-            if($data->pill_type == 0)
-            {
-                if($what_paid < $total_value)
-                {
+            if ($data->pill_type == 0) {
+                if ($what_paid < $total_value) {
                     return response()->json([
                         'status' => false,
                         'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
                     ]);
                 }
-            }
-            else{
+            } else {
 
-                if($what_paid == $total_value)
-                {
+                if ($what_paid == $total_value) {
                     return response()->json([
                         'status' => false,
                         'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
@@ -383,19 +382,16 @@ class SupplierOrdersController extends Controller
                 $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
                 $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
 
-                $treasuries_balance = $shift->treasuries_balance /-100;
+                $treasuries_balance = $shift->treasuries_balance / -100;
 
-                if($what_paid > $treasuries_balance)
-                {
+                if ($what_paid > $treasuries_balance) {
                     return response()->json([
                         'status' => false,
                         'message' => ' الرصيد المتاح لا يسمح بالدفع',
                         'redirect' => route('supplier_orders.show', $data->id),
                     ]);
                 }
-            }
-            else
-            {
+            } else {
                 return response()->json([
                     'status' => false,
                     'message' => ' لا يوجد شفت مفتوح',
@@ -404,53 +400,107 @@ class SupplierOrdersController extends Controller
             }
 
             $flage = $data->update([
-                'is_approved'=> 1,
-                'discount_percent'=> $discount_percent,
-                'discount_value'=> $discount_value*100,
-                'tax_percent'=> $tax_percent,
-                'tax_value'=> $tax_value*100,
-                'total_cost'=> $total_value*100,
-                'what_paid'=> $what_paid*100,
-                'what_remain'=> $what_remain*100,
-                'updated_by'=> auth()->user()->id,
+                'is_approved' => 1,
+                'discount_percent' => $discount_percent,
+                'discount_value' => $discount_value * 100,
+                'tax_percent' => $tax_percent,
+                'tax_value' => $tax_value * 100,
+                'total_cost' => $total_value * 100,
+                'what_paid' => $what_paid * 100,
+                'what_remain' => $what_remain * 100,
+                'updated_by' => auth()->user()->id,
             ]);
 
-            if($flage)
-            {
-                if($what_paid > 0)
-                {
-                    $treasuries = Treasuries::where(['id' => $shift->treasuries_id , 'com_code'=>$com_code])->first();
-                    if($treasuries->last_isal_exchange == null)
-                    {
+            if ($flage) {
+                //movement in transaction table
+                if ($what_paid > 0) {
+                    $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $com_code])->first();
+                    if ($treasuries->last_isal_exchange == null) {
                         $$treasuries->last_isal_exchange = 0;
                     }
                     TreasuriesTransaction::create([
-                        'treasuries_id'=>$shift->treasuries_id,
-                        'bill_code'=>$data->auto_serial,
-                        'is_approved'=>1,
-                        'shift_id'=>$shift->id,
-                        'com_code'=>$com_code,
-                        'money'=>$what_paid * (100),
-                        'isal_number'=> $treasuries->last_isal_exchange+1,
-                        'date'=>date('Y-m-d'),
-                        'byan'=>'فاتوره مشتريات',
-                        'move_type'=>1,
-                        'account_number'=>$data->account_number,
-                        'money_for_account'=>$what_paid*100,
-                        'added_by'=>auth()->user()->id,
+                        'treasuries_id' => $shift->treasuries_id,
+                        'bill_code' => $data->auto_serial,
+                        'is_approved' => 1,
+                        'shift_id' => $shift->id,
+                        'com_code' => $com_code,
+                        'money' => $what_paid * (100),
+                        'isal_number' => $treasuries->last_isal_exchange + 1,
+                        'date' => date('Y-m-d'),
+                        'byan' => 'فاتوره مشتريات',
+                        'move_type' => 1,
+                        'account_number' => $data->account_number,
+                        'money_for_account' => $what_paid * 100,
+                        'added_by' => auth()->user()->id,
                     ]);
 
                     $treasuries->update([
-                        'last_isal_exchange'=> $treasuries->last_isal_exchange+1,
+                        'last_isal_exchange' => $treasuries->last_isal_exchange + 1,
                     ]);
                 }
+                //movement in stores
+                $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $auto_serial, 'com_code' => $com_code])->get();
+                foreach ($items as $item) {
+                    $item_card = ItemCard::select('retail_unit_to_parent')->where(['com_code' => $com_code, 'item_code' => $item->item_code])->first();
+                    $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item->item_code])->sum('quantity');
+
+                    if ($item->isparentunit == 1) {
+                        $quantity = $item->delivered_quantity;
+                        $unit_price = $item->unit_price;
+                    } else {
+
+                        $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
+                        $unit_price = $item_card->retail_unit_to_parent * $item->unit_price;
+                    }
+
+                    if ($item->production_date != null && $item->end_date != null) {
+                        $batche_exist = Batche::where(['item_code' => $item->item_code, 'end_date' => $item->end_date, 'production_date' => $item->production_date, 'store_id' => $data->store_id, 'com_code' => $com_code, 'unit_price' => $unit_price])->first();
+                    } else {
+                        $batche_exist = Batche::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $com_code, 'unit_price' => $unit_price])->first();
+                    }
+                    if ($batche_exist) {
+                        $batche_exist->update([
+                            'quantity' => $batche_exist->quantity + $quantity,
+                            'total_cost' => $batche_exist->total_cost + ($item->delivered_quantity * $item->unit_price),
+                            'updated_by' => auth()->user()->id,
+                        ]);
+                    } else {
+                        $batche['auto_serial'] = $auto_serial;
+                        $batche['store_id'] = $data->store_id;
+                        $batche['item_code'] = $item->item_code;
+                        $batche['unit_id'] = $item->unit_id;
+                        $batche['unit_price'] = $unit_price;
+                        $batche['quantity'] = $quantity;
+                        $batche['total_cost'] = $item->total_price;
+                        $batche['production_date'] = $item->production_date;
+                        $batche['end_date'] = $item->end_date;
+                        $batche['com_code'] = auth()->user()->com_code;
+                        $batche['added_by'] = auth()->user()->id;
+                        Batche::create($batche);
+                    }
+
+                    //movement in item table
+                    $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item->item_code])->sum('quantity');
+                    $item_movement['date'] = date('Y-m-d');
+                    $item_movement['com_code'] = auth()->user()->com_code;
+                    $item_movement['movement_type'] = 1;
+                    $item_movement['added_by'] = auth()->user()->id;
+                    $item_movement['quantity_after_movement'] = $quantity_after_movement;
+                    $item_movement['quantity_before_movement'] = $quantity_before_movement;
+                    $item_movement['item_code'] = $item->item_code;
+                    $item_movement['table_code'] = $auto_serial;
+                    $item_movement['table_details_code'] = $item->id;
+                    $item_movement['byan'] ="مشتريات من مورد" ."" .$supplier_name;
+                    ItemMovement::create($item_movement);
+                }
             }
+
 
             return response()->json([
                 'status' => true,
                 'message' => 'تم اعتماد الفاتورة بنجاح',
+                'redirect' => route('supplier_orders.index'),
             ]);
-
         }
     }
 }
