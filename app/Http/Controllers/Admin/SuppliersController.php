@@ -182,11 +182,18 @@ class SuppliersController extends Controller
         $flage = $data->save();
 
         if ($flage) {
+            if($request->active == 1)
+            {
+                $is_archived = 0;
+            }
+            else{
+                $is_archived = 1;
+            }
 
             Accounts::where(['other_table_fk'=> $data->supplier_code ,'account_number'=>$data['account_number'],'com_code'=>$data['com_code'] ])
                 ->update([
                     'name' => $request->name,
-                    'is_archived' => $request->active,
+                    'is_archived' => $is_archived,
                     'notes' => $request->notes,
                     'updated_by' => auth()->user()->id,
                 ]);

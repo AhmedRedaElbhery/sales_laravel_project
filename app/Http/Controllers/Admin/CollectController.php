@@ -9,6 +9,7 @@ use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminShifts;
 use App\Models\MoveType;
+use App\Models\Suppliers;
 use App\Models\Treasuries;
 use App\Models\TreasuriesTransaction;
 use Illuminate\Http\Request;
@@ -81,7 +82,7 @@ class CollectController extends Controller
             $data['move_type'] = $request->move_type;
             $data['account_number'] = $request->account_number;
             $data['money_for_account'] = $request->money * (-100);
-            $data['money'] = $request->money * (-100);
+            $data['money'] = $request->money * (100);
             $data['byan'] = $request->byan;
             $data['added_by'] = auth()->user()->id;
             $data['date'] = $request->date;
@@ -96,6 +97,24 @@ class CollectController extends Controller
             ]);
 
             TreasuriesTransaction::create($data);
+
+            $account_data = Accounts::where(['account_number' => $request->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
+
+            $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $request->account_number, 'com_code' => $com_code])->sum('money_for_account');
+
+            $the_final_balance = $account_data->start_balance + $money_for_account_transaction;
+
+            $account_data->update([
+                'current_balance' => $the_final_balance,
+            ]);
+
+            $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+            $supplier->update([
+                'current_balance' => $the_final_balance,
+            ]);
+
+
+
             return redirect()->route('collect_transaction.index');
         }
 

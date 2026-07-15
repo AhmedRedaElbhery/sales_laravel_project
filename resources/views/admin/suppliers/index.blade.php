@@ -65,7 +65,7 @@
                                             <td>{{ $item->current_balance }}</td>
 
                                             <td>
-                                                @if ($item->active == 0)
+                                                @if ($item->active == 1)
                                                     <span class="badge badge-success">مفعل</span>
                                                 @else
                                                     <span class="badge badge-danger">مؤرشف وغير مفعل</span>

@@ -61,8 +61,8 @@
                             <label>حاله التفعيل </label>
                             <select name="active" class="form-control" >
                                 <option value="" selected disabled>اختر الحاله </option>
-                                <option value="0"  @selected(old('active') === '0')> مفعل </option>
-                                <option value="1"  @selected(old('active') == 1)> مؤرشف وغير مفعل </option>
+                                <option value="0"  @selected(old('active') == 1)> مفعل </option>
+                                <option value="1"  @selected(old('active') === '0')> مؤرشف وغير مفعل </option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>

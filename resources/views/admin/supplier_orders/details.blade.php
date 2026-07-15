@@ -487,7 +487,7 @@
                             <div class="form-group col-md-12">
                                 <label>الرصيد المتاح بالخزنه</label>
                                 <input class="form-control" readonly id="treasuries_balance"
-                                    value="{{ $shift->treasuries_balance / -100 }}">
+                                    value="{{ $shift->treasuries_balance / 100 }}">
                             </div>
 
 

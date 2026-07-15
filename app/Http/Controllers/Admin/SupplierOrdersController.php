@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApproveBillRequest;
 use App\Http\Requests\SupplierOrderRequest;
+use App\Models\Accounts;
 use App\Models\Admin;
 use App\Models\AdminShifts;
 use App\Models\Batche;
@@ -350,7 +351,7 @@ class SupplierOrdersController extends Controller
             $treasuries_balance = $request->treasuries_balance;
 
             $data = SupplierOrders::where(['auto_serial' => $auto_serial, 'com_code' => $com_code])->first();
-            $supplier_name = Suppliers::where(['account_number'=>$data->account_number])->value('name');
+            $supplier_name = Suppliers::where(['account_number' => $data->account_number])->value('name');
             if ($data->is_approved == 1) {
                 return response()->json([
                     'status' => false,
@@ -382,7 +383,7 @@ class SupplierOrdersController extends Controller
                 $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
                 $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
 
-                $treasuries_balance = $shift->treasuries_balance / -100;
+                $treasuries_balance = $shift->treasuries_balance / 100;
 
                 if ($what_paid > $treasuries_balance) {
                     return response()->json([
@@ -400,7 +401,7 @@ class SupplierOrdersController extends Controller
             }
 
             $flage = $data->update([
-                'is_approved' => 1,
+                'is_approved' => 0, ///////////////////////////////////////////////
                 'discount_percent' => $discount_percent,
                 'discount_value' => $discount_value * 100,
                 'tax_percent' => $tax_percent,
@@ -408,6 +409,7 @@ class SupplierOrdersController extends Controller
                 'total_cost' => $total_value * 100,
                 'what_paid' => $what_paid * 100,
                 'what_remain' => $what_remain * 100,
+                'money_for_account' => $what_paid * 100,
                 'updated_by' => auth()->user()->id,
             ]);
 
@@ -424,24 +426,41 @@ class SupplierOrdersController extends Controller
                         'is_approved' => 1,
                         'shift_id' => $shift->id,
                         'com_code' => $com_code,
-                        'money' => $what_paid * (100),
+                        'money' => $what_paid * (-100),
                         'isal_number' => $treasuries->last_isal_exchange + 1,
                         'date' => date('Y-m-d'),
                         'byan' => 'فاتوره مشتريات',
                         'move_type' => 1,
                         'account_number' => $data->account_number,
-                        'money_for_account' => $what_paid * 100,
+                        'money_for_account' => $what_paid * (100),
                         'added_by' => auth()->user()->id,
                     ]);
 
                     $treasuries->update([
                         'last_isal_exchange' => $treasuries->last_isal_exchange + 1,
                     ]);
+
+                    $account_data = Accounts::where(['account_number' => $data->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
+
+                    //$money_for_account_supplier = SupplierOrders::where(['account_number'=>$data->account_number,'com_code'=>$com_code])->sum('money_for_account');
+
+                    $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $data->account_number, 'com_code' => $com_code])->sum('money_for_account');
+
+                    $the_final_balance = $account_data->start_balance + $money_for_account_transaction;
+
+                    $account_data->update([
+                        'current_balance' => $the_final_balance,
+                    ]);
+
+                    $supplier = Suppliers::where(['account_number' => $data->account_number, 'com_code' => $com_code])->first();
+                    $supplier->update([
+                        'current_balance' => $the_final_balance,
+                    ]);
                 }
                 //movement in stores
                 $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $auto_serial, 'com_code' => $com_code])->get();
                 foreach ($items as $item) {
-                    $item_card = ItemCard::select('retail_unit_to_parent')->where(['com_code' => $com_code, 'item_code' => $item->item_code])->first();
+                    $item_card = ItemCard::where(['com_code' => $com_code, 'item_code' => $item->item_code])->first();
                     $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item->item_code])->sum('quantity');
 
                     if ($item->isparentunit == 1) {
@@ -490,8 +509,35 @@ class SupplierOrdersController extends Controller
                     $item_movement['item_code'] = $item->item_code;
                     $item_movement['table_code'] = $auto_serial;
                     $item_movement['table_details_code'] = $item->id;
-                    $item_movement['byan'] ="مشتريات من مورد" ."" .$supplier_name;
+                    $item_movement['byan'] = "مشتريات من مورد" . "" . $supplier_name;
                     ItemMovement::create($item_movement);
+
+
+                    if ($item_card->has_fixed_price == 0) {
+
+                        //update the new price of item and update the quantity
+
+                        $current_quantity = $item_card->quantity;
+
+                        if ($item->isparentunit == 1) {
+                            $quantity = $item->delivered_quantity;
+
+                            $unit_price = $item->unit_price;
+                            $retail_unit_price = $item->unit_price /  $item_card->retail_unit_to_parent;
+                        } else {
+                            $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
+
+                            $unit_price = $item_card->retail_unit_to_parent * $item->unit_price;
+                            $retail_unit_price = $item->unit_price;
+                        }
+
+                        $item_card->update([
+                            'quantity' => $current_quantity + $quantity,
+                            'all_retail_quantity' => ($current_quantity + $quantity) * $item_card->retail_unit_to_parent,
+                            'retail_cost_price' => $retail_unit_price,
+                            'cost_price' => $unit_price,
+                        ]);
+                    }
                 }
             }
 

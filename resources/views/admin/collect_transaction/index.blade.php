@@ -105,7 +105,7 @@
                                     <div class="form-group col-4">
                                         <label>الرصيد المتاح بالخزنه</label>
                                         <input readonly class="form-control" type="number" name="treasuries_balance"
-                                            value="{{ old('treasuries_balance', $treasuries_balance/-100) }}">
+                                            value="{{ old('treasuries_balance', $treasuries_balance/100) }}">
 
                                         @error('treasuries_balance')
                                             <span class="text-danger">{{ $message }}</span>

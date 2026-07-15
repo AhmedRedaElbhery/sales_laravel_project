@@ -207,6 +207,14 @@ class AccountsController extends Controller
 
         $flage = $data->save();
         if ($flage) {
+
+            if($request->is_archived == 1)
+            {
+                $active = 0;
+            }
+            else{
+                $active = 1;
+            }
             if ($data['account_type'] == 3) {
 
                 $customer_data = Customer::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
@@ -214,7 +222,7 @@ class AccountsController extends Controller
                 $customer_data['name'] = $request->name;
                 $customer_data['updated_by'] = auth()->user()->id;
                 $customer_data['notes'] = $request->notes;
-                $customer_data['active'] = $request->is_archived;
+                $customer_data['active'] = $active;
                 $customer_data->save();
             }
 
@@ -225,7 +233,7 @@ class AccountsController extends Controller
                 $supplier_data['name'] = $request->name;
                 $supplier_data['updated_by'] = auth()->user()->id;
                 $supplier_data['notes'] = $request->notes;
-                $supplier_data['active'] = $request->is_archived;
+                $supplier_data['active'] = $active;
                 $supplier_data->save();
             }
         }

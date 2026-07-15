@@ -84,11 +84,11 @@
                             <select name="active" class="form-control">
                                 <option value="" disabled>اختر الحاله</option>
 
-                                <option value="0" @selected(old('active', $data->active) == 0)>
+                                <option value="1" @selected(old('active', $data->active) == 1)>
                                     مفعل
                                 </option>
 
-                                <option value="1" @selected(old('active', $data->active) == 1)>
+                                <option value="0" @selected(old('active', $data->active) == 0)>
                                     مؤرشف وغير مفعل
                                 </option>
                             </select>

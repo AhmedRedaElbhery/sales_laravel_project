@@ -105,7 +105,7 @@
                                     <div class="form-group col-4">
                                         <label>الرصيد المتاح بالخزنه</label>
                                         <input readonly class="form-control" type="number" name="treasuries_balance"
-                                            value="{{ old('treasuries_balance', $treasuries_balance / -100) }}">
+                                            value="{{ old('treasuries_balance', $treasuries_balance / 100) }}">
 
                                         @error('treasuries_balance')
                                             <span class="text-danger">{{ $message }}</span>
@@ -126,7 +126,7 @@
                                     <div class="form-group col-4">
                                         <label>الرصيد المصروف</label>
                                         <input
-                                            @if ($treasuries_balance / -100 <= 0) disabled placeholder="الرصيد لا يسمح" @endif
+                                            @if ($treasuries_balance / 100 <= 0) disabled placeholder="الرصيد لا يسمح" @endif
                                             class="form-control" type="number" name="money" id="money"
                                             value="{{ old('money') }}">
 

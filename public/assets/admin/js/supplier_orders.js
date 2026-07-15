@@ -321,15 +321,18 @@ $(document).ready(function () {
             return false;
         }
 
-        var what_paid = $("#what_paid").val();
-        var treasuries_balance = $("#treasuries_balance").val();
+        let what_paid = parseFloat($("#what_paid").val()) || 0;
+        let treasuries_balance =
+            parseFloat($("#treasuries_balance").val()) || 0;
 
         if (what_paid > treasuries_balance) {
             alert("الرصيد الحالى لا يسمح");
             return false;
         }
 
-        if (what_paid == null || what_paid == "") {
+        let what_paid_input = $("#what_paid").val();
+
+        if (what_paid == null || what_paid === "") {
             alert("ادخل الرصيد المدفوع");
             $("#what_paid").focus();
             return false;
@@ -351,7 +354,6 @@ $(document).ready(function () {
             cache: false,
 
             data: {
-
                 autoserialparent: autoserialparent,
                 _token: token_search,
 
@@ -363,7 +365,6 @@ $(document).ready(function () {
 
                 what_paid: what_paid,
                 what_remain: what_remain,
-
 
                 treasuries_id: treasuries_id,
                 total_value: total_value,
