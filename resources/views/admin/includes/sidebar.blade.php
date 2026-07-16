@@ -244,13 +244,15 @@
 
 
                             </ul>
+
+
                         </li>
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*','sales_bills.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*','sales_bills.*') ? 'active' : '' }} ">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     المبيعات
@@ -259,6 +261,17 @@
                             </a>
 
                             <ul class="nav nav-treeview">
+
+                                <li class="nav-item">
+                                    <a href="{{ route('sales_bills.index') }}"
+                                        class="nav-link {{ request()->routeIs('sales_bills.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            فواتير المبيعات
+                                        </p>
+                                    </a>
+                                </li>
+
 
                             </ul>
                         </li>

@@ -132,7 +132,7 @@ class AccountsController extends Controller
         $flage = Accounts::create($data);
         if ($flage) {
 
-            if ($request->account_type == 3) {
+            if ($request->account_type == 3 && $request->parent_account_number != 0) {
 
                 $customer_data['name'] = $request->name;
                 $customer_data['com_code'] = auth()->user()->com_code;

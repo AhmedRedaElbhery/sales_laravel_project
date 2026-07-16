@@ -40,17 +40,19 @@
                             @if (isset($item_card_data) && $item_card_data != null)
 
                                 @if ($item_card_data->has_retail_unit == 1)
-                                    <option data-isparentunit="1" @if ($item_data->unit_id == $item_card_data->parent_unit_id) selected @endif
+                                    <option data-isparentunit="1" @if ($item_data->unit_id == $item_card_data->parent_unit_id)
+selected
+                                    @endif
                                         value="{{ $item_card_data->parent_unit_id }}">
                                         {{ $item_card_data->parent_unit_name }} (وحده اساسى)</option>
 
-                                    <option data-isparentunit="0" @if ($item_data->unit_id == $item_card_data->retail_unit_id) selected @endif
-                                        value="{{ $item_card_data->retail_unit_id }}">
+                                    <option data-isparentunit="0" @if ($item_data->unit_id == $item_card_data->retail_unit_id)
+                                        selected
+                                                                            @endif value="{{ $item_card_data->retail_unit_id }}">
                                         {{ $item_card_data->retail_unit_name }} (وحده
                                         تجزئه)</option>
                                 @else
-                                    <option data-isparentunit="1" selected
-                                        value="{{ $item_card_data->parent_unit_id }}">
+                                    <option data-isparentunit="1" selected value="{{ $item_card_data->parent_unit_id }}">
                                         {{ $item_card_data->parent_unit_name }} (وحده اساسى)</option>
                                 @endif
                             @endif

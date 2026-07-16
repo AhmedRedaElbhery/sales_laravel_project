@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\CollectController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ExchangeController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
+use App\Http\Controllers\Admin\SalesBillsController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
 use App\Http\Controllers\Admin\SupplierOrdersController;
 use App\Http\Controllers\Admin\SuppliersController;
@@ -126,6 +127,12 @@ Route::resource('collect_transaction', CollectController::class);
 //exchange transaction
 
 Route::resource('exchange_transaction', ExchangeController::class);
+
+//sales bills
+
+Route::resource('sales_bills', SalesBillsController::class);
+Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
+
 
 });
 

@@ -83,14 +83,17 @@
 
                                                 <a href="{{ route('supplier_orders.show', $item->id) }}"
                                                     class="btn btn-info">التفاصيل</a>
+                                                @if ($item->is_approved == 0)
+                                                    <form action="{{ route('supplier_orders.destroy', $item->id) }}"
+                                                        method="POST" class="d-inline"
+                                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">حذف</button>
+                                                    </form>
+                                                @endif
 
-                                                <form action="{{ route('supplier_orders.destroy', $item->id) }}"
-                                                    method="POST" class="d-inline"
-                                                    onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
-                                                </form>
+
                                             </td>
                                         </tr>
                                     @endforeach

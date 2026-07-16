@@ -401,7 +401,7 @@ class SupplierOrdersController extends Controller
             }
 
             $flage = $data->update([
-                'is_approved' => 0, ///////////////////////////////////////////////
+                'is_approved' => 1,
                 'discount_percent' => $discount_percent,
                 'discount_value' => $discount_value * 100,
                 'tax_percent' => $tax_percent,
