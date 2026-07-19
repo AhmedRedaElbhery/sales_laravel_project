@@ -132,6 +132,9 @@ Route::resource('exchange_transaction', ExchangeController::class);
 
 Route::resource('sales_bills', SalesBillsController::class);
 Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
+Route::get('sales_item/get_batches', [SalesBillsController::class, 'get_batches'])->name('sales_item.get_batches');
+Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->name('sales_item.get_price');
+Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
 
 
 });

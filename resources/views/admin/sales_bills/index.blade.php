@@ -128,6 +128,9 @@
                 <input type="hidden" id="token_search" value="{{ csrf_token() }}">
                 <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
                 <input type="hidden" id="sales_item_getUnits_url" value="{{ route('sales_item.getUnits') }}">
+                <input type="hidden" id="sales_item_get_batches_url" value="{{ route('sales_item.get_batches') }}">
+                <input type="hidden" id="sales_item_getprice_url" value="{{ route('sales_item.get_price') }}">
+                <input type="hidden" id="sales_item_getitems_url" value="{{ route('sales_item.get_add_items') }}">
 
                 <div class="modal-body bg-white text-dark">
 
@@ -174,6 +177,36 @@
 
                         </div>
 
+                        <div class="form-group col-md-3">
+                            <label>نوع المنتج </label>
+                            <select class="form-control" id="normal_sale">
+                                <option value="" selected disabled>اختر النوع</option>
+                                <option value="0">بيع عادى</option>
+                                <option value="1">بونص</option>
+                                <option value="2">دعايه</option>
+                            </select>
+
+                            @error('price')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+                        <div class="form-group col-md-4">
+                            <label>المخزن</label>
+                            <select class="form-control select2" id="store_id">
+                                <option value="" selected disabled>
+                                    اختر المخزن
+                                </option>
+                                @foreach ($stores as $store)
+                                    <option value="{{ $store->id }}">
+                                        {{ $store->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                        </div>
+
                         <div class="form-group col-md-4">
                             <label>الصنف</label>
                             <select class="form-control select2" id="item_code">
@@ -181,7 +214,7 @@
                                     اختر الصنف
                                 </option>
                                 @foreach ($items as $item)
-                                    <option value="{{ $item->item_code }}">
+                                    <option data-type="{{ $item->item_type }}" value="{{ $item->item_code }}">
                                         {{ $item->name }}
                                     </option>
                                 @endforeach
@@ -192,6 +225,11 @@
 
 
                         <div class="col-4 related_to_itemcard" style="display: none" id="unitsDiv">
+
+                        </div>
+
+
+                        <div class="col-4 batches" style="display: none" id="batches_div">
 
                         </div>
 
@@ -216,38 +254,24 @@
 
                         <div class="form-group col-md-3">
                             <label>الكميه </label>
-                            <input type="number" class="form-control" id="quantity" name="quantity">
+                            <input type="number" value="" class="form-control" id="quantity" name="quantity">
 
                             @error('quantity')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="form-group col-md-3">
-                            <label>نوع المنتج </label>
-                            <select class="form-control" id="normal_sale">
-                                <option value="" selected disabled>اختر النوع</option>
-                                <option value="0">بيع عادى</option>
-                                <option value="1">بونص</option>
-                                <option value="2">دعايه</option>
-                            </select>
-
-                            @error('price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
                         <div style="display: none" id="price_div" class="form-group col-md-3">
                             <label>السعر </label>
-                            <input type="number" class="form-control" id="price" name="price">
+                            <input readonly type="number" value="" class="form-control" id="price" name="price">
                         </div>
 
 
                         <div class="form-group col-md-3">
                             <label>الاجمالى النهائى</label>
-                            <input type="number" readonly name="total_value" id="total_value" class="form-control">
+                            <input type="number" value="" readonly name="total_price" id="total_price" class="form-control">
 
-                            @error('total_value')
+                            @error('total_price')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -256,7 +280,7 @@
                         <div class="col-12">
 
                             <div class="form-group text-center">
-                                <button type="button" class="btn btn-info" id="approve_bill"> اضافه الفاتوره
+                                <button type="button" class="btn btn-info" id="save_item"> اضافه الفاتوره
                                 </button>
                             </div>
                         </div>
@@ -268,8 +292,8 @@
                         <table class="table table-bordered table-hover text-center">
                             <thead class="custom_head">
                                 <tr>
-                                    <th>تاريخ الفاتوره</th>
                                     <th>الصنف</th>
+                                    <th>وحده الصنف</th>
                                     <th>نوع البيع</th>
                                     <th>الكميه</th>
                                     <th>نوع المنتج</th>
@@ -279,26 +303,8 @@
                                 </tr>
                             </thead>
 
-                            <tbody>
-                                @foreach ($data as $item)
-                                    <tr>
+                            <tbody id="items_table">
 
-                                        <td>
-                                            {{ $item->invoice_date }}
-
-                                        </td>
-
-                                        <td>
-                                            <form action="{{ route('sales_bills.destroy', $item->id) }}" method="POST"
-                                                class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">حذف</button>
-                                            </form>
-
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                         <br>
