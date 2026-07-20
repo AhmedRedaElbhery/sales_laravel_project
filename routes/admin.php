@@ -137,6 +137,10 @@ Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->
 Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
 
 
+
+Route::post('sales_item/open_active_bill', [SalesBillsController::class, 'open_active_bill'])->name('sales_item.open_active_bill');
+
+
 });
 
 

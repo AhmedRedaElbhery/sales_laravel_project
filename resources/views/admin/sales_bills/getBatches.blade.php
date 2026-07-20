@@ -10,7 +10,7 @@
                     {{ $data->production_date }}</option>
             @endforeach
         @else
-            <option value="0" selected disabled>الكميه المتاحه بالمخزن {{ $total_quantity *1 }}</option>
+            <option value="{{ $batche_id }}" selected disabled>الكميه المتاحه بالمخزن {{ $total_quantity *1 }}</option>
         @endif
 
     </select>

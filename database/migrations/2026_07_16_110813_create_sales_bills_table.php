@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('doc_number')->nullable();
             $table->integer('customer_code');
             $table->integer('delegate_code');
-            $table->integer('delegate_auto_invoice'); //عدد الفواتير للمندوب باليوم
-            $table->integer('account_number');
+            $table->integer('delegate_auto_invoice')->default(0); //عدد الفواتير للمندوب باليوم
+            $table->integer('account_number')->nullable();
             $table->integer('sales_material_type_id');
             $table->date('invoice_date');
             $table->boolean('is_approved')->default(0);
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->integer('tax_value')->default(0);
             $table->integer('total_cost')->default(0);
             $table->integer('money_for_account')->default(0); //الفلوس الى هتدخل او تخرج من حساب العميل
-            $table->boolean('pill_type'); //نوع الفاتوره كاش او ااجل
+            $table->boolean('pill_type')->nullable(); //نوع الفاتوره كاش او ااجل
             $table->integer('what_paid')->default(0); //اى الفيمه الى اتدفعت وقت الفاتوره
             $table->integer('what_remain')->default(0); //لو دفعت جزء ومتبقى جزء يبقى كم المتبقى
             $table->integer('treasuries_transaction_id')->nullable();

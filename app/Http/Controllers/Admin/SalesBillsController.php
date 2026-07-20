@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\AdminShifts;
 use App\Models\Batche;
 use App\Models\Customer;
+use App\Models\Delegate;
 use App\Models\ItemCard;
 use App\Models\SalesBills;
 use App\Models\SalesMaterialType;
 use App\Models\Store;
+use App\Models\Treasuries;
+use App\Models\TreasuriesTransaction;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 
@@ -29,18 +33,26 @@ class SalesBillsController extends Controller
             foreach ($data as $item) {
                 $item['sales_material_name'] = SalesMaterialType::where('id', $item['sales_material_type_id'])->value('name');
                 $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                $item['customer_name'] = Customer::where(['account_number' => $item->account_number, 'com_code' => $com_code])->value('name');
+                $item['customer_name'] = Customer::where(['customer_code' => $item->customer_code, 'com_code' => $com_code])->value('name');
                 if ($item->updated_at && $item->updated_at  != null) {
                     $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
                 }
             }
         }
 
-        $customers = Customer::select('id', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
+        $customers = Customer::select('customer_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
+        $delegates = Delegate::select('delegate_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
         $items = ItemCard::select('item_code', 'name', 'item_type')->where(['com_code' => $com_code])->get();
         $stores = Store::select('id', 'name')->where(['com_code' => $com_code])->get();
+        $sales_material_types = SalesMaterialType::select('id', 'name')->where(['com_code' => $com_code, 'active' => 1])->get();
 
-        return view('admin.sales_bills.index', compact('data', 'customers', 'items', 'stores'));
+        $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($shift != null) {
+            $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+            $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+        }
+
+        return view('admin.sales_bills.index', compact('data', 'customers', 'items', 'stores', 'shift', 'delegates', 'sales_material_types'));
     }
 
     /**
@@ -142,8 +154,8 @@ class SalesBillsController extends Controller
                 return view('admin.sales_bills.getBatches', compact('batches_data'));
             } else {
                 $total_quantity = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id])->sum('quantity');
-                $unit_price = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id])->value('unit_price');
-                return view('admin.sales_bills.getBatches', compact('total_quantity', 'unit_price'));
+                $batche_id = Batche::select('id')->where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id])->get();
+                return view('admin.sales_bills.getBatches', compact('total_quantity', 'batche_id'));
             }
         }
     }
@@ -194,7 +206,7 @@ class SalesBillsController extends Controller
             $data['item_code'] = $request->item_code;
             $data['parent_unit'] = $request->parent_unit;
             $data['unit_id'] = $request->unit_id;
-            $data['quantity_with_date'] = $request->quantity_with_date;
+            $data['batche_id'] = $request->quantity_with_date;
             $data['sale_type'] = $request->sale_type;
             $data['quantity'] = $request->quantity;
             $data['price'] = $request->price;
@@ -207,7 +219,42 @@ class SalesBillsController extends Controller
             $data['sale_type_name'] = $request->sale_type_name;
 
 
-            return view('admin.sales_bills.get_add_items',compact('data'));
+            return view('admin.sales_bills.get_add_items', compact('data'));
+        }
+    }
+
+    public function open_active_bill(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $customer_code = $request->customer_code;
+            $delegate_code = $request->delegate_code;
+            $date = $request->date;
+            $sales_material_type_id = $request->sales_material_type_id;
+
+            $serial = SalesBills::max('auto_serial');
+            if ($serial == null) {
+                $data['auto_serial'] = 1;
+            } else {
+                $data['auto_serial'] = $serial + 1;
+            }
+
+            $data['customer_code'] = $customer_code;
+            $data['delegate_code'] = $delegate_code;
+
+            $data['added_by'] = auth()->user()->id;
+            $data['com_code'] = $com_code;
+            $data['invoice_date'] = $date;
+            $data['sales_material_type_id'] = $sales_material_type_id;
+
+            $flage = SalesBills::create($data);
+
+            if ($flage) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'تمت الاضافه بنجاح',
+                ]);
+            }
         }
     }
 }

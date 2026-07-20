@@ -25,9 +25,9 @@ return new class extends Migration
             $table->integer('com_code');
             $table->integer('total_before_discount')->default(0);
             $table->boolean('discount_type')->nullable(); // خصم قيمه او خصم يدوى
-            $table->integer('discount_percent')->default(0); //نسبه الخصم 15%
+            $table->decimal('discount_percent')->default(0); //نسبه الخصم 15%
             $table->integer('discount_value')->default(0); //قيمه الخصم من الاجمالى الرقم الفعلى للخصم
-            $table->integer('tax_percent')->default(0);
+            $table->decimal('tax_percent')->default(0);
             $table->integer('tax_value')->default(0);
             $table->integer('total_cost')->default(0);
             $table->integer('money_for_account')->default(0); //الفلوس الى للمورد او فلوس الشراء بتاع الفاتوره لكل حساب مورد

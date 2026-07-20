@@ -174,7 +174,6 @@ $(document).ready(function () {
             $("#price").val(0);
         }
         $("#sale_type").val("");
-
     });
 
     $(document).on("change", "#store_id", function () {
@@ -248,9 +247,11 @@ $(document).ready(function () {
             return;
         }
 
-        if ($("#total_price").val() == null || $("#total_price").val() == "" &&
-        $("#normal_sale option:selected").val() == 0)
-        {
+        if (
+            $("#total_price").val() == null ||
+            ($("#total_price").val() == "" &&
+                $("#normal_sale option:selected").val() == 0)
+        ) {
             alert("السعر مطلوب");
             return;
         }
@@ -302,10 +303,153 @@ $(document).ready(function () {
 
             success: function (data) {
                 $("#items_table").append(data);
+
+                var item_total_price = 0;
+
+                $(".item_total_price").each(function () {
+                    item_total_price += Number($(this).val());
+                });
+
+                $("#total").val(item_total_price);
             },
 
             error: function (xhr) {
                 $("#items_table").html("");
+            },
+        });
+    });
+
+    $(document).on("click", ".delete", function (e) {
+        e.preventDefault();
+        $(this).closest("tr").remove();
+
+        var item_total_price = 0;
+
+        $(".item_total_price").each(function () {
+            item_total_price += Number($(this).val());
+        });
+
+        $("#total").val(item_total_price);
+    });
+
+    /////////////////////////////////////////////
+
+    $(document).on("input", "#tax_percent", function () {
+        $("#discount_percent").val("");
+        $("#discount_value").val("");
+        var tax_percent = $("#tax_percent").val();
+        if (tax_percent > 100 || tax_percent < 0) {
+            alert(" خطا بنسبه الضريبه ادخل نسبه صحيحه");
+            $("#tax_percent").val("");
+            $("#tax_value").val("");
+            return false;
+        }
+
+        var total = $("#total").val();
+
+        value = (total * tax_percent) / 100;
+
+        $("#tax_value").val(value);
+        var total_value = parseFloat(total) + parseFloat(value);
+
+        $("#total_value").val(total_value);
+
+        var what_paid = $("#what_paid").val();
+        if (what_paid != null && what_paid != "") {
+            $("#what_remain").val(total_value - what_paid);
+        }
+    });
+
+    $(document).on("input", "#discount_percent", function () {
+        var discount_percent = $("#discount_percent").val();
+        if (discount_percent > 100 || discount_percent < 0) {
+            alert(" خطا بنسبه الخصم ادخل نسبه صحيحه");
+            $("#discount_percent").val("");
+            $("#discount_value").val("");
+            return false;
+        }
+
+        var total = parseFloat($("#total").val());
+        var tax_value = parseFloat($("#tax_value").val() || 0);
+
+        value = ((total + tax_value) * discount_percent) / 100;
+
+        $("#discount_value").val(value);
+
+        var total_value = total + tax_value - value;
+        $("#total_value").val(total_value);
+
+        var what_paid = $("#what_paid").val();
+        if (what_paid != null && what_paid != "") {
+            console.log(total_value);
+            $("#what_remain").val(total_value - what_paid);
+        }
+    });
+
+    $(document).on("input", "#what_paid", function () {
+        var total = $("#total_value").val();
+
+        if (total == null || total == "") {
+            var total = $("#total").val();
+        }
+        var what_paid = $("#what_paid").val();
+
+        $("#what_remain").val(total - what_paid);
+    });
+
+    $(document).on("click", "#open_active_bill", function () {
+        var date = $("#invoice_date").val();
+        let customer_code = $("#customer_code option:selected").val();
+        let delegate_code = $("#delegate_code option:selected").val();
+        let sales_material_type_id = $("#sales_material_type option:selected").val();
+
+        if (date == null || date == "") {
+            alert("ادخل التاريخ");
+            return;
+        }
+
+        if (sales_material_type_id == null || sales_material_type_id == "") {
+
+            alert("اختر نوع فئه الفاتوره");
+            return;
+        }
+
+        if (customer_code == null || customer_code == "") {
+            alert("اختر العميل");
+            return;
+        }
+
+        if (delegate_code == null || delegate_code == "") {
+
+            alert("اختر المندوب");
+            return;
+        }
+
+
+
+        var token_search = $("#token_search").val();
+        var url = $("#open_active_bill").val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            cache: false,
+
+            data: {
+                date: date,
+                customer_code: customer_code,
+                delegate_code: delegate_code,
+                sales_material_type_id : sales_material_type_id,
+                _token: token_search,
+            },
+
+            success: function (response) {
+                alert(response.message);
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('حدث خطا ما');
             },
         });
     });

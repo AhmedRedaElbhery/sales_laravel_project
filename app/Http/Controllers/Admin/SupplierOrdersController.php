@@ -72,7 +72,7 @@ class SupplierOrdersController extends Controller
             $data['auto_serial'] = $serial + 1;
         }
 
-        $account_number = Suppliers::select('account_number')->where(['supplier_code' => $request->supplier_code, 'com_code' => $com_code])->value('account_number');
+        $account_number = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $com_code])->value('account_number');
 
         $data['order_date'] = $request->order_date;
         $data['store_id'] = $request->store;
