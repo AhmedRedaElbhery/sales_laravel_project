@@ -75,29 +75,24 @@
 
                                             <td>
 
+                                                <input type="hidden" id="get_active_bill_data_url" value="{{ route('sales_item.get_active_bill_data') }}" />
+                                                <button data-autoserial="{{ $item->auto_serial }}"
+                                                   class="btn btn-info edit_bill">تعديل</button>
 
-                                                <a href="{{ route('sales_bills.show', $item->id) }}"
-                                                    class="btn btn-info">التفاصيل</a>
-                                                @if ($item->is_approved == 0)
-                                                    <form action="{{ route('sales_bills.destroy', $item->id) }}"
-                                                        method="POST" class="d-inline"
-                                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">حذف</button>
-                                                    </form>
-                                                @endif
-
+                                                <button data-autoserial="{{ $item->auto_serial }}"
+                                                     class="btn btn-danger delete_bill">حذف</button>
 
                                             </td>
                                         </tr>
                                     @endforeach
+                                    <br>
+                                    <div class="mt-3">
+                                        {{ $data->links() }}
+                                    </div>
                                 </tbody>
+
                             </table>
-                            <br>
-                            <div class="mt-3">
-                                {{ $data->links() }}
-                            </div>
+
                         </div>
                     @else
                         <div class="alert alert-warning">
@@ -133,24 +128,10 @@
 
                     <div class="row p-3" style="border: 1px solid blue">
 
-                        <div class="form-group col-md-3">
-                            <label>نوع المنتج </label>
-                            <select class="form-control" id="normal_sale">
-                                <option value="" selected disabled>اختر النوع</option>
-                                <option value="0">بيع عادى</option>
-                                <option value="1">بونص</option>
-                                <option value="2">دعايه</option>
-                            </select>
 
-                            @error('price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-
-                        <div class="form-group col-md-4">
+                        {{-- <div class="form-group col-md-4">
                             <label>المخزن</label>
-                            <select class="form-control select2" id="store_id">
+                            <select class="form-control select2" id="mirror_store_id">
                                 <option value="" selected disabled>
                                     اختر المخزن
                                 </option>
@@ -161,11 +142,11 @@
                                 @endforeach
                             </select>
 
-                        </div>
+                        </div> --}}
 
                         <div class="form-group col-md-4">
                             <label>الصنف</label>
-                            <select class="form-control select2" id="item_code">
+                            <select class="form-control select2" id="mirror_item_code">
                                 <option value="" selected disabled>
                                     اختر الصنف
                                 </option>
@@ -175,23 +156,22 @@
                                     </option>
                                 @endforeach
                             </select>
-
                         </div>
 
 
 
-                        <div class="col-4 related_to_itemcard" style="display: none" id="unitsDiv">
+                        <div class="col-4 related_to_itemcard" style="display: none" id="mirror_unitsDiv">
 
                         </div>
 
 
-                        <div class="col-4 batches" style="display: none" id="batches_div">
+                        <div class="col-4 batches" style="display: none" id="mirror_batches_div">
 
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>نوع البيع</label>
-                            <select class="form-control" id="sale_type">
+                            <select class="form-control" id="mirror_sale_type">
                                 <option value="" selected disabled>
                                     اختر طريقه البيع
                                 </option>
@@ -210,23 +190,23 @@
 
                         <div class="form-group col-md-3">
                             <label>الكميه </label>
-                            <input type="number" value="" class="form-control" id="quantity" name="quantity">
+                            <input type="number" value="" class="form-control" id="mirror_quantity" name="quantity">
 
                             @error('quantity')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div style="display: none" id="price_div" class="form-group col-md-3">
+                        <div style="display: none" id="mirror_price_div" class="form-group col-md-3">
                             <label>السعر </label>
-                            <input readonly type="number" value="" class="form-control" id="price"
+                            <input readonly type="number" value="" class="form-control" id="mirror_price"
                                 name="price">
                         </div>
 
 
                         <div class="form-group col-md-3">
                             <label>الاجمالى النهائى</label>
-                            <input type="number" value="" readonly name="total_price" id="total_price"
+                            <input type="number" value="" readonly name="total_price" id="mirror_total_price"
                                 class="form-control">
 
                             @error('total_price')
@@ -238,7 +218,7 @@
                         <div class="col-12">
 
                             <div class="form-group text-center">
-                                <button type="button" class="btn btn-info" id="save_item"> اضافه الفاتوره
+                                <button type="button" class="btn btn-info" id="mirror_save_item"> اضافه الفاتوره
                                 </button>
                             </div>
                         </div>
@@ -261,40 +241,36 @@
                                 </tr>
                             </thead>
 
-                            <tbody id="items_table">
+                            <tbody id="mirror_items_table">
 
                             </tbody>
                         </table>
-                        <br>
-                        <div class="mt-3">
-                            {{ $data->links() }}
-                        </div>
                     </div>
 
                     <div class="row p-3" style="border: 1px solid blue">
 
                         <div class="form-group col-md-4">
                             <label>الاجمالى بالفاتوره قبل الخصم والضريبه</label>
-                            <input class="form-control" readonly id="total" value="{{ 0 / 100 }}">
+                            <input class="form-control" readonly id="mirror_total" value="{{ 0 / 100 }}">
 
 
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>ادخل نسبه الضريبه على الفاتوره</label>
-                            <input type="number" name="tax_percent" value="" id="tax_percent"
+                            <input type="number" name="tax_percent" value="" id="mirror_tax_percent"
                                 class="form-control">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label> قيمه الضريبه </label>
-                            <input type="number" readonly name="tax_value" value="" id="tax_value"
+                            <input type="number" readonly name="tax_value" value="" id="mirror_tax_value"
                                 class="form-control">
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>ادخل نسبه الخصم على الفاتوره</label>
-                            <input type="number" name="discount_percent" value="" id="discount_percent"
+                            <input type="number" name="discount_percent" value="" id="mirror_discount_percent"
                                 class="form-control">
 
 
@@ -302,14 +278,14 @@
 
                         <div class="form-group col-md-4">
                             <label>قيمه الخصم </label>
-                            <input type="number" readonly name="discount_value" value="" id="discount_value"
-                                class="form-control">
+                            <input type="number" readonly name="discount_value" value=""
+                                id="mirror_discount_value" class="form-control">
 
                         </div>
 
                         <div class="form-group col-md-4">
                             <label>الاجمالى النهائى</label>
-                            <input type="number" readonly name="total_value" value="" id="total_value"
+                            <input type="number" readonly name="total_value" value="" id="mirror_total_value"
                                 class="form-control">
                         </div>
 
@@ -434,252 +410,6 @@
 
                     </div>
 
-
-
-                    {{--
-                        <div class="form-group col-md-3">
-                            <label>نوع المنتج </label>
-                            <select class="form-control" id="normal_sale">
-                                <option value="" selected disabled>اختر النوع</option>
-                                <option value="0">بيع عادى</option>
-                                <option value="1">بونص</option>
-                                <option value="2">دعايه</option>
-                            </select>
-
-                            @error('price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-
-                        <div class="form-group col-md-4">
-                            <label>المخزن</label>
-                            <select class="form-control select2" id="store_id">
-                                <option value="" selected disabled>
-                                    اختر المخزن
-                                </option>
-                                @foreach ($stores as $store)
-                                    <option value="{{ $store->id }}">
-                                        {{ $store->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>الصنف</label>
-                            <select class="form-control select2" id="item_code">
-                                <option value="" selected disabled>
-                                    اختر الصنف
-                                </option>
-                                @foreach ($items as $item)
-                                    <option data-type="{{ $item->item_type }}" value="{{ $item->item_code }}">
-                                        {{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                        </div>
-
-
-
-                        <div class="col-4 related_to_itemcard" style="display: none" id="unitsDiv">
-
-                        </div>
-
-
-                        <div class="col-4 batches" style="display: none" id="batches_div">
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>نوع البيع</label>
-                            <select class="form-control" id="sale_type">
-                                <option value="" selected disabled>
-                                    اختر طريقه البيع
-                                </option>
-                                <option value="0">
-                                    جمله
-                                </option>
-                                <option value="1">
-                                    نص جمله
-                                </option>
-                                <option value="2">
-                                    قطاعى
-                                </option>
-                            </select>
-
-                        </div>
-
-                        <div class="form-group col-md-3">
-                            <label>الكميه </label>
-                            <input type="number" value="" class="form-control" id="quantity" name="quantity">
-
-                            @error('quantity')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div style="display: none" id="price_div" class="form-group col-md-3">
-                            <label>السعر </label>
-                            <input readonly type="number" value="" class="form-control" id="price"
-                                name="price">
-                        </div>
-
-
-                        <div class="form-group col-md-3">
-                            <label>الاجمالى النهائى</label>
-                            <input type="number" value="" readonly name="total_price" id="total_price"
-                                class="form-control">
-
-                            @error('total_price')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-
-                        <div class="col-12">
-
-                            <div class="form-group text-center">
-                                <button type="button" class="btn btn-info" id="save_item"> اضافه الفاتوره
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row p-3 " style="border: 1px solid blue">
-                        <h4 class="form-control text-center">الاصناف المضافه للفاتوره</h4>
-                        <table class="table table-bordered table-hover text-center">
-                            <thead class="custom_head">
-                                <tr>
-                                    <th>الصنف</th>
-                                    <th>وحده الصنف</th>
-                                    <th>نوع البيع</th>
-                                    <th>الكميه</th>
-                                    <th>نوع المنتج</th>
-                                    <th>سعر الوحده </th>
-                                    <th>الاجمالى </th>
-                                    <th> </th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="items_table">
-
-                            </tbody>
-                        </table>
-                        <br>
-                        <div class="mt-3">
-                            {{ $data->links() }}
-                        </div>
-                    </div>
-
-                    <div class="row p-3" style="border: 1px solid blue">
-
-                        <div class="form-group col-md-4">
-                            <label>الاجمالى بالفاتوره قبل الخصم والضريبه</label>
-                            <input class="form-control" readonly id="total" value="{{ 0 / 100 }}">
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>ادخل نسبه الضريبه على الفاتوره</label>
-                            <input type="number" name="tax_percent" value="" id="tax_percent"
-                                class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label> قيمه الضريبه </label>
-                            <input type="number" readonly name="tax_value" value="" id="tax_value"
-                                class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>ادخل نسبه الخصم على الفاتوره</label>
-                            <input type="number" name="discount_percent" value="" id="discount_percent"
-                                class="form-control">
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>قيمه الخصم </label>
-                            <input type="number" readonly name="discount_value" value="" id="discount_value"
-                                class="form-control">
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>الاجمالى النهائى</label>
-                            <input type="number" readonly name="total_value" value="" id="total_value"
-                                class="form-control">
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>نوع الفاتوره</label>
-                            <select class="form-control" id="bill_type">
-
-                                <option value="" selected disabled>
-                                    اختر نوع الفاتوره
-                                </option>
-
-                                <option value="0">
-                                    كاش
-                                </option>
-
-                                <option value="1">
-                                    اجل
-                                </option>
-                            </select>
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>الخزنة الحالية</label>
-                            <select class="form-control" id="treasuries_id" disabled>
-                                <option value="{{ $shift->treasuries_id }}" selected>
-                                    {{ $shift->treasuries_name }}
-                                </option>
-                            </select>
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>الرصيد المتاح بالخزنه</label>
-                            <input class="form-control" readonly id="treasuries_balance"
-                                value="{{ $shift->treasuries_balance }}">
-                        </div>
-
-
-                        <div class="form-group col-md-4">
-                            <label>المبلغ المدفوع </label>
-                            <input class="form-control" value="" id="what_paid" name="what_paid">
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>المبلغ المتبقى </label>
-                            <input readonly class="form-control" value="" id="what_remain" name="what_remain">
-
-
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label>الملاحظات </label><br>
-                            <textarea class="m-1" style="width: 320px"></textarea>
-                        </div>
-
-                    </div> --}}
-
-
-
                 </div>
 
                 <div class="modal-footer justify-content-between">
@@ -691,6 +421,12 @@
             </div>
 
         </div>
+
+    </div>
+
+    <div class="modal fade" id="modal_billitems">
+
+    </div>
 
     </div>
 

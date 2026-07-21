@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Delegate;
 use App\Models\ItemCard;
 use App\Models\SalesBills;
+use App\Models\SalesBillsDetails;
 use App\Models\SalesMaterialType;
 use App\Models\Store;
 use App\Models\Treasuries;
@@ -247,14 +248,79 @@ class SalesBillsController extends Controller
             $data['invoice_date'] = $date;
             $data['sales_material_type_id'] = $sales_material_type_id;
 
-            $flage = SalesBills::create($data);
+            $data = SalesBills::create($data);
 
-            if ($flage) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'تمت الاضافه بنجاح',
-                ]);
+            if ($data) {
+
+                $customers = Customer::select('customer_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
+                $delegates = Delegate::select('delegate_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
+                $items = ItemCard::select('item_code', 'name', 'item_type')->where(['com_code' => $com_code])->get();
+                $stores = Store::select('id', 'name')->where(['com_code' => $com_code])->get();
+                $sales_material_types = SalesMaterialType::select('id', 'name')->where(['com_code' => $com_code, 'active' => 1])->get();
+                $bill_details = SalesBillsDetails::where(['com_code' => $com_code, 'bill_auto_serial' => $data['auto_serial']])->get();
+
+                $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+                if ($shift != null) {
+                    $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+                    $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+                }
+
+                return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details'));
             }
+        }
+    }
+
+    public function get_active_bill_data(Request $request)
+    {
+        $auto_serial = $request->auto_serial;
+        $com_code = auth()->user()->com_code;
+
+        $data = SalesBills::where(['com_code' => $com_code, 'auto_serial' => $auto_serial])->first();
+
+        $customers = Customer::select('customer_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
+        $delegates = Delegate::select('delegate_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
+        $items = ItemCard::select('item_code', 'name', 'item_type')->where(['com_code' => $com_code])->get();
+        $stores = Store::select('id', 'name')->where(['com_code' => $com_code])->get();
+        $sales_material_types = SalesMaterialType::select('id', 'name')->where(['com_code' => $com_code, 'active' => 1])->get();
+        $bill_details = SalesBillsDetails::where(['com_code' => $com_code, 'bill_auto_serial' => $auto_serial])->get();
+
+        $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($shift != null) {
+            $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+            $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+        }
+
+        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details'));
+    }
+
+    public function active_add_items(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+
+            $data['customer_code'] = $request->customer_code;
+            $data['delegate_code'] = $request->delegate_code;
+            $data['invoice_date'] = $request->invoice_date;
+            $data['sales_material_type'] = $request->sales_material_type;
+            $data['normal_sale'] = $request->normal_sale;
+            $data['store_id'] = $request->store_id;
+            $data['item_code'] = $request->item_code;
+            $data['parent_unit'] = $request->parent_unit;
+            $data['unit_id'] = $request->unit_id;
+            $data['batche_id'] = $request->quantity_with_date;
+            $data['sale_type'] = $request->sale_type;
+            $data['quantity'] = $request->quantity;
+            $data['price'] = $request->price;
+            $data['total_price'] = $request->total_price;
+
+
+            $data['unit_name'] = $request->unit_name;
+            $data['item_name'] = $request->item_name;
+            $data['normal_sale_name'] = $request->normal_sale_name;
+            $data['sale_type_name'] = $request->sale_type_name;
+
+
+            return view('admin.sales_bills.get_add_items', compact('data'));
         }
     }
 }
