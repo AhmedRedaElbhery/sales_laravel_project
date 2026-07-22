@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('com_code');
             $table->string('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->engine = 'InnoDB';
         });

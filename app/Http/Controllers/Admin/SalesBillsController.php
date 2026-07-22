@@ -374,14 +374,33 @@ class SalesBillsController extends Controller
     public function delete_item(Request $request)
     {
         if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
 
-            $item_data = SalesBillsDetails::select('quantity', 'batch_id')->where(['id' => $request->record_id])->first();
+
+
+            $item_data = SalesBillsDetails::select('item_code','quantity', 'batch_id')->where(['id' => $request->record_id])->first();
             $batche_data = Batche::where(['id' => $item_data->batch_id])->first();
+            $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
 
             $batche_data->update([
                 'quantity' => $batche_data->quantity + $item_data->quantity,
                 'total_cost' => ($batche_data->quantity + $item_data->quantity) * $batche_data->unit_price,
             ]);
+
+            //movement in item table
+            $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
+            $customer_name = Customer::where(['com_code' => $com_code, 'customer_code' => $request->customer_code])->value('name');
+            $item_movement['date'] = date('Y-m-d');
+            $item_movement['com_code'] = auth()->user()->com_code;
+            $item_movement['movement_type'] = 5;
+            $item_movement['added_by'] = auth()->user()->id;
+            $item_movement['quantity_after_movement'] = $quantity_after_movement;
+            $item_movement['quantity_before_movement'] = $quantity_before_movement;
+            $item_movement['item_code'] =  $item_data->item_code;
+            $item_movement['table_code'] = $batche_data->auto_serial;
+            $item_movement['table_details_code'] =  $item_data->batch_id;
+            $item_movement['byan'] = "مرتجع من " . "" . $customer_name;
+            ItemMovement::create($item_movement);
 
             SalesBillsDetails::destroy($request->record_id);
 
@@ -393,6 +412,7 @@ class SalesBillsController extends Controller
 
     public function active_delete_all_items(Request $request)
     {
+
         if ($request->ajax()) {
 
             $items = SalesBillsDetails::select('id', 'quantity', 'batch_id')->where(['bill_auto_serial' => $request->auto_serial])->get();
@@ -405,6 +425,8 @@ class SalesBillsController extends Controller
                     'quantity' => $batche_data->quantity + $item->quantity,
                     'total_cost' => ($batche_data->quantity + $item->quantity) * $batche_data->unit_price,
                 ]);
+
+                //item movement
 
                 SalesBillsDetails::destroy($item->id);
             }
