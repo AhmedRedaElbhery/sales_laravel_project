@@ -43,7 +43,7 @@
                                     <tr>
                                         <th>كود الفاتوره</th>
                                         <th>اسم العميل</th>
-                                        <th>نوع البيع</th>
+                                        <th>نوع الفاتوره</th>
                                         <th>تاريخ الفاتوره</th>
                                         <th>حاله الاعتماد </th>
                                         <th> </th>
@@ -56,8 +56,13 @@
                                             <td>{{ $item->auto_serial }}</td>
 
                                             <td>{{ $item->customer_name }}</td>
-                                            <td>
 
+                                            <td>
+                                                @if ($item->pill_type == 1)
+                                                    <span class="text-success p-2">كاش</span>
+                                                @elseif($item->pill_type === '0')
+                                                    <span class="adge bg-danger p-2">اجل</span>
+                                                @endif
                                             </td>
 
                                             <td>
@@ -74,14 +79,28 @@
                                             </td>
 
                                             <td>
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                                <input type="hidden" id="get_active_bill_data_url" value="{{ route('sales_item.get_active_bill_data') }}" />
-                                                <button data-autoserial="{{ $item->auto_serial }}"
-                                                   class="btn btn-info edit_bill">تعديل</button>
+                                                    <input type="hidden" id="get_active_bill_data_url"
+                                                        value="{{ route('sales_item.get_active_bill_data') }}">
 
-                                                <button data-autoserial="{{ $item->auto_serial }}"
-                                                     class="btn btn-danger delete_bill">حذف</button>
+                                                    <button type="button" class="btn btn-info m-1 edit_bill"
+                                                        style="width: 90px;" data-autoserial="{{ $item->auto_serial }}">
+                                                        تعديل
+                                                    </button>
 
+                                                    <form action="{{ route('sales_bills.destroy', $item->auto_serial) }}"
+                                                        method="POST" class="deleteBillForm m-0">
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="btn btn-danger m-1"
+                                                            style="width: 90px;">
+                                                            حذف
+                                                        </button>
+                                                    </form>
+
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -8,10 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class SalesBillsDetails extends Model
 {
     use HasFactory;
-    protected $table="sales_bills_details";
+    protected $table = "sales_bills_details";
     protected $fillable = [
-        'supplier_auto_serial',
-        'order_type',
         'com_code',
         'quantity',
         'isparentunit',
@@ -28,5 +26,6 @@ class SalesBillsDetails extends Model
         'batch_id',
         'sale_type',
         'normal_sale',
+        'bill_auto_serial',
     ];
 }

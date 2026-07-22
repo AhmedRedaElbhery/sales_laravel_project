@@ -9,6 +9,7 @@ use App\Models\Batche;
 use App\Models\Customer;
 use App\Models\Delegate;
 use App\Models\ItemCard;
+use App\Models\ItemMovement;
 use App\Models\SalesBills;
 use App\Models\SalesBillsDetails;
 use App\Models\SalesMaterialType;
@@ -143,6 +144,7 @@ class SalesBillsController extends Controller
     {
         if ($request->ajax()) {
 
+
             $com_code = auth()->user()->com_code;
             $item_code = $request->item_code;
             $item_type = $request->item_type;
@@ -151,13 +153,11 @@ class SalesBillsController extends Controller
 
 
             if ($item_type == 2) {
-                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id])->orderby('production_date', 'ASC')->get();
-                return view('admin.sales_bills.getBatches', compact('batches_data'));
+                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
             } else {
-                $total_quantity = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id])->sum('quantity');
-                $batche_id = Batche::select('id')->where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id])->get();
-                return view('admin.sales_bills.getBatches', compact('total_quantity', 'batche_id'));
+                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
             }
+            return view('admin.sales_bills.getBatches', compact('batches_data'));
         }
     }
 
@@ -298,29 +298,120 @@ class SalesBillsController extends Controller
         if ($request->ajax()) {
             $com_code = auth()->user()->com_code;
 
-            $data['customer_code'] = $request->customer_code;
-            $data['delegate_code'] = $request->delegate_code;
-            $data['invoice_date'] = $request->invoice_date;
-            $data['sales_material_type'] = $request->sales_material_type;
-            $data['normal_sale'] = $request->normal_sale;
-            $data['store_id'] = $request->store_id;
-            $data['item_code'] = $request->item_code;
-            $data['parent_unit'] = $request->parent_unit;
-            $data['unit_id'] = $request->unit_id;
-            $data['batche_id'] = $request->quantity_with_date;
-            $data['sale_type'] = $request->sale_type;
-            $data['quantity'] = $request->quantity;
-            $data['price'] = $request->price;
-            $data['total_price'] = $request->total_price;
+            $batche_data = Batche::where(['id' => $request->quantity_with_date])->first();
+            $sale_bill_data = SalesBills::where(['auto_serial' => $request->auto_serial])->first();
+            $item_type = ItemCard::where(['item_code' => $request->item_code])->value('item_type');
+
+            if ($sale_bill_data) {
+
+                if ($batche_data) {
+
+                    if ($batche_data->quantity >= $request->quantity) {
+
+                        $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
 
 
-            $data['unit_name'] = $request->unit_name;
-            $data['item_name'] = $request->item_name;
-            $data['normal_sale_name'] = $request->normal_sale_name;
-            $data['sale_type_name'] = $request->sale_type_name;
+                        $data['customer_code'] = $request->customer_code;
+                        $data['delegate_code'] = $request->delegate_code;
+                        $data['invoice_date'] = $request->invoice_date;
+                        $data['sales_material_type'] = $request->sales_material_type;
+                        $data['normal_sale'] = $request->normal_sale;
+                        $data['store_id'] = $request->store_id;
+                        $data['item_code'] = $request->item_code;
+                        $data['isparentunit'] = $request->parent_unit;
+                        $data['unit_id'] = $request->unit_id;
+                        $data['batch_id'] = $request->quantity_with_date;
+                        $data['sale_type'] = $request->sale_type;
+                        $data['quantity'] = $request->quantity;
+                        $data['unit_price'] = $request->price * 100;
+                        $data['total_price'] = $request->total_price * 100;
+                        $data['bill_auto_serial'] = $request->auto_serial;
+                        $data['added_by'] = auth()->user()->id;
+                        $data['com_code'] = $com_code;
+                        $data['item_card_type'] = $item_type;
 
 
-            return view('admin.sales_bills.get_add_items', compact('data'));
+                        $data = SalesBillsDetails::create($data);
+
+                        $batche_data->update([
+                            'quantity' => $batche_data->quantity - $request->quantity,
+                            'total_cost' => ($batche_data->quantity - $request->quantity) * $batche_data->unit_price,
+                        ]);
+
+
+                        //movement in item table
+                        $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
+                        $customer_name = Customer::where(['com_code' => $com_code, 'customer_code' => $request->customer_code])->value('name');
+                        $item_movement['date'] = date('Y-m-d');
+                        $item_movement['com_code'] = auth()->user()->com_code;
+                        $item_movement['movement_type'] = 4;
+                        $item_movement['added_by'] = auth()->user()->id;
+                        $item_movement['quantity_after_movement'] = $quantity_after_movement;
+                        $item_movement['quantity_before_movement'] = $quantity_before_movement;
+                        $item_movement['item_code'] = $request->item_code;
+                        $item_movement['table_code'] = $request->auto_serial;
+                        $item_movement['table_details_code'] = $data->id;
+                        $item_movement['byan'] = "مبيعات ل " . "" . $customer_name;
+                        ItemMovement::create($item_movement);
+
+
+                        $data['unit_name'] = $request->unit_name;
+                        $data['item_name'] = $request->item_name;
+                        $data['normal_sale_name'] = $request->normal_sale_name;
+                        $data['sale_type_name'] = $request->sale_type_name;
+
+                        return view('admin.sales_bills.get_add_items', compact('data'));
+                    } else {
+                        return response()->json([
+                            'message' => 'الكمية المطلوبة أكبر من الكمية المتاحة.'
+                        ], 422);
+                    }
+                }
+            }
+        }
+    }
+
+    public function delete_item(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $item_data = SalesBillsDetails::select('quantity', 'batch_id')->where(['id' => $request->record_id])->first();
+            $batche_data = Batche::where(['id' => $item_data->batch_id])->first();
+
+            $batche_data->update([
+                'quantity' => $batche_data->quantity + $item_data->quantity,
+                'total_cost' => ($batche_data->quantity + $item_data->quantity) * $batche_data->unit_price,
+            ]);
+
+            SalesBillsDetails::destroy($request->record_id);
+
+            return response()->json([
+                'message' => 'تم الحذف بنجاح',
+            ]);
+        }
+    }
+
+    public function active_delete_all_items(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $items = SalesBillsDetails::select('id', 'quantity', 'batch_id')->where(['bill_auto_serial' => $request->auto_serial])->get();
+
+            foreach ($items as $item) {
+
+                $batche_data = Batche::where(['id' => $item->batch_id])->first();
+
+                $batche_data->update([
+                    'quantity' => $batche_data->quantity + $item->quantity,
+                    'total_cost' => ($batche_data->quantity + $item->quantity) * $batche_data->unit_price,
+                ]);
+
+                SalesBillsDetails::destroy($item->id);
+            }
+
+            return response()->json([
+                'message' => 'تم الحذف بنجاح',
+            ]);
         }
     }
 }

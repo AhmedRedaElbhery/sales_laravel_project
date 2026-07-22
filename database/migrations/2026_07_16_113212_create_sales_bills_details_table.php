@@ -15,14 +15,12 @@ return new class extends Migration
     {
         Schema::create('sales_bills_details', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('supplier_auto_serial');
-            $table->tinyInteger('order_type');
             $table->integer('com_code');
             $table->decimal('quantity', 10, 2);
             $table->boolean('isparentunit');
             $table->integer('unit_id');
-            $table->integer('unit_price');
-            $table->integer('total_price');
+            $table->integer('unit_price')->nullable();
+            $table->integer('total_price')->nullable();
             $table->date('invoice_date');
             $table->date('end_date')->nullable();
             $table->date('production_date')->nullable();

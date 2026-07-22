@@ -3,7 +3,7 @@
 
         <div class="modal-header">
             <h4 class="modal-title">اضافه اصناف لفاتوره مبيعات</h4>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close text-white" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -12,7 +12,10 @@
         <input type="hidden" id="autoserial" value="{{ $data['auto_serial'] }}">
 
         <input type="hidden" id="save_active_billitems_url" value="{{ route('sales_item.save_active_billitems') }}">
+
         <input type="hidden" id="active_add_items_url" value="{{ route('sales_item.active_add_items') }}">
+
+        <input type="hidden" id="active_delete_all_items" value="{{ route('sales_item.active_delete_all_items') }}">
 
 
 
@@ -322,7 +325,7 @@
 
             <div class="col-12">
                 <div class="form-group text-center">
-                    <button type="button" class="btn btn-success p-2 mt-3" style="width: 100px">
+                    <button type="button" id="approve_sale_bill" class="btn btn-success p-2 mt-3" style="width: 100px">
                         اعتماد
                     </button>
                 </div>
@@ -331,13 +334,11 @@
         </div>
 
         <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+            <button type="button" class="close btn btn-outline-light">
                 اغلاق
             </button>
         </div>
 
     </div>
-
-
 
 </div>
