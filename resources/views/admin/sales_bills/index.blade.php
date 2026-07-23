@@ -38,17 +38,18 @@
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
 
-                            <table class="table table-bordered table-hover text-center">
-                                <thead class="custom_head">
-                                    <tr>
-                                        <th>كود الفاتوره</th>
-                                        <th>اسم العميل</th>
-                                        <th>نوع الفاتوره</th>
-                                        <th>تاريخ الفاتوره</th>
-                                        <th>حاله الاعتماد </th>
-                                        <th> </th>
-                                    </tr>
-                                </thead>
+                            <div id="ajax_responce_searchDiv" class="table-responsive">
+                                <table class="table table-bordered table-hover text-center">
+                                    <thead class="custom_head">
+                                        <tr>
+                                            <th>كود الفاتوره</th>
+                                            <th>اسم العميل</th>
+                                            <th>نوع الفاتوره</th>
+                                            <th>تاريخ الفاتوره</th>
+                                            <th>حاله الاعتماد</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
 
                                 <tbody>
                                     @foreach ($data as $item)

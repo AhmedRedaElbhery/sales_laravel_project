@@ -538,6 +538,24 @@ class SupplierOrdersController extends Controller
                             'cost_price' => $unit_price,
                         ]);
                     }
+                    else{
+
+                         // update the quantity
+
+                         $current_quantity = $item_card->quantity;
+
+                         if ($item->isparentunit == 1) {
+                             $quantity = $item->delivered_quantity;
+                         } else {
+                             $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
+                         }
+
+                         $item_card->update([
+                             'quantity' => $current_quantity + $quantity,
+                             'all_retail_quantity' => ($current_quantity + $quantity) * $item_card->retail_unit_to_parent,
+                         ]);
+
+                    }
                 }
             }
 

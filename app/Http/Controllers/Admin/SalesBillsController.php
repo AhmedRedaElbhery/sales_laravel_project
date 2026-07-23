@@ -265,7 +265,9 @@ class SalesBillsController extends Controller
                     $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
                 }
 
-                return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details'));
+                $total_bill_cost = 0;
+
+                return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost'));
             }
         }
     }
@@ -283,6 +285,30 @@ class SalesBillsController extends Controller
         $stores = Store::select('id', 'name')->where(['com_code' => $com_code])->get();
         $sales_material_types = SalesMaterialType::select('id', 'name')->where(['com_code' => $com_code, 'active' => 1])->get();
         $bill_details = SalesBillsDetails::where(['com_code' => $com_code, 'bill_auto_serial' => $auto_serial])->get();
+        if ($bill_details != null) {
+
+            $total_bill_cost = 0;
+            foreach ($bill_details as $item) {
+                $item['item_name'] = ItemCard::select()->where(['item_code' => $item->item_code, 'com_code' => $com_code])->value('name');
+                $item['unit_name'] = Unit::where(['id' => $item->unit_id, 'com_code' => $com_code])->value('name');
+                if ($item->normal_sale === "0") {
+                    $item['normal_sale_name'] = 'بيع عادى';
+                } else if ($item->normal_sale == 1) {
+                    $item['normal_sale_name'] = 'بونص';
+                } else {
+                    $item['normal_sale_name'] = 'دعايه';
+                }
+                if ($item->normal_sale === "0") {
+                    $item['sale_type_name'] = 'جمله';
+                } else if ($item->normal_sale == 1) {
+                    $item['sale_type_name'] = 'نص جمله';
+                } else {
+                    $item['sale_type_name'] = 'قطاعى';
+                }
+
+                $total_bill_cost = $item->total_price + $total_bill_cost;
+            }
+        }
 
         $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
         if ($shift != null) {
@@ -290,7 +316,9 @@ class SalesBillsController extends Controller
             $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
         }
 
-        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details'));
+
+
+        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost'));
     }
 
     public function active_add_items(Request $request)
@@ -311,27 +339,27 @@ class SalesBillsController extends Controller
                         $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
 
 
-                        $data['customer_code'] = $request->customer_code;
-                        $data['delegate_code'] = $request->delegate_code;
-                        $data['invoice_date'] = $request->invoice_date;
-                        $data['sales_material_type'] = $request->sales_material_type;
-                        $data['normal_sale'] = $request->normal_sale;
-                        $data['store_id'] = $request->store_id;
-                        $data['item_code'] = $request->item_code;
-                        $data['isparentunit'] = $request->parent_unit;
-                        $data['unit_id'] = $request->unit_id;
-                        $data['batch_id'] = $request->quantity_with_date;
-                        $data['sale_type'] = $request->sale_type;
-                        $data['quantity'] = $request->quantity;
-                        $data['unit_price'] = $request->price * 100;
-                        $data['total_price'] = $request->total_price * 100;
-                        $data['bill_auto_serial'] = $request->auto_serial;
-                        $data['added_by'] = auth()->user()->id;
-                        $data['com_code'] = $com_code;
-                        $data['item_card_type'] = $item_type;
+                        $bill_details['customer_code'] = $request->customer_code;
+                        $bill_details['delegate_code'] = $request->delegate_code;
+                        $bill_details['invoice_date'] = $request->invoice_date;
+                        $bill_details['sales_material_type'] = $request->sales_material_type;
+                        $bill_details['normal_sale'] = $request->normal_sale;
+                        $bill_details['store_id'] = $request->store_id;
+                        $bill_details['item_code'] = $request->item_code;
+                        $bill_details['isparentunit'] = $request->parent_unit;
+                        $bill_details['unit_id'] = $request->unit_id;
+                        $bill_details['batch_id'] = $request->quantity_with_date;
+                        $bill_details['sale_type'] = $request->sale_type;
+                        $bill_details['quantity'] = $request->quantity;
+                        $bill_details['unit_price'] = $request->price * 100;
+                        $bill_details['total_price'] = $request->total_price * 100;
+                        $bill_details['bill_auto_serial'] = $request->auto_serial;
+                        $bill_details['added_by'] = auth()->user()->id;
+                        $bill_details['com_code'] = $com_code;
+                        $bill_details['item_card_type'] = $item_type;
 
 
-                        $data = SalesBillsDetails::create($data);
+                        $bill_details = SalesBillsDetails::create($bill_details);
 
                         $batche_data->update([
                             'quantity' => $batche_data->quantity - $request->quantity,
@@ -350,17 +378,54 @@ class SalesBillsController extends Controller
                         $item_movement['quantity_before_movement'] = $quantity_before_movement;
                         $item_movement['item_code'] = $request->item_code;
                         $item_movement['table_code'] = $request->auto_serial;
-                        $item_movement['table_details_code'] = $data->id;
+                        $item_movement['table_details_code'] = $bill_details->id;
                         $item_movement['byan'] = "مبيعات ل " . "" . $customer_name;
                         ItemMovement::create($item_movement);
 
+                        if ($request->parent_unit == 1) {
+                            $item_card_data = ItemCard::select('id', 'quantity', 'retail_unit_to_parent')->where(['item_code' => $request->item_code, 'com_code' => $com_code])->first();
+                            $new_quantity = $item_card_data->quantity - $request->quantity;
 
-                        $data['unit_name'] = $request->unit_name;
-                        $data['item_name'] = $request->item_name;
-                        $data['normal_sale_name'] = $request->normal_sale_name;
-                        $data['sale_type_name'] = $request->sale_type_name;
+                            $item_card_data->update([
+                                'quantity' => $new_quantity,
+                                'all_retail_quantity' => $new_quantity * $item_card_data->retail_unit_to_parent,
+                            ]);
+                        } else {
+                            $item_card_data = ItemCard::select('id', 'retail_unit_to_parent', 'all_retail_quantity')->where(['item_code' => $request->item_code, 'com_code' => $com_code])->first();
 
-                        return view('admin.sales_bills.get_add_items', compact('data'));
+                            $new_quantity = $item_card_data->all_retail_quantity - $request->quantity;
+
+                            $item_card_data->update([
+                                'all_retail_quantity' => $new_quantity,
+                                'quantity' => $new_quantity / $item_card_data->retail_unit_to_parent,
+                            ]);
+                        }
+
+
+                        $bill_details = SalesBillsDetails::where(['com_code' => $com_code, 'bill_auto_serial' => $request->auto_serial])->get();
+                        if ($bill_details != null) {
+
+                            foreach ($bill_details as $item) {
+                                $item['item_name'] = ItemCard::select()->where(['item_code' => $item->item_code, 'com_code' => $com_code])->value('name');
+                                $item['unit_name'] = Unit::where(['id' => $item->unit_id, 'com_code' => $com_code])->value('name');
+                                if ($item->normal_sale === "0") {
+                                    $item['normal_sale_name'] = 'بيع عادى';
+                                } else if ($item->normal_sale == 1) {
+                                    $item['normal_sale_name'] = 'بونص';
+                                } else {
+                                    $item['normal_sale_name'] = 'دعايه';
+                                }
+                                if ($item->normal_sale === "0") {
+                                    $item['sale_type_name'] = 'جمله';
+                                } else if ($item->normal_sale == 1) {
+                                    $item['sale_type_name'] = 'نص جمله';
+                                } else {
+                                    $item['sale_type_name'] = 'قطاعى';
+                                }
+                            }
+                        }
+
+                        return view('admin.sales_bills.get_add_items', compact('bill_details'));
                     } else {
                         return response()->json([
                             'message' => 'الكمية المطلوبة أكبر من الكمية المتاحة.'
@@ -378,7 +443,7 @@ class SalesBillsController extends Controller
 
 
 
-            $item_data = SalesBillsDetails::select('item_code','quantity', 'batch_id')->where(['id' => $request->record_id])->first();
+            $item_data = SalesBillsDetails::select('item_code', 'quantity', 'batch_id')->where(['id' => $request->record_id])->first();
             $batche_data = Batche::where(['id' => $item_data->batch_id])->first();
             $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
 
@@ -401,6 +466,26 @@ class SalesBillsController extends Controller
             $item_movement['table_details_code'] =  $item_data->batch_id;
             $item_movement['byan'] = "مرتجع من " . "" . $customer_name;
             ItemMovement::create($item_movement);
+
+            if ($request->parent_unit == 1) {
+                $item_card_data = ItemCard::select('id', 'quantity', 'retail_unit_to_parent')->where(['item_code' => $item_data->item_code, 'com_code' => $com_code])->first();
+                $new_quantity = $item_card_data->quantity + $item_data->quantity;
+
+                $item_card_data->update([
+                    'quantity' => $new_quantity,
+                    'all_retail_quantity' => $new_quantity * $item_card_data->retail_unit_to_parent,
+                ]);
+            } else {
+                $item_card_data = ItemCard::select('id', 'retail_unit_to_parent', 'all_retail_quantity')->where(['item_code' => $item_data->item_code, 'com_code' => $com_code])->first();
+
+                $new_quantity = $item_card_data->all_retail_quantity + $item_data->quantity;
+
+                $item_card_data->update([
+                    'all_retail_quantity' => $new_quantity,
+                    'quantity' => $new_quantity / $item_card_data->retail_unit_to_parent,
+                ]);
+            }
+
 
             SalesBillsDetails::destroy($request->record_id);
 
@@ -435,5 +520,27 @@ class SalesBillsController extends Controller
                 'message' => 'تم الحذف بنجاح',
             ]);
         }
+    }
+
+    public function approve_active_bill(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+
+        $data['discount_percent'] = $request->discount_percent;
+        $data['discount_value'] = $request->discount_value;
+        $data['tax_percent'] = $request->tax_percent;
+        $data['tax_value'] = $request->tax_value;
+        $data['total_value'] = $request->total_value;
+        $data['bill_type'] = $request->bill_type;
+        $data['what_paid'] = $request->what_paid;
+        $data['what_remain'] = $request->what_remain;
+        $data['notes'] = $request->notes;
+
+
+        $data['invoice_date'] = $request->date;
+        $data['customer_code'] = $request->customer_code;
+        $data['sales_material_type_id'] = $request->sales_material_type_id;
+        $data['delegate_code'] = $request->delegate_code;
+
     }
 }

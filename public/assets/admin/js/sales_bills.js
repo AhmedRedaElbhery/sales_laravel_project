@@ -445,11 +445,7 @@ $(document).ready(function () {
 
                     // Show the modal that came from the returned HTML
 
-                    $("#modal_billitems").modal({
-                        backdrop: "static",
-                        keyboard: false,
-                        show: true,
-                    });
+                    $("#modal_billitems").modal('show');
                 });
 
                 $("#modal_activebill").modal("hide");
@@ -482,14 +478,13 @@ $(document).ready(function () {
             success: function (response) {
                 $("#modal_billitems").html(response);
 
-                $("#modal_billitems").modal({
-                    backdrop: "static",
-                    keyboard: false,
-                    show: true,
-                });
+                $("#modal_billitems").modal("show");
             },
             error: function (xhr) {
-                alert("حدث خطا ما");
+                console.log(xhr);
+    console.log(status);
+    console.log(xhr.responseText);
+
             },
         });
     });
@@ -650,7 +645,7 @@ $(document).ready(function () {
             },
 
             success: function (data) {
-                $("#table_items").append(data);
+                $("#table_items").html(data);
 
                 var item_total_price = 0;
 
@@ -667,11 +662,7 @@ $(document).ready(function () {
             },
 
             error: function (xhr) {
-                if (xhr.status === 422) {
-                    alert(" يوجد خطأ ما فى الكميه");
-                } else {
-                    alert("يوجد خطأ ما");
-                }
+                console.log(xhr.responseText);
             },
         });
     });
@@ -682,6 +673,7 @@ $(document).ready(function () {
         let row = $(this).closest("tr");
 
         var record_id = $("#item_record_id").val();
+        var is_parent_unit = $("#is_parent_unit").val();
         var token_search = $("#token_search").val();
         var ajax_deleteItem = $("#sales_delete_item_url").val();
 
@@ -691,6 +683,7 @@ $(document).ready(function () {
             dataType: "json",
             data: {
                 record_id: record_id,
+                is_parent_unit: is_parent_unit,
                 _token: token_search,
             },
 
@@ -731,6 +724,152 @@ $(document).ready(function () {
             dataType: "json",
             cache: false,
             data: {
+                auto_serial: auto_serial,
+                _token: token_search,
+            },
+
+            success: function (response) {
+                alert(response.message);
+                $("#modal_billitems").modal("hide");
+            },
+
+            error: function (xhr) {
+                alert("يوجد خطأ ما");
+            },
+        });
+    });
+
+    $(document).on("hidden.bs.modal", "#modal_billitems", function () {
+        location.reload();
+    });
+
+    $(document).on("click", "#approve_sale_bill", function (e) {
+
+        var date = $("#update_invoice_date").val();
+        let customer_code = $("#update_customer_code option:selected").val();
+        let delegate_code = $("#update_delegate_code option:selected").val();
+        let sales_material_type_id = $(
+            "#update_sales_material_type option:selected"
+        ).val();
+
+        if (date == null || date == "") {
+            alert("ادخل التاريخ");
+            return;
+        }
+
+        if (sales_material_type_id == null || sales_material_type_id == "") {
+            alert("اختر نوع فئه الفاتوره");
+            return;
+        }
+
+        if (customer_code == null || customer_code == "") {
+            alert("اختر العميل");
+            return;
+        }
+
+        if (delegate_code == null || delegate_code == "") {
+            alert("اختر المندوب");
+            return;
+        }
+
+
+        var tax_percent = $("#tax_percent").val();
+        var tax_value = $("#tax_value").val();
+
+        if (tax_percent == null || tax_percent == "") {
+            alert("يجب ادخال نسبه الضريبه");
+            return;
+        }
+        if (tax_value == null || tax_value == "") {
+            alert("يجب ادخال قيمه الضريبه");
+            return;
+        }
+
+        var discount_percent = $("#discount_percent").val();
+        var discount_value = $("#discount_value").val();
+
+        if (discount_percent == null || discount_percent == "") {
+            alert("يجب ادخال نسبه الخصم");
+            return;
+        }
+        if (discount_value == null || discount_value == "") {
+            alert("يجب ادخال قيمه الخصم");
+            return;
+        }
+
+
+        var total_value = $("#total_value").val();
+        if (total_value == null || total_value == "") {
+            alert("يجب ادخال المبلغ الكلى");
+            return;
+        }
+
+        var bill_type = $("#bill_type option:selected").val();
+        if (bill_type == null || bill_type == "") {
+            alert("اختر طريقه الدفع");
+            return;
+        }
+
+        var what_paid = $("#what_paid").val();
+        if (what_paid == null || what_paid == "") {
+            alert("يجب ادخال المبلغ المدفوع");
+            return;
+        }
+
+        var what_remain = $("#what_remain").val();
+        if (what_remain == null || what_remain == "") {
+            alert("يجب ادخال المبلغ المتبقى");
+            return;
+        }
+
+
+        var notes = $("#notes").val();
+        if (notes == null || notes == "") {
+            alert("ادخل الملاحظات على الفاتوره");
+            return;
+        }
+
+        var total_before_discount = $("#total").val();
+        if (total_before_discount == null || total_before_discount == "") {
+            alert("يوجد خطا بالسعر قبل الخصم");
+            return;
+        }
+
+
+        var auto_serial = $("#autoserial").val();
+
+        var url = $("#approve_active_bill").val();
+        var token_search = $("#token_search").val();
+
+        $.ajax({
+            url: url,
+            type: "post",
+            dataType: "json",
+            cache: false,
+            data: {
+
+                date: date,
+                customer_code: customer_code,
+                delegate_code: delegate_code,
+                sales_material_type_id: sales_material_type_id,
+
+                discount_percent: discount_percent,
+                discount_value: discount_value,
+
+                tax_percent: tax_percent,
+                tax_value: tax_value,
+
+                total_value: total_value,
+
+                bill_type: bill_type,
+
+                what_paid: what_paid,
+                what_remain: what_remain,
+
+                notes: notes,
+
+                total_before_discount: total_before_discount,
+
                 auto_serial: auto_serial,
                 _token: token_search,
             },

@@ -18,15 +18,19 @@
         <input type="hidden" id="active_delete_all_items" value="{{ route('sales_item.active_delete_all_items') }}">
 
 
+        <input type="hidden" id="approve_active_bill" value="{{ route('sales_item.approve_active_bill') }}">
 
 
-        <div class="modal-body bg-white text-dark">
+
+
+        <div class="modal-body bg-white text-dark" id="bill_model">
 
             <div class="row p-3" style="border: 1px solid blue">
 
                 <div class="form-group col-md-3">
                     <label>تاريخ الفاتوره</label>
-                    <input type="date" class="form-control" id="update_invoice_date" value="{{ $data->invoice_date }}">
+                    <input type="date" class="form-control" id="update_invoice_date"
+                        value="{{ $data->invoice_date }}">
 
                     @error('invoice_date')
                         <span class="text-danger">{{ $message }}</span>
@@ -41,9 +45,8 @@
                             اختر نوع فئه الفاتوره
                         </option>
                         @foreach ($sales_material_types as $sales_material_type)
-                            <option value="{{ $sales_material_type->id }}" @if ($data->sales_material_type_id == $sales_material_type->id )
-                                selected
-                            @endif>
+                            <option value="{{ $sales_material_type->id }}"
+                                @if ($data->sales_material_type_id == $sales_material_type->id) selected @endif>
                                 {{ $sales_material_type->name }}
                             </option>
                         @endforeach
@@ -60,9 +63,8 @@
                             اختر حساب العميل
                         </option>
                         @foreach ($customers as $customer)
-                            <option value="{{ $customer->customer_code }}" @if ($data->customer_code == $customer->customer_code )
-                                selected
-                            @endif>
+                            <option value="{{ $customer->customer_code }}"
+                                @if ($data->customer_code == $customer->customer_code) selected @endif>
                                 {{ $customer->name }}
                             </option>
                         @endforeach
@@ -77,9 +79,8 @@
                             اختر حساب المندوب
                         </option>
                         @foreach ($delegates as $delegate)
-                            <option value="{{ $delegate->delegate_code }}" @if ($data->delegate_code == $delegate->delegate_code )
-                                selected
-                            @endif>
+                            <option value="{{ $delegate->delegate_code }}"
+                                @if ($data->delegate_code == $delegate->delegate_code) selected @endif>
                                 {{ $delegate->name }}
                             </option>
                         @endforeach
@@ -199,33 +200,38 @@
 
             </div>
 
-            <div class="row p-3 " style="border: 1px solid blue">
+            <div class="row p-3" style="border: 1px solid blue">
                 <h4 class="form-control text-center">الاصناف المضافه للفاتوره</h4>
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="custom_head">
-                        <tr>
-                            <th>الصنف</th>
-                            <th>وحده الصنف</th>
-                            <th>نوع البيع</th>
-                            <th>الكميه</th>
-                            <th>نوع المنتج</th>
-                            <th>سعر الوحده </th>
-                            <th>الاجمالى </th>
-                            <th> </th>
-                        </tr>
-                    </thead>
 
-                    <tbody id="table_items">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="custom_head">
+                            <tr>
+                                <th>الصنف</th>
+                                <th>وحده الصنف</th>
+                                <th>نوع البيع</th>
+                                <th>الكميه</th>
+                                <th>نوع المنتج</th>
+                                <th>سعر الوحده</th>
+                                <th>الاجمالى</th>
+                                <th></th>
+                            </tr>
+                        </thead>
 
-                    </tbody>
-                </table>
+                        <tbody id="table_items">
+                            @include('admin.sales_bills.get_add_items', [
+                                'bill_details' => $bill_details
+                            ])
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="row p-3" style="border: 1px solid blue">
 
                 <div class="form-group col-md-4">
                     <label>الاجمالى بالفاتوره قبل الخصم والضريبه</label>
-                    <input class="form-control" readonly id="total" value="{{ 0 / 100 }}">
+                    <input class="form-control" readonly id="total" value="{{ $total_bill_cost / 100 }}">
 
 
                 </div>
@@ -298,7 +304,7 @@
                 <div class="form-group col-md-4">
                     <label>الرصيد المتاح بالخزنه</label>
                     <input class="form-control" readonly id="treasuries_balance"
-                        value="{{ $shift->treasuries_balance }}">
+                        value="{{ $shift->treasuries_balance /100 }}">
                 </div>
 
 
@@ -317,15 +323,16 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label>الملاحظات </label><br>
-                    <textarea class="m-1" style="width: 320px"></textarea>
+                    <label>الملاحظات</label>
+                    <textarea id="notes" class="form-control"></textarea>
                 </div>
 
             </div>
 
             <div class="col-12">
                 <div class="form-group text-center">
-                    <button type="button" id="approve_sale_bill" class="btn btn-success p-2 mt-3" style="width: 100px">
+                    <button type="button" id="approve_sale_bill" class="btn btn-success p-2 mt-3"
+                        style="width: 100px">
                         اعتماد
                     </button>
                 </div>
@@ -334,9 +341,7 @@
         </div>
 
         <div class="modal-footer justify-content-between">
-            <button type="button" class="close btn btn-outline-light">
-                اغلاق
-            </button>
+
         </div>
 
     </div>

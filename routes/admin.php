@@ -144,6 +144,7 @@ Route::get('sales_item/get_active_bill_data', [SalesBillsController::class, 'get
 Route::post('sales_item/active_add_items', [SalesBillsController::class, 'active_add_items'])->name('sales_item.active_add_items');
 Route::delete('sales_item/delete_item', [SalesBillsController::class, 'delete_item'])->name('sales_item.delete_item');
 Route::delete('sales_item/active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])->name('sales_item.active_delete_all_items');
+Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])->name('sales_item.approve_active_bill');
 
 
 });
