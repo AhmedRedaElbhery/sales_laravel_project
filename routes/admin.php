@@ -150,6 +150,18 @@ Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'app
 });
 
 
+Route::get('/lang/{locale}', function ($locale) {
+
+    if (! in_array($locale, ['en', 'ar'])) {
+        abort(404);
+    }
+
+    session(['locale' => $locale]);
+
+    return back();
+})->name('lang.switch');
+
+
 Route::group([
     'namespace' => 'admin',
     'prefix' => 'admin',

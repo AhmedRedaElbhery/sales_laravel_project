@@ -59,9 +59,9 @@
                                             <td>{{ $item->customer_name }}</td>
 
                                             <td>
-                                                @if ($item->pill_type == 1)
-                                                    <span class="text-success p-2">كاش</span>
-                                                @elseif($item->pill_type === '0')
+                                                @if ($item->pill_type === 0)
+                                                    <span class="adge bg-success p-2">كاش</span>
+                                                @elseif($item->pill_type == 1)
                                                     <span class="adge bg-danger p-2">اجل</span>
                                                 @endif
                                             </td>
@@ -85,10 +85,20 @@
                                                     <input type="hidden" id="get_active_bill_data_url"
                                                         value="{{ route('sales_item.get_active_bill_data') }}">
 
+                                                        @if ($item->is_approved == 0)
+                                                        <button type="button" class="btn btn-primary m-1 edit_bill"
+                                                            style="width: 90px;" data-autoserial="{{ $item->auto_serial }}">
+                                                            تعديل
+                                                        </button>
+
+                                                        @endif
+                                                    @if ($item->is_approved == 1)
                                                     <button type="button" class="btn btn-info m-1 edit_bill"
                                                         style="width: 90px;" data-autoserial="{{ $item->auto_serial }}">
-                                                        تعديل
+                                                        تفاصيل
                                                     </button>
+
+                                                    @endif
 
                                                     <form action="{{ route('sales_bills.destroy', $item->auto_serial) }}"
                                                         method="POST" class="deleteBillForm m-0">

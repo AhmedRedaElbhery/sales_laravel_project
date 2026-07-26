@@ -445,7 +445,7 @@ $(document).ready(function () {
 
                     // Show the modal that came from the returned HTML
 
-                    $("#modal_billitems").modal('show');
+                    $("#modal_billitems").modal("show");
                 });
 
                 $("#modal_activebill").modal("hide");
@@ -482,9 +482,8 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 console.log(xhr);
-    console.log(status);
-    console.log(xhr.responseText);
-
+                console.log(status);
+                console.log(xhr.responseText);
             },
         });
     });
@@ -744,7 +743,6 @@ $(document).ready(function () {
     });
 
     $(document).on("click", "#approve_sale_bill", function (e) {
-
         var date = $("#update_invoice_date").val();
         let customer_code = $("#update_customer_code option:selected").val();
         let delegate_code = $("#update_delegate_code option:selected").val();
@@ -772,7 +770,6 @@ $(document).ready(function () {
             return;
         }
 
-
         var tax_percent = $("#tax_percent").val();
         var tax_value = $("#tax_value").val();
 
@@ -796,7 +793,6 @@ $(document).ready(function () {
             alert("يجب ادخال قيمه الخصم");
             return;
         }
-
 
         var total_value = $("#total_value").val();
         if (total_value == null || total_value == "") {
@@ -822,7 +818,6 @@ $(document).ready(function () {
             return;
         }
 
-
         var notes = $("#notes").val();
         if (notes == null || notes == "") {
             alert("ادخل الملاحظات على الفاتوره");
@@ -835,6 +830,10 @@ $(document).ready(function () {
             return;
         }
 
+        if (bill_type == 0 && what_paid < total_value) {
+            alert("يجب دفع المبلغ كامل لان الفاتوره كاش");
+            return;
+        }
 
         var auto_serial = $("#autoserial").val();
 
@@ -847,7 +846,6 @@ $(document).ready(function () {
             dataType: "json",
             cache: false,
             data: {
-
                 date: date,
                 customer_code: customer_code,
                 delegate_code: delegate_code,
@@ -884,5 +882,4 @@ $(document).ready(function () {
             },
         });
     });
-
 });

@@ -177,10 +177,18 @@ class CustomerController extends Controller
 
         if ($flage) {
 
+            if($request->active == 0)
+            {
+                $is_archived = 1;
+            }
+            else{
+                $is_archived = 0;
+            }
+
             Accounts::where(['other_table_fk'=> $data->customer_code ,'account_number'=>$data['account_number'] ,'com_code'=>$data['com_code']])
                 ->update([
                     'name' => $request->name,
-                    'is_archived' => $request->active,
+                    'is_archived' =>  $is_archived,
                     'notes' => $request->notes,
                     'updated_by' => auth()->user()->id,
                 ]);

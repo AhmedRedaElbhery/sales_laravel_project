@@ -101,7 +101,7 @@
 
                                             </td>
 
-                                            <td>{{ $item->current_balance }}</td>
+                                            <td>{{ $item->current_balance / 100 }}</td>
 
                                             <td>
                                                 @if ($item->is_archived == 0)

@@ -6,10 +6,10 @@
                     <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">الرئيسيه</a>
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link">{{ __('navbar.home') }}</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('admin.logout') }}" class="nav-link">تسجيل الخروج</a>
+                    <a href="{{ route('admin.logout') }}" class="nav-link">  {{ __('navbar.logout') }}</a>
                 </li>
             </ul>
 
@@ -26,6 +26,9 @@
                 </div>
             </form>
 
+            <a class="btn m-2" href="{{ route('lang.switch', 'en') }}">English</a>
+
+            <a class="btn m-2" href="{{ route('lang.switch', 'ar') }}">العربية</a>
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Messages Dropdown Menu -->
@@ -55,7 +58,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ asset('assets/admin/dist/img/user8-128x128.jpg')}} " alt="User Avatar"
+                                <img src="{{ asset('assets/admin/dist/img/user8-128x128.jpg') }} " alt="User Avatar"
                                     class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">

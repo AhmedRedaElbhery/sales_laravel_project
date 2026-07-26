@@ -16,7 +16,10 @@
         <td>{{ $data['sale_type_name'] }}</td>
         <td>{{ $data->unit_price / 100 }}</td>
         <td>{{ $data->total_price / 100 }}</td>
-        <td>
-            <button class="btn btn-danger" id="delete">حذف</button>
-        </td>
+        @if ($is_approved == 0)
+            <td>
+                <button class="btn btn-danger" id="delete">حذف</button>
+            </td>
+        @endif
+
     </tr @endforeach

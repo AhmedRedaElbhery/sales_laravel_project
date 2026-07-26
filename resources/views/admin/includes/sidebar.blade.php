@@ -31,9 +31,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin.adminpanelsettings.*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin.adminpanelsettings.*', 'admin.treasuries.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    الضبط العام
+                                    {{ __('sidebar.general_settings') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -45,7 +45,7 @@
                                         class="nav-link {{ request()->routeIs('admin.adminpanelsettings.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            الضبط العام
+                                            {{ __('sidebar.general_settings') }}
                                         </p>
                                     </a>
 
@@ -56,7 +56,7 @@
                                         class="nav-link {{ request()->routeIs('admin.treasuries.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            بيانات الخزن
+                                            {{ __('sidebar.treasuries') }}
                                         </p>
                                     </a>
                                 </li>
@@ -68,9 +68,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    الحسابات
+                                    {{ __('sidebar.accounts') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -82,7 +82,7 @@
                                         class="nav-link  {{ request()->routeIs('admin.accounttypes.index') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            انواع الحسابات الماليه
+                                            {{ __('sidebar.account_types') }}
                                         </p>
                                     </a>
                                 </li>
@@ -92,7 +92,7 @@
                                         class="nav-link  {{ request()->routeIs('accounts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            الحسابات الماليه
+                                            {{ __('sidebar.financial_accounts') }}
                                         </p>
                                     </a>
                                 </li>
@@ -102,7 +102,7 @@
                                         class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            حسابات العملاء
+                                            {{ __('sidebar.customers') }}
                                         </p>
                                     </a>
                                 </li>
@@ -112,7 +112,7 @@
                                         class="nav-link {{ request()->routeIs('suppliers_category.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            فئات الموردين
+                                            {{ __('sidebar.supplier_categories') }}
                                         </p>
                                     </a>
                                 </li>
@@ -122,7 +122,7 @@
                                         class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            حسابات الموردين
+                                            {{ __('sidebar.suppliers') }}
                                         </p>
                                     </a>
                                 </li>
@@ -133,7 +133,7 @@
                                         class="nav-link {{ request()->routeIs('collect_transaction.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            شاشه تحصيل النقديه
+                                            {{ __('sidebar.collect_transaction') }}
                                         </p>
                                     </a>
                                 </li>
@@ -144,7 +144,7 @@
                                         class="nav-link {{ request()->routeIs('exchange_transaction.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            شاشه صرف النقديه
+                                            {{ __('sidebar.exchange_transaction') }}
                                         </p>
                                     </a>
                                 </li>
@@ -157,9 +157,9 @@
                             class="nav-item has-treeview  {{ request()->routeIs('admin.sales_material.*', 'admin.store.*', 'unit.*', 'category.*', 'itemcard.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link {{ request()->routeIs('admin.sales_material.*', 'admin.store.*', 'unit.*', 'category.*', 'itemcard.*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    ضبط الخزن
+                                    {{ __('sidebar.inventory_settings') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -172,7 +172,7 @@
                                         class="nav-link  {{ request()->routeIs('admin.sales_material.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            بيانات فئات الفواتير
+                                            {{ __('sidebar.sales_material_types') }}
                                         </p>
                                     </a>
                                 </li>
@@ -182,7 +182,7 @@
                                         class="nav-link {{ request()->routeIs('admin.store.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            بيانات المخازن
+                                            {{ __('sidebar.stores') }}
                                         </p>
                                     </a>
                                 </li>
@@ -192,7 +192,7 @@
                                         class="nav-link {{ request()->routeIs('unit.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            بيانات الوحدات
+                                            {{ __('sidebar.units') }}
                                         </p>
                                     </a>
                                 </li>
@@ -202,7 +202,7 @@
                                         class="nav-link {{ request()->routeIs('category.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            فئات الاصناف
+                                            {{ __('sidebar.categories') }}
                                         </p>
                                     </a>
                                 </li>
@@ -212,7 +212,7 @@
                                         class="nav-link {{ request()->routeIs('itemcard.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            الاصناف
+                                            {{ __('sidebar.items') }}
                                         </p>
                                     </a>
                                 </li>
@@ -223,9 +223,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin..*', 'supplier_orders.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin..*', 'supplier_orders.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    حركات مخزنيه
+                                    {{ __('sidebar.inventory_transactions') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -237,7 +237,7 @@
                                         class="nav-link {{ request()->routeIs('supplier_orders.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            فواتير الشراء
+                                            {{ __('sidebar.purchase_invoices') }}
                                         </p>
                                     </a>
                                 </li>
@@ -253,9 +253,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*','sales_bills.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*','sales_bills.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    المبيعات
+                                    {{ __('sidebar.sales') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -267,7 +267,7 @@
                                         class="nav-link {{ request()->routeIs('sales_bills.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            فواتير المبيعات
+                                            {{ __('sidebar.sales_invoices') }}
                                         </p>
                                     </a>
                                 </li>
@@ -283,9 +283,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    خدمات داخليه وخارجيه
+                                    {{ __('sidebar.services') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -301,9 +301,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin_shifts.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin_shifts.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    حركه شفت الخزينه
+                                    {{ __('sidebar.treasury_shift') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -315,7 +315,7 @@
                                         class="nav-link {{ request()->routeIs('admin_shifts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            شفتات الخزن
+                                            {{ __('sidebar.treasury_shifts') }}
                                         </p>
                                     </a>
                                 </li>
@@ -331,9 +331,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin_accounts.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin_accounts.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    الصلاحيات
+                                    {{ __('sidebar.permissions') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -346,7 +346,7 @@
                                         class="nav-link {{ request()->routeIs('admin_accounts.*') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
-                                            المستخدمين
+                                            {{ __('sidebar.users') }}
                                         </p>
                                     </a>
                                 </li>
@@ -361,9 +361,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    التقارير
+                                    {{ __('sidebar.reports') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -377,9 +377,9 @@
                             class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
                             <a href="#"
                                 class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
-                                <i class="nav-icon fas fa-cogs"></i>
+
                                 <p>
-                                    المراقبه والدعم الفنى
+                                    {{ __('sidebar.monitoring_support') }}
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>

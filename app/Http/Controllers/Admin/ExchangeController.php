@@ -112,7 +112,7 @@ class ExchangeController extends Controller
                 'current_balance' => $the_final_balance,
             ]);
 
-            $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+            $supplier = Accounts::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
             $supplier->update([
                 'current_balance' => $the_final_balance,
             ]);

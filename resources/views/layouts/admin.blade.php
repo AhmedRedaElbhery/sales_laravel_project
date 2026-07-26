@@ -3,7 +3,7 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8">
@@ -17,8 +17,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('assets/admin/dist/css/adminlte.min.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="{{ asset('assets/admin/fonts/SansPro/SansPro.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }}">
+    @if (app()->getLocale() == 'ar')
+        <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap_rtl-v4.2.1/custom_rtl.css') }}">
+    @else
+        <link rel="stylesheet" href="{{ asset('assets/admin/plugins/bootstrap/css/bootstrap.min.css') }}">
+    @endif
     <link rel="stylesheet" href="{{ asset('assets/admin/css/mycustomstyle.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 

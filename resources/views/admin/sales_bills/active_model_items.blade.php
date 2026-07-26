@@ -91,6 +91,8 @@
             </div>
 
 
+            @if ($is_approved == 0)
+
             <div class="row p-3" style="border: 1px solid blue">
 
                 <div class="form-group col-md-3">
@@ -190,15 +192,19 @@
                 </div>
 
 
-                <div class="col-12">
+                @if ($data->is_approved == 0)
+                    <div class="col-12">
 
-                    <div class="form-group text-center">
-                        <button type="button" class="btn btn-info" id="save_edit_item"> اضافه الفاتوره
-                        </button>
+                        <div class="form-group text-center">
+                            <button type="button" class="btn btn-info" id="save_edit_item"> اضافه الفاتوره
+                            </button>
+                        </div>
                     </div>
-                </div>
+                @endif
 
             </div>
+
+            @endif
 
             <div class="row p-3" style="border: 1px solid blue">
                 <h4 class="form-control text-center">الاصناف المضافه للفاتوره</h4>
@@ -220,7 +226,7 @@
 
                         <tbody id="table_items">
                             @include('admin.sales_bills.get_add_items', [
-                                'bill_details' => $bill_details
+                                'bill_details' => $bill_details,
                             ])
                         </tbody>
                     </table>
@@ -238,36 +244,35 @@
 
                 <div class="form-group col-md-4">
                     <label>ادخل نسبه الضريبه على الفاتوره</label>
-                    <input type="number" name="tax_percent" value="" id="tax_percent" class="form-control">
+                    <input type="number" name="tax_percent" value="{{ $data->tax_percent }}" id="tax_percent"
+                        class="form-control">
                 </div>
 
                 <div class="form-group col-md-4">
                     <label> قيمه الضريبه </label>
-                    <input type="number" readonly name="tax_value" value="" id="tax_value"
+                    <input type="number" readonly name="tax_value" value="{{ $data->tax_value }}" id="tax_value"
                         class="form-control">
                 </div>
 
                 <div class="form-group col-md-4">
                     <label>ادخل نسبه الخصم على الفاتوره</label>
-                    <input type="number" name="discount_percent" value="" id="discount_percent"
-                        class="form-control">
+                    <input type="number" name="discount_percent" value="{{ $data->discount_percent }}"
+                        id="discount_percent" class="form-control">
 
 
                 </div>
 
                 <div class="form-group col-md-4">
                     <label>قيمه الخصم </label>
-                    <input type="number" readonly name="discount_value" value="" id="discount_value"
-                        class="form-control">
+                    <input type="number" readonly name="discount_value" value="{{ $data->discount_value }}"
+                        id="discount_value" class="form-control">
 
                 </div>
 
                 <div class="form-group col-md-4">
                     <label>الاجمالى النهائى</label>
-                    <input type="number" readonly name="total_value" value="" id="total_value"
-                        class="form-control">
-
-
+                    <input type="number" readonly name="total_value" value="{{ $data->total_value }}"
+                        id="total_value" class="form-control">
                 </div>
 
                 <div class="form-group col-md-4">
@@ -278,11 +283,11 @@
                             اختر نوع الفاتوره
                         </option>
 
-                        <option value="0">
+                        <option @if ($data->pill_type == 0) selected @endif value="0">
                             كاش
                         </option>
 
-                        <option value="1">
+                        <option value="1" @if ($data->pill_type == 1) selected @endif>
                             اجل
                         </option>
                     </select>
@@ -304,39 +309,42 @@
                 <div class="form-group col-md-4">
                     <label>الرصيد المتاح بالخزنه</label>
                     <input class="form-control" readonly id="treasuries_balance"
-                        value="{{ $shift->treasuries_balance /100 }}">
+                        value="{{ $shift->treasuries_balance / 100 }}">
                 </div>
 
 
                 <div class="form-group col-md-4">
                     <label>المبلغ المدفوع </label>
-                    <input class="form-control" value="" id="what_paid" name="what_paid">
+                    <input class="form-control" value="{{ $data->what_paid }}" id="what_paid" name="what_paid">
 
 
                 </div>
 
                 <div class="form-group col-md-4">
                     <label>المبلغ المتبقى </label>
-                    <input readonly class="form-control" value="" id="what_remain" name="what_remain">
+                    <input readonly class="form-control" value="{{ $data->what_remain }}" id="what_remain"
+                        name="what_remain">
 
 
                 </div>
 
                 <div class="form-group col-md-4">
                     <label>الملاحظات</label>
-                    <textarea id="notes" class="form-control"></textarea>
+                    <textarea id="notes" class="form-control">{{ $data->notes }}</textarea>
                 </div>
 
             </div>
-
-            <div class="col-12">
-                <div class="form-group text-center">
-                    <button type="button" id="approve_sale_bill" class="btn btn-success p-2 mt-3"
-                        style="width: 100px">
-                        اعتماد
-                    </button>
+            @if ($data->is_approved == 0)
+                <div class="col-12">
+                    <div class="form-group text-center">
+                        <button type="button" id="approve_sale_bill" class="btn btn-success p-2 mt-3"
+                            style="width: 100px">
+                            اعتماد
+                        </button>
+                    </div>
                 </div>
-            </div>
+            @endif
+
 
         </div>
 

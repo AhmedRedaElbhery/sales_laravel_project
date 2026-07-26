@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Accounts;
 use App\Models\Admin;
 use App\Models\AdminShifts;
 use App\Models\Batche;
@@ -278,6 +279,7 @@ class SalesBillsController extends Controller
         $com_code = auth()->user()->com_code;
 
         $data = SalesBills::where(['com_code' => $com_code, 'auto_serial' => $auto_serial])->first();
+        $is_approved = $data->is_approved;
 
         $customers = Customer::select('customer_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
         $delegates = Delegate::select('delegate_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
@@ -317,8 +319,7 @@ class SalesBillsController extends Controller
         }
 
 
-
-        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost'));
+        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost','is_approved'));
     }
 
     public function active_add_items(Request $request)
@@ -328,6 +329,7 @@ class SalesBillsController extends Controller
 
             $batche_data = Batche::where(['id' => $request->quantity_with_date])->first();
             $sale_bill_data = SalesBills::where(['auto_serial' => $request->auto_serial])->first();
+            $is_approved = $sale_bill_data->is_approved;
             $item_type = ItemCard::where(['item_code' => $request->item_code])->value('item_type');
 
             if ($sale_bill_data) {
@@ -425,7 +427,7 @@ class SalesBillsController extends Controller
                             }
                         }
 
-                        return view('admin.sales_bills.get_add_items', compact('bill_details'));
+                        return view('admin.sales_bills.get_add_items', compact('bill_details','is_approved'));
                     } else {
                         return response()->json([
                             'message' => 'الكمية المطلوبة أكبر من الكمية المتاحة.'
@@ -526,21 +528,113 @@ class SalesBillsController extends Controller
     {
         $com_code = auth()->user()->com_code;
 
-        $data['discount_percent'] = $request->discount_percent;
-        $data['discount_value'] = $request->discount_value;
-        $data['tax_percent'] = $request->tax_percent;
-        $data['tax_value'] = $request->tax_value;
-        $data['total_value'] = $request->total_value;
-        $data['bill_type'] = $request->bill_type;
-        $data['what_paid'] = $request->what_paid;
-        $data['what_remain'] = $request->what_remain;
-        $data['notes'] = $request->notes;
+        $data = SalesBills::where(['auto_serial' => $request->auto_serial, 'com_code' => $com_code])->first();
+
+        if ($data->is_approved != 1) {
+
+            $data->update([
+                'discount_percent' => $request->discount_percent,
+                'discount_value' => $request->discount_value * 100,
+                'tax_percent' => $request->tax_percent,
+                'tax_value' => $request->tax_value * 100,
+                'total_cost' => $request->total_value * 100,
+                'money_for_account' => $request->total_value * -100,
+                'pill_type' => $request->bill_type,
+                'what_paid' => $request->what_paid * 100,
+                'what_remain' => $request->what_remain * 100,
+                'notes' => $request->notes,
+                'invoice_date' => $request->date,
+                'customer_code' => $request->customer_code,
+                'sales_material_type_id' => $request->sales_material_type_id,
+                'delegate_code' => $request->delegate_code,
+                'total_before_discount' => $request->total_before_discount,
+                'is_approved' => 1,
+                'updated_by' => auth()->user()->id,
+            ]);
 
 
-        $data['invoice_date'] = $request->date;
-        $data['customer_code'] = $request->customer_code;
-        $data['sales_material_type_id'] = $request->sales_material_type_id;
-        $data['delegate_code'] = $request->delegate_code;
+            if ($request->what_paid > 0) {
 
+                $customer_account = Customer::where(['customer_code' => $request->customer_code, 'com_code' => $com_code])->first();
+
+
+                $money_for_account_before_transaction = TreasuriesTransaction::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code])->sum('money_for_account');
+                $data->update([
+                    'customer_balance_after_pill' => $money_for_account_before_transaction,
+                ]);
+
+
+                $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+                if ($shift == null) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => ' لا يوجد شفت مفتوح',
+                        'redirect' => route('sales_bills.index'),
+                    ]);
+                }
+
+                $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $com_code])->first();
+                if ($treasuries->last_isal_collect == null) {
+                    $$treasuries->last_isal_collect = 0;
+                }
+                $transaction_id = TreasuriesTransaction::create([
+                    'treasuries_id' => $shift->treasuries_id,
+                    'bill_code' => $data->auto_serial,
+                    'is_approved' => 1,
+                    'shift_id' => $shift->id,
+                    'com_code' => $com_code,
+                    'money' => $request->what_paid * (100),
+                    'isal_number' => $treasuries->last_isal_collect + 1,
+                    'date' => date('Y-m-d'),
+                    'byan' => 'فاتوره مبيعات',
+                    'move_type' => 5,
+                    'account_number' => $customer_account->account_number,
+                    'from_account' => $request->customer_code,
+                    'money_for_account' => $request->what_paid * (-100),
+                    'added_by' => auth()->user()->id,
+                ]);
+
+                $data->update([
+                    'treasuries_transaction_id' => $transaction_id->id,
+                ]);
+
+                $treasuries->update([
+                    'last_isal_collect' => $treasuries->last_isal_collect + 1,
+                ]);
+
+
+
+                $customer_account_in_accounts = Accounts::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
+
+                $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code])->sum('money_for_account');
+
+                $the_final_balance = $customer_account->start_balance + $money_for_account_transaction;
+
+                $customer_account->update([
+                    'current_balance' => $the_final_balance,
+                ]);
+
+                $customer_account_in_accounts->update([
+                    'current_balance' => $the_final_balance,
+                ]);
+
+                $data->update([
+                    'customer_balance_after_pill' => $the_final_balance,
+                ]);
+
+            }
+
+
+            return response()->json([
+                'status' => true,
+                'message' => 'تم الاعتماد بنجاح',
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => true,
+                'message' => 'الفاتوره معتمده من قبل',
+            ]);
+        }
     }
 }
