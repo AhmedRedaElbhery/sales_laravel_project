@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    إضافة خزنة
+    {{ __('treasuries.title') }}
 @endsection
 
 @section('contentheader')
-    الخزن
+{{ __('treasuries.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.treasuries.index') }}"> الخزن </a>
+    <a href="{{ route('admin.treasuries.index') }}">  {{ __('treasuries.title') }} </a>
 @endsection
 
 @section('contentheaderactive')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title">إضافة خزنة جديدة</h3>
+                    <h3 class="card-title">{{ __('treasuries.add_new') }}</h3>
                 </div>
 
                 <div class="card-body">
@@ -36,7 +36,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <label>اسم الخزنة</label>
+                            <label> {{ __('treasuries.treasury_name') }}</label>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -44,11 +44,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>هل رئيسية؟</label>
+                            <label> {{ __('treasuries.master') }}</label>
                             <select name="is_master" class="form-control">
-                                <option value="" selected disabled>اختر النوع</option>
-                                <option value="0">لا</option>
-                                <option value="1">نعم</option>
+                                <option value="" selected disabled> {{ __('treasuries.choose_type') }}</option>
+                                <option value="0"> {{ __('treasuries.no') }}</option>
+                                <option value="1"> {{ __('treasuries.yes') }}</option>
                             </select>
                             @error('is_master')
                                 <span class="text-danger">{{ $message }}</span>
@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>رقم آخر إيصال صرف لهذه الخزنه</label>
+                            <label> {{ __('treasuries.last_exchange_receipt') }}</label>
                             <input type="number" name="last_isal_exchange" class="form-control" value="">
                             @error('last_isal_exchange')
                                 <span class="text-danger">{{ $message }}</span>
@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>رقم آخر إيصال تحصيل لهذه الخزنه</label>
+                            <label> {{ __('treasuries.last_collect_receipt') }}</label>
                             <input type="number" name="last_isal_collect" class="form-control" value="">
                             @error('last_isal_collect')
                                 <span class="text-danger">{{ $message }}</span>
@@ -72,11 +72,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('treasuries.status') }}</label>
                             <select name="active" class="form-control">
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1">مفعل</option>
-                                <option value="0">معطل</option>
+                                <option value="" selected disabled>{{ __('treasuries.choose_type') }}</option>
+                                <option value="1">{{ __('treasuries.active') }}</option>
+                                <option value="0">{{ __('treasuries.inactive') }}</option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>
@@ -84,11 +84,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            حفظ
+                            {{ __('treasuries.save') }}
                         </button>
 
                         <a href="{{ route('admin.treasuries.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('treasuries.cancel') }}
                         </a>
 
                     </form>

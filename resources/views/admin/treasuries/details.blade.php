@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-    الضبط العام
+    {{ __('treasuries.title') }}
 @endsection
 
 @section('contentheader')
-    الخزن
+{{ __('treasuries.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.treasuries.index') }}"> الخزن </a>
+    <a href="{{ route('admin.treasuries.index') }}">  {{ __('treasuries.title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('treasuries.show') }}
 @endsection
 
 @section('content')
@@ -23,52 +23,52 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات الخزنه</h3>
+                    <h3 class="card-title card_title_center"> {{ __('treasuries.treasuries_data') }}</h3>
                 </div>
 
                 <div class="card-body">
                     @if (isset($data))
                         <table id="example2" class="table table-bordered table-hover">
                             <tr>
-                                <td class="width30">اسم الخزنه</td>
+                                <td class="width30">{{ __('treasuries.treasury_name') }}</td>
                                 <td>{{ $data['name'] }}</td>
                             </tr>
 
                             <tr>
-                                <td class="width30">اخر ايصال صرف</td>
+                                <td class="width30">{{ __('treasuries.last_exchange_receipt') }}</td>
                                 <td>{{ $data['last_isal_exchange'] }}</td>
                             </tr>
 
                             <tr>
-                                <td class="width30">اخر ايصال تحصيل</td>
+                                <td class="width30">{{ __('treasuries.last_collect_receipt') }}</td>
                                 <td>{{ $data['last_isal_collect'] }}</td>
                             </tr>
 
                             <tr>
-                                <td>حاله الخزنه</td>
+                                <td>{{ __('treasuries.status') }}</td>
                                 <td>
                                     @if ($data['active'] == 1)
-                                        مفعل
+                                    {{ __('treasuries.active') }}
                                     @else
-                                        غير مفعل
+                                    {{ __('treasuries.inactive') }}
                                     @endif
                                 </td>
                             </tr>
 
 
                             <tr>
-                                <td> هل رئيسيه؟</td>
+                                <td> {{ __('treasuries.is_master') }}</td>
                                 <td>
                                     @if ($data['is_master'] == 1)
-                                        رئيسيه
+                                    {{ __('treasuries.master') }}
                                     @else
-                                        غير رئيسيه
+                                    {{ __('treasuries.branch') }}
                                     @endif
                                 </td>
                             </tr>
 
                             <tr>
-                                <td>تاريخ الاضافه </td>
+                                <td> {{ __('treasuries.date_added') }}  </td>
                                 <td>
                                     @if ($data['added_by'] > 0 && $data['added_by'] != null)
                                         @php
@@ -76,22 +76,21 @@
                                             $date = $dt->format('Y-m-d');
                                             $time = $dt->format('h-i');
                                             $newdatetime = date('A', strtotime($time));
-                                            $newdatetimetype = $newdatetime == 'AM' ? 'صباحا' : 'مساء';
-                                        @endphp
+                                            $newdatetimetype = $newdatetime == 'AM' ? __('treasuries.am') : __('treasuries.pm'); @endphp
                                         {{ $date }}
                                         {{ $time }}
                                         {{ $newdatetimetype }}
-                                        بواسطه
+                                        {{ __('treasuries.by') }}
                                         {{ $data['added_by_admin'] }}
                                     @else
-                                        لا يوجد
+                                    {{ __('treasuries.none') }}
                                     @endif
                                 </td>
 
                             </tr>
 
                             <tr>
-                                <td>تاريخ اخر تحديث </td>
+                                <td> {{ __('treasuries.last_update') }}   </td>
                                 <td>
                                     @if ($data['updated_by'] > 0 && $data['updated_by'] != null)
                                         @php
@@ -99,18 +98,18 @@
                                             $date = $dt->format('Y-m-d');
                                             $time = $dt->format('h-i');
                                             $newdatetime = date('A', strtotime($time));
-                                            $newdatetimetype = $newdatetime == 'PM' ? 'صباحا' : 'مساء';
+                                            $newdatetimetype = $newdatetime == 'AM' ? __('treasuries.am') : __('treasuries.pm');
                                         @endphp
                                         {{ $date }}
                                         {{ $time }}
                                         {{ $newdatetimetype }}
-                                        بواسطه
+                                        {{ __('treasuries.by') }}
                                         {{ $data['updated_by_admin'] }}
                                     @else
-                                        لا يوجد
+                                    {{ __('treasuries.none') }}
                                     @endif
                                     <a href="{{ route('admin.treasuries.edit', $data->id) }}"
-                                        class="btn btn-primary">تعديل</a>
+                                        class="btn btn-primary ml-3"> {{ __('treasuries.edit') }} </a>
                                 </td>
                             </tr>
 
@@ -118,21 +117,21 @@
                         <br>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('treasuries.no_data') }}
                         </div>
                     @endif
 
                     @if (isset($treasuries_delivary) && count($treasuries_delivary) > 0)
                     <div class="card-header">
-                        <h3 class="card-title card_title_center">الخزن الفرعيه للخزنه ({{ $data['name'] }})</h3>
+                        <h3 class="card-title card_title_center">{{ __('treasuries.branch_treasuries') }}  ({{ $data['name'] }})</h3>
                     </div>
-                    <a href="{{ route('admin.treasuries.add_treasuries_branch',$data->id) }}" class="btn btn-primary m-3" > اضافه جديد</a>
+                    <a href="{{ route('admin.treasuries.add_treasuries_branch',$data->id) }}" class="btn btn-primary m-3" > {{ __('treasuries.add_new') }}</a>
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم الخزن</th>
-                                        <th>تاريخ الاضافه </th>
+                                        <th> {{ __('treasuries.serial') }} </th>
+                                        <th> {{ __('treasuries.treasury_name') }} </th>
+                                        <th> {{ __('treasuries.date_added') }}  </th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -151,15 +150,14 @@
                                                         $date = $dt->format('Y-m-d');
                                                         $time = $dt->format('h-i');
                                                         $newdatetime = date('A', strtotime($time));
-                                                        $newdatetimetype = $newdatetime == 'PM' ? 'صباحا' : 'مساء';
-                                                    @endphp
+                                                        $newdatetimetype = $newdatetime == 'AM' ? __('treasuries.am') : __('treasuries.pm');  @endphp
                                                     {{ $date }}
                                                     {{ $time }}
                                                     {{ $newdatetimetype }}
-                                                    بواسطه
+                                                    {{ __('treasuries.by') }}
                                                     {{ $item['added_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                {{ __('treasuries.none') }}
                                                 @endif
 
                                             </td>
@@ -172,7 +170,7 @@
                                                   @method('DELETE')
 
                                                   <button type="submit" class="btn btn-danger">
-                                                      حذف
+                                                    {{ __('treasuries.delete') }}
                                                   </button>
                                               </form>
 
@@ -183,7 +181,7 @@
                             </table>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('treasuries.no_data') }}
                         </div>
                     @endif
 

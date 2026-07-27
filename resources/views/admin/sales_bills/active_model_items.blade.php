@@ -271,7 +271,7 @@
 
                 <div class="form-group col-md-4">
                     <label>الاجمالى النهائى</label>
-                    <input type="number" readonly name="total_value" value="{{ $data->total_value }}"
+                    <input type="number" readonly name="total_value" value="{{ $data->total_cost /100 }}"
                         id="total_value" class="form-control">
                 </div>
 

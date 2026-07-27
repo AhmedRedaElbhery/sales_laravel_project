@@ -1,20 +1,21 @@
-@extends('layouts.admin');
+@extends('layouts.admin')
 
 @section('title')
- الحسابات
+    {{ __('account_types.accounts') }}
 @endsection
 
 @section('contentheader')
-انواع الحسابات
+    {{ __('account_types.account_types') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.accounttypes.index') }}"> انواع الحسابات </a>
+    <a href="{{ route('admin.accounttypes.index') }}">
+        {{ __('account_types.account_types') }}
+    </a>
 @endsection
 
-
 @section('contentheaderactive')
-    عرض
+    {{ __('account_types.show') }}
 @endsection
 
 @section('content')
@@ -23,7 +24,9 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">انواع الحسابات </h3>
+                    <h3 class="card-title card_title_center">
+                        {{ __('account_types.account_types') }}
+                    </h3>
                 </div>
 
                 <div class="card-body">
@@ -34,10 +37,10 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم الحساب</th>
-                                        <th>حاله التفعيل</th>
-                                        <th>يمكن اضافته من الشاشه الداخليه؟</th>
+                                        <th>{{ __('account_types.serial') }}</th>
+                                        <th>{{ __('account_types.account_name') }}</th>
+                                        <th>{{ __('account_types.status') }}</th>
+                                        <th>{{ __('account_types.can_be_added_from_internal_screen') }}</th>
                                     </tr>
                                 </thead>
 
@@ -50,28 +53,38 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">
+                                                        {{ __('account_types.active') }}
+                                                    </span>
                                                 @else
-                                                    <span class="badge badge-danger">معطل</span>
+                                                    <span class="badge badge-danger">
+                                                        {{ __('account_types.inactive') }}
+                                                    </span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item->relatedinternalaccounts == 1)
-                                                    <span class="badge badge-success">نعم يمكن اضافته</span>
-                                                @elseif(($item->relatedinternalaccounts == 0))
-                                                    <span class="badge badge-danger">لا يمكن هذا رئيسى</span>
+                                                    <span class="badge badge-success">
+                                                        {{ __('account_types.yes_can_be_added') }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-danger">
+                                                        {{ __('account_types.no_is_main') }}
+                                                    </span>
                                                 @endif
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
                             <br>
+
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('account_types.no_data') }}
                         </div>
                     @endif
 

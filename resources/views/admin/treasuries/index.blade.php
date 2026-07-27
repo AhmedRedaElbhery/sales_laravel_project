@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-الخزن
+{{ __('treasuries.title') }}
 @endsection
 
 @section('contentheader')
-    الخزن
+{{ __('treasuries.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.treasuries.index') }}"> الخزن </a>
+    <a href="{{ route('admin.treasuries.index') }}"> {{ __('treasuries.title') }} </a>
 @endsection
 
 
@@ -23,15 +23,15 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات الخزن</h3>
+                    <h3 class="card-title card_title_center">{{ __('treasuries.treasuries_data') }}</h3>
                 </div>
 
                 <div class="card-body">
-                    <a class="btn btn-success m-2" href="{{ route('admin.treasuries.create') }}">اضافه جديد</a>
+                    <a class="btn btn-success m-2" href="{{ route('admin.treasuries.create') }}">{{ __('treasuries.add_new') }}</a>
 
 
                     <div class="col-md-4">
-                        <input type="text" id="search_by_name" placeholder="بحث بالاسم" class=" form-control mb-3">
+                        <input type="text" id="search_by_name" placeholder="{{ __('treasuries.search_by_name') }}" class=" form-control mb-3">
                     </div>
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
@@ -39,13 +39,13 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم الخزن</th>
-                                        <th>هل رئيسيه</th>
-                                        <th>حاله التفعيل</th>
-                                        <th>كود الشركه التابع له</th>
-                                        <th>آخر ايصال صرف</th>
-                                        <th>آخر ايصال تحصيل</th>
+                                        <th>{{ __('treasuries.serial') }}</th>
+                                        <th>{{ __('treasuries.treasury_name') }}</th>
+                                        <th>{{ __('treasuries.is_master') }}</th>
+                                        <th>{{ __('treasuries.status') }}</th>
+                                        <th>{{ __('treasuries.company_code') }}</th>
+                                        <th>{{ __('treasuries.last_exchange_receipt') }}</th>
+                                        <th>{{ __('treasuries.last_collect_receipt') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -59,17 +59,17 @@
 
                                             <td>
                                                 @if ($item->is_master == 1)
-                                                    رئيسية
+                                                {{ __('treasuries.master') }}
                                                 @else
-                                                    فرعية
+                                                {{ __('treasuries.branch') }}
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">{{ __('treasuries.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">معطل</span>
+                                                    <span class="badge badge-danger">{{ __('treasuries.inactive') }}</span>
                                                 @endif
                                             </td>
 
@@ -79,8 +79,8 @@
 
                                             <td>
                                                 <a href="{{ route('admin.treasuries.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
-                                                <a href="{{ route('admin.treasuries.details', $item->id) }}" class="btn btn-info">المزيد</a>
+                                                    class="btn btn-primary">{{ __('treasuries.edit') }}</a>
+                                                <a href="{{ route('admin.treasuries.details', $item->id) }}" class="btn btn-info">{{ __('treasuries.details') }}</a>
 
                                             </td>
                                         </tr>
@@ -94,7 +94,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('treasuries.no_data') }}
                         </div>
                     @endif
 

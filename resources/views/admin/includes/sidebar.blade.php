@@ -250,9 +250,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*','sales_bills.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*','sales_bills.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*','sales_bills.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*', 'sales_bills.*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.sales') }}
@@ -280,9 +280,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.services') }}
@@ -358,9 +358,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.reports') }}
@@ -374,9 +374,9 @@
                         </li>
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'admin.treasuries.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.monitoring_support') }}

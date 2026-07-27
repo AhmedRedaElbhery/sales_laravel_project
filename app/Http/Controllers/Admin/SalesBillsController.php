@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Accounts;
 use App\Models\Admin;
+use App\Models\AdminPanalSettings;
 use App\Models\AdminShifts;
 use App\Models\Batche;
 use App\Models\Customer;
@@ -19,6 +20,7 @@ use App\Models\Treasuries;
 use App\Models\TreasuriesTransaction;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalesBillsController extends Controller
 {
@@ -267,8 +269,9 @@ class SalesBillsController extends Controller
                 }
 
                 $total_bill_cost = 0;
+                $is_approved = $data->is_approved;
 
-                return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost'));
+                return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost', 'is_approved'));
             }
         }
     }
@@ -319,7 +322,7 @@ class SalesBillsController extends Controller
         }
 
 
-        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost','is_approved'));
+        return view('admin.sales_bills.active_model_items', compact('data', 'customers', 'delegates', 'items', 'stores', 'sales_material_types', 'shift', 'bill_details', 'total_bill_cost', 'is_approved'));
     }
 
     public function active_add_items(Request $request)
@@ -427,7 +430,7 @@ class SalesBillsController extends Controller
                             }
                         }
 
-                        return view('admin.sales_bills.get_add_items', compact('bill_details','is_approved'));
+                        return view('admin.sales_bills.get_add_items', compact('bill_details', 'is_approved'));
                     } else {
                         return response()->json([
                             'message' => 'الكمية المطلوبة أكبر من الكمية المتاحة.'
@@ -621,7 +624,6 @@ class SalesBillsController extends Controller
                 $data->update([
                     'customer_balance_after_pill' => $the_final_balance,
                 ]);
-
             }
 
 
@@ -629,12 +631,33 @@ class SalesBillsController extends Controller
                 'status' => true,
                 'message' => 'تم الاعتماد بنجاح',
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'status' => true,
                 'message' => 'الفاتوره معتمده من قبل',
             ]);
         }
+    }
+
+    public function print($auto_serial)
+    {
+        $data = SalesBills::where(['auto_serial' => $auto_serial, 'com_code' => auth()->user()->com_code])->first();
+        $data->customer = Customer::where(['customer_code' => $data->customer_code])->first();
+        $data->company = AdminPanalSettings::where(['com_code' => auth()->user()->com_code])->first();
+        $data->sales_material_type_name = SalesMaterialType::where(['id' => $data->sales_material_type_id])->value('name');
+
+
+        $details = SalesBillsDetails::where(['bill_auto_serial' => $auto_serial, 'com_code' => auth()->user()->com_code])->get();
+
+        foreach ($details as $item) {
+            $item->unit_name = Unit::where(['id' => $item->unit_id])->value('name');
+            $item->item_name = ItemCard::where(['item_code' => $item->item_code, 'com_code' => auth()->user()->com_code])->value('name');
+        }
+
+        $css = file_get_contents(asset('assets/admin/css/print_invoice.css'));
+
+        $pdf = Pdf::loadView('admin.sales_bills.print_bill', compact('data', 'details', 'css'));
+
+        return $pdf->stream('Invoice_' . $data->auto_serial . '.pdf');
     }
 }

@@ -135,7 +135,7 @@ Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->na
 Route::get('sales_item/get_batches', [SalesBillsController::class, 'get_batches'])->name('sales_item.get_batches');
 Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->name('sales_item.get_price');
 Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
-
+Route::get('sales_bills/print/{auto_serial}', [SalesBillsController::class, 'print'])->name('sales_bills.print');
 
 
 Route::post('sales_item/open_active_bill', [SalesBillsController::class, 'open_active_bill'])->name('sales_item.open_active_bill');
@@ -145,6 +145,7 @@ Route::post('sales_item/active_add_items', [SalesBillsController::class, 'active
 Route::delete('sales_item/delete_item', [SalesBillsController::class, 'delete_item'])->name('sales_item.delete_item');
 Route::delete('sales_item/active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])->name('sales_item.active_delete_all_items');
 Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])->name('sales_item.approve_active_bill');
+
 
 
 });

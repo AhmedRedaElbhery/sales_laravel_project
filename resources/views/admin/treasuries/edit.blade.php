@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    تعديل بيانات خزنة
+
 @endsection
 
 @section('contentheader')
-    الخزن
+    {{ __('treasuries.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.treasuries.index') }}"> الخزن </a>
+    <a href="{{ route('admin.treasuries.index') }}"> {{ __('treasuries.title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل بيانات خزنه
+{{ __('treasuries.edit_treasuries_data') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">تعديل بيانات خزنة </h3>
+                    <h3 class="card-title card_title_center">{{ __('treasuries.edit_treasuries_data') }} </h3>
                 </div>
 
                 <div class="card-body">
@@ -37,7 +37,7 @@
                         @method('put')
 
                         <div class="form-group">
-                            <label>اسم الخزنة</label>
+                            <label>{{ __('treasuries.treasury_name') }}</label>
                             <input type="text" name="name" class="form-control" value="{{ $data->name }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -45,18 +45,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label>هل رئيسية؟</label>
+                            <label>{{ __('treasuries.is_master') }}?</label>
                             <select name="is_master" class="form-control">
-                                <option value="" disabled>اختر النوع</option>
+                                <option value="" disabled>{{ __('treasuries.choose_type') }}</option>
 
                                 <option value="0"
                                     {{ old('is_master', $data->is_master) == 0 ? 'selected' : '' }}>
-                                    لا
+                                    {{ __('treasuries.no') }}
                                 </option>
 
                                 <option value="1"
                                     {{ old('is_master', $data->is_master) == 1 ? 'selected' : '' }}>
-                                    نعم
+                                    {{ __('treasuries.yes') }}
                                 </option>
                             </select>
 
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>رقم آخر إيصال صرف لهذه الخزنه</label>
+                            <label>{{ __('treasuries.last_exchange_receipt') }}</label>
                             <input type="number" name="last_isal_exchange" class="form-control" value="{{ $data->last_isal_exchange }}">
                             @error('last_isal_exchange')
                                 <span class="text-danger">{{ $message }}</span>
@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>رقم آخر إيصال تحصيل لهذه الخزنه</label>
+                            <label>{{ __('treasuries.last_collect_receipt') }}</label>
                             <input type="number" name="last_isal_collect" class="form-control" value="{{ $data->last_isal_collect }}">
                             @error('last_isal_collect')
                                 <span class="text-danger">{{ $message }}</span>
@@ -82,19 +82,19 @@
                         </div>
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('treasuries.status') }}</label>
 
                             <select name="active" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('treasuries.choose_type') }}</option>
 
                                 <option value="1"
                                     {{ old('active', $data->active) == 1 ? 'selected' : '' }}>
-                                    مفعل
+                                    {{ __('treasuries.active') }}
                                 </option>
 
                                 <option value="0"
                                     {{ old('active', $data->active) == 0 ? 'selected' : '' }}>
-                                    معطل
+                                    {{ __('treasuries.inactive') }}
                                 </option>
                             </select>
 
@@ -104,11 +104,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            حفظ التعديلات
+                            {{ __('treasuries.update') }}
                         </button>
 
                         <a href="{{ route('admin.treasuries.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('treasuries.cancel') }}
                         </a>
 
                     </form>

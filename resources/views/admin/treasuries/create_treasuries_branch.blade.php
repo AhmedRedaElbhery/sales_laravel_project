@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    إضافة خزنة فرعيه
+    {{ __('treasuries.add_new_branch') }}
 @endsection
 
 @section('contentheader')
-    الخزن
+    {{ __('treasuries.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.treasuries.index') }}"> الخزن </a>
+    <a href="{{ route('admin.treasuries.index') }}"> {{ __('treasuries.title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    إضافة
+{{ __('treasuries.add_new') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title">إضافة خزنة فرعيه جديدة</h3>
+                    <h3 class="card-title"> {{ __('treasuries.add_new_branch') }}</h3>
                 </div>
 
                 <div class="card-body">
@@ -32,13 +32,13 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('admin.treasuries.store_treasuries_branch',$id) }}" method="POST">
+                    <form action="{{ route('admin.treasuries.store_treasuries_branch', $id) }}" method="POST">
                         @csrf
 
                         <div class="form-group">
-                            <label>اسم الخزنة</label>
+                            <label> {{ __('treasuries.treasury_name') }}</label>
                             <select name="treasury_name" class="form-control">
-                                <option value="">اختر الخزنه </option>
+                                <option value="" >{{ __('treasuries.choose_treasury') }} </option>
                                 @foreach ($data as $treasury)
                                     <option value="{{ $treasury->id }}">{{ $treasury->name }}</option>
                                 @endforeach
@@ -50,11 +50,11 @@
 
 
                         <button type="submit" class="btn btn-primary">
-                            حفظ
+                            {{ __('treasuries.save') }}
                         </button>
 
                         <a href="{{ route('admin.treasuries.details', $id) }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('treasuries.cancel') }}
                         </a>
 
                     </form>

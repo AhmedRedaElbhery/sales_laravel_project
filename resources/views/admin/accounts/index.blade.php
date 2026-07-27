@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-    الحسابات
+    {{ __('accounts.title') }}
 @endsection
 
 @section('contentheader')
-    الحسابات الماليه
+{{ __('accounts.financial_accounts') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('accounts.index') }}"> الحسابات الماليه </a>
+    <a href="{{ route('accounts.index') }}"> {{ __('accounts.financial_accounts') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('accounts.show') }}
 @endsection
 
 @section('content')
@@ -23,15 +23,15 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">الحسابات الماليه </h3>
-                    <a class="btn btn-success" href="{{ route('accounts.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">{{ __('accounts.financial_accounts') }}  </h3>
+                    <a class="btn btn-success" href="{{ route('accounts.create') }}">{{ __('accounts.add_new') }} </a>
                 </div>
 
                 <div class="card-body">
 
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                            <input type="text" id="search_by_name" placeholder="{{ __('accounts.search_by_name') }} " class="form-control mb-3">
                         </div>
 
                         <div class="col-md-4">
@@ -39,22 +39,22 @@
                                 @csrf
                                 <select name="type" class="form-control" onchange="this.form.submit()">
                                     @if (!isset($type))
-                                        <option value="all">عرض الكل</option>
-                                        <option value="1">الحسابات رئيسيه</option>
-                                        <option value="0">الحسابات فرعيه</option>
+                                        <option value="all">{{ __('accounts.show_all') }} </option>
+                                        <option value="1">{{ __('accounts.parent_accounts') }} </option>
+                                        <option value="0">{{ __('accounts.child_accounts') }} </option>
                                     @else
                                         @if ($type == 0)
-                                            <option value="all">عرض الكل</option>
-                                            <option value="1">الحسابات رئيسيه</option>
-                                            <option value="0" selected>الحسابات فرعيه</option>
+                                            <option value="all">{{ __('accounts.show_all') }} </option>
+                                            <option value="1">{{ __('accounts.parent_accounts') }} </option>
+                                            <option value="0" selected>{{ __('accounts.child_accounts') }} </option>
                                         @elseif($type == 1)
-                                            <option value="all">عرض الكل</option>
-                                            <option value="1" selected>الحسابات رئيسيه</option>
-                                            <option value="0">الحسابات فرعيه</option>
+                                            <option value="all">{{ __('accounts.show_all') }}</option>
+                                            <option value="1" selected>{{ __('accounts.parent_accounts') }}</option>
+                                            <option value="0">{{ __('accounts.child_accounts') }}</option>
                                         @else
-                                            <option value="all" selected>عرض الكل</option>
-                                            <option value="1">الحسابات رئيسيه</option>
-                                            <option value="0">الحسابات فرعيه</option>
+                                            <option value="all" selected>{{ __('accounts.show_all') }}</option>
+                                            <option value="1">{{ __('accounts.parent_accounts') }}</option>
+                                            <option value="0">{{ __('accounts.child_accounts') }}</option>
                                         @endif
                                     @endif
                                 </select>
@@ -68,13 +68,13 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>الاسم</th>
-                                        <th>رقم الحساب </th>
-                                        <th>نوع الحساب</th>
-                                        <th>هل اب </th>
-                                        <th>الحساب الاب له</th>
-                                        <th>الرصيد الحالى </th>
-                                        <th>حاله التفعيل</th>
+                                        <th>{{ __('accounts.name') }}</th>
+                                        <th>{{ __('accounts.account_number') }} </th>
+                                        <th>{{ __('accounts.account_type') }}</th>
+                                        <th>{{ __('accounts.is_parent') }} </th>
+                                        <th>{{ __('accounts.parent_account') }}</th>
+                                        <th>{{ __('accounts.current_balance') }} </th>
+                                        <th>{{ __('accounts.status') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -90,9 +90,9 @@
 
                                             <td>
                                                 @if ($item->is_parent == 1)
-                                                    <span class="badge badge-success">نعم</span>
+                                                    <span class="badge badge-success">{{ __('accounts.yes') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">لا</span>
+                                                    <span class="badge badge-danger">{{ __('accounts.no') }}</span>
                                                 @endif
                                             </td>
 
@@ -105,21 +105,21 @@
 
                                             <td>
                                                 @if ($item->is_archived == 0)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">{{ __('accounts.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">مؤرشف وغير مفعل</span>
+                                                    <span class="badge badge-danger">{{ __('accounts.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 <a href="{{ route('accounts.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
+                                                    class="btn btn-primary">{{ __('accounts.edit') }}</a>
 
                                                 <form action="{{ route('accounts.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    class="d-inline" onsubmit="return confirm('{{ __('accounts.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('accounts.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -133,7 +133,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('accounts.no_data') }}
                         </div>
                     @endif
 

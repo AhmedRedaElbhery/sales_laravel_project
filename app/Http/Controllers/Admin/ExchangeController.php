@@ -120,11 +120,6 @@ class ExchangeController extends Controller
             return redirect()->route('exchange_transaction.index');
         }
 
-        /*
-
-                    */
-
-
         return redirect()->back()->with(['error' => 'حدث خطا ما']);
     }
 

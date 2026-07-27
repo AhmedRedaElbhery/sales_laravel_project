@@ -9,7 +9,7 @@
                     <a href="{{ route('admin.dashboard') }}" class="nav-link">{{ __('navbar.home') }}</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('admin.logout') }}" class="nav-link">  {{ __('navbar.logout') }}</a>
+                    <a href="{{ route('admin.logout') }}" class="nav-link"> {{ __('navbar.logout') }}</a>
                 </li>
             </ul>
 
@@ -26,9 +26,18 @@
                 </div>
             </form>
 
-            <a class="btn m-2" href="{{ route('lang.switch', 'en') }}">English</a>
 
-            <a class="btn m-2" href="{{ route('lang.switch', 'ar') }}">العربية</a>
+            <select class="form-select w-auto" onchange="window.location.href=this.value;">
+                <option value="{{ route('lang.switch', 'en') }}" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>
+                    English
+                </option>
+
+                <option value="{{ route('lang.switch', 'ar') }}" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>
+                    العربية
+                </option>
+            </select>
+
+
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Messages Dropdown Menu -->

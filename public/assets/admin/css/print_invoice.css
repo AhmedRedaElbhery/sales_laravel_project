@@ -1,0 +1,258 @@
+/* ===========================
+   GENERAL
+=========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "DejaVu Sans", sans-serif;
+    font-size: 13px;
+    color: #333;
+    background: #fff;
+    line-height: 1.6;
+    padding: 30px;
+    width: 80%;
+}
+
+.clear {
+    clear: both;
+}
+
+/* ===========================
+   CONTAINER
+=========================== */
+
+.invoice {
+    width: 100%;
+    border: 1px solid #dcdcdc;
+    padding: 25px;
+    height: 200px;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.header {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.company {
+    float: left;
+    width: 60%;
+}
+
+.invoice-info {
+    float: right;
+    width: 35%;
+    text-align: right;
+}
+
+.logo {
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.company h2 {
+    color: #0d6efd;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.company p {
+    margin-bottom: 4px;
+    color: #666;
+}
+
+.invoice-title {
+    text-align: center;
+    font-size: 28px;
+    color: #0d6efd;
+    font-weight: bold;
+    margin: 30px 0;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #0d6efd;
+    padding-bottom: 10px;
+}
+
+/* ===========================
+   INFORMATION BOXES
+=========================== */
+
+.info-box {
+    width: 48%;
+    border: 1px solid #ddd;
+    float: left;
+    margin-bottom: 25px;
+}
+
+.info-box:last-child {
+    float: right;
+}
+
+.info-title {
+    background: #0d6efd;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.info-content {
+    padding: 12px;
+}
+
+.info-content p {
+    margin-bottom: 8px;
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.items-table thead tr {
+    background: #0d6efd;
+    color: white;
+}
+
+.items-table th {
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+    font-size: 13px;
+}
+
+.items-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.items-table tbody tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+/* ===========================
+   TOTALS
+=========================== */
+
+.summary {
+    width: 40%;
+    float: right;
+    margin-top: 25px;
+}
+
+.summary table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.summary td:first-child {
+    font-weight: bold;
+}
+
+.total-row {
+    background: #0d6efd;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ===========================
+   NOTES
+=========================== */
+
+.notes {
+    margin-top: 35px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    background: #fafafa;
+}
+
+.notes h4 {
+    color: #0d6efd;
+    margin-bottom: 10px;
+}
+
+/* ===========================
+   SIGNATURE
+=========================== */
+
+.signatures {
+    margin-top: 100px;
+}
+
+.signature-box {
+    width: 40%;
+    float: left;
+    text-align: center;
+}
+
+.signature-box:last-child {
+    float: right;
+}
+
+.signature-line {
+    width: 220px;
+    border-top: 1px solid #555;
+    margin: 60px auto 10px;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+.footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+}
+
+/* ===========================
+   BADGES
+=========================== */
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #0d6efd;
+    color: white;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+/* ===========================
+   PRINT
+=========================== */
+
+@page {
+    margin: 15mm;
+}
+
+@media print {
+
+    body {
+        padding: 0;
+    }
+
+    .invoice {
+        border: none;
+    }
+
+}

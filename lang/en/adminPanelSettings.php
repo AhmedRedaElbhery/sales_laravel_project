@@ -28,4 +28,10 @@ return [
 
     'am' => 'AM',
     'pm' => 'PM',
+
+    'edit_general_settings' => 'Edit General Settings',
+
+    'edit_settings_general_data' => 'Edit General Settings data',
+    'save_updates' => 'Update',
+    'choose_account' => 'Choose Account',
 ];

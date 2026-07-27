@@ -1,26 +1,26 @@
 @extends('layouts.admin')
 
 @section('title')
-    تعديل حساب
+    {{ __('accounts.edit_account') }}
 @endsection
 
 @section('contentheader')
-تعديل حساب
+{{ __('accounts.edit_account') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('accounts.index') }}"> الحسابات الماليه </a>
+    <a href="{{ route('accounts.index') }}"> {{ __('accounts.financial_accounts') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل
+{{ __('accounts.edit') }}
 @endsection
 
 @section('content')
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">تعديل حساب</h3>
+            <h3 class="card-title card_title_center">{{ __('accounts.edit_account') }}</h3>
         </div>
 
         <div class="card-body">
@@ -39,7 +39,7 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>اسم الحساب </label>
+                            <label>{{ __('accounts.name') }} </label>
                             <input type="text" name="name" class="form-control"
                                 value="{{ old('name', $data->name) }}">
 
@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>نوع الحساب </label>
+                            <label>{{ __('accounts.account_type') }} </label>
 
                             <select name="account_type" class="form-control">
                                 <option value="" selected disabled>{{ $account_type->name }}</option>
@@ -65,14 +65,14 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>الحساب الاساسى له</label>
+                            <label>{{ __('accounts.who_is_parent_account') }}</label>
 
                             <select name="parent_account_number" class="form-control">
-                                <option value="" disabled>اختر الحساب الاب له</option>
+                                <option value="" disabled>{{ __('accounts.select_parent_account') }}</option>
 
                                 <option value="0"
                                     @selected(old('parent_account_number', $data->parent_account_number) == 0)>
-                                    هذا الحساب اساسى
+                                    {{ __('accounts.this_is_parent_account') }}
                                 </option>
 
                                 @foreach ($accounts as $item)
@@ -92,19 +92,19 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>حاله التفعيل</label>
+                            <label>{{ __('accounts.select_status') }}</label>
 
                             <select name="is_archived" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('accounts.select_status') }}</option>
 
                                 <option value="0"
                                     @selected(old('is_archived', $data->is_archived) == 0)>
-                                    مفعل
+                                    {{ __('accounts.active') }}
                                 </option>
 
                                 <option value="1"
                                     @selected(old('is_archived', $data->is_archived) == 1)>
-                                    مؤرشف وغير مفعل
+                                    {{ __('accounts.inactive') }}
                                 </option>
                             </select>
 
@@ -116,7 +116,7 @@
                     </div>
 
                     <div class="form-group col-sm-5">
-                        <label>الملاحظات</label> <br>
+                        <label>{{ __('accounts.notes') }}</label> <br>
 
                         <textarea name="notes" style="height: 100px; width: 420px">{{ old('notes', $data->notes) }}</textarea>
 
@@ -128,11 +128,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary m-5 p-2 col-sm-5">
-                    تحديث
+                    {{ __('accounts.update') }}
                 </button>
 
                 <a href="{{ route('accounts.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
-                    رجوع
+                    {{ __('accounts.cancel') }}
                 </a>
 
             </form>

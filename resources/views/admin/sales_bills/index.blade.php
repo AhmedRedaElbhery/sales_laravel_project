@@ -51,83 +51,89 @@
                                         </tr>
                                     </thead>
 
-                                <tbody>
-                                    @foreach ($data as $item)
-                                        <tr>
-                                            <td>{{ $item->auto_serial }}</td>
+                                    <tbody>
+                                        @foreach ($data as $item)
+                                            <tr>
+                                                <td>{{ $item->auto_serial }}</td>
 
-                                            <td>{{ $item->customer_name }}</td>
+                                                <td>{{ $item->customer_name }}</td>
 
-                                            <td>
-                                                @if ($item->pill_type === 0)
-                                                    <span class="adge bg-success p-2">كاش</span>
-                                                @elseif($item->pill_type == 1)
-                                                    <span class="adge bg-danger p-2">اجل</span>
-                                                @endif
-                                            </td>
+                                                <td>
+                                                    @if ($item->pill_type === 0)
+                                                        <span class="adge bg-success p-2">كاش</span>
+                                                    @elseif($item->pill_type == 1)
+                                                        <span class="adge bg-danger p-2">اجل</span>
+                                                    @endif
+                                                </td>
 
-                                            <td>
-                                                {{ $item->invoice_date }}
+                                                <td>
+                                                    {{ $item->invoice_date }}
 
-                                            </td>
+                                                </td>
 
-                                            <td>
-                                                @if ($item->is_approved == 0)
-                                                    <span class="badge badge-danger p-2">غير معتمده</span>
-                                                @else
-                                                    <span class="badge badge-success p-2">معتمده</span>
-                                                @endif
-                                            </td>
+                                                <td>
+                                                    @if ($item->is_approved == 0)
+                                                        <span class="badge badge-danger p-2">غير معتمده</span>
+                                                    @else
+                                                        <span class="badge badge-success p-2">معتمده</span>
+                                                    @endif
+                                                </td>
 
-                                            <td>
-                                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                                    <input type="hidden" id="get_active_bill_data_url"
-                                                        value="{{ route('sales_item.get_active_bill_data') }}">
+                                                        <input type="hidden" id="get_active_bill_data_url"
+                                                            value="{{ route('sales_item.get_active_bill_data') }}">
 
                                                         @if ($item->is_approved == 0)
-                                                        <button type="button" class="btn btn-primary m-1 edit_bill"
-                                                            style="width: 90px;" data-autoserial="{{ $item->auto_serial }}">
-                                                            تعديل
-                                                        </button>
-
+                                                            <button type="button" class="btn btn-primary m-1 edit_bill"
+                                                                style="width: 90px;"
+                                                                data-autoserial="{{ $item->auto_serial }}">
+                                                                تعديل
+                                                            </button>
                                                         @endif
-                                                    @if ($item->is_approved == 1)
-                                                    <button type="button" class="btn btn-info m-1 edit_bill"
-                                                        style="width: 90px;" data-autoserial="{{ $item->auto_serial }}">
-                                                        تفاصيل
-                                                    </button>
 
-                                                    @endif
+                                                        @if ($item->is_approved == 1)
+                                                            <button type="button" class="btn btn-info m-1 edit_bill"
+                                                                style="width: 90px;"
+                                                                data-autoserial="{{ $item->auto_serial }}">
+                                                                تفاصيل
+                                                            </button>
+                                                        @endif
 
-                                                    <form action="{{ route('sales_bills.destroy', $item->auto_serial) }}"
-                                                        method="POST" class="deleteBillForm m-0">
-                                                        @csrf
-                                                        @method('DELETE')
+                                                        @if ($item->is_approved == 1)
+                                                            <a href="{{ route('sales_bills.print',$item->auto_serial) }}" class="btn btn-primary">طباعه</a>
+                                                        @endif
 
-                                                        <button type="submit" class="btn btn-danger m-1"
-                                                            style="width: 90px;">
-                                                            حذف
-                                                        </button>
-                                                    </form>
+                                                        <form
+                                                            action="{{ route('sales_bills.destroy', $item->auto_serial) }}"
+                                                            method="POST" class="deleteBillForm m-0">
+                                                            @csrf
+                                                            @method('DELETE')
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    <br>
-                                    <div class="mt-3">
-                                        {{ $data->links() }}
-                                    </div>
-                                </tbody>
+                                                            <button type="submit" class="btn btn-danger m-1"
+                                                                style="width: 90px;">
+                                                                حذف
+                                                            </button>
+                                                        </form>
 
-                            </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <br>
+                                        <div class="mt-3">
+                                            {{ $data->links() }}
+                                        </div>
+                                    </tbody>
 
-                        </div>
-                    @else
-                        <div class="alert alert-warning">
-                            لا توجد بيانات
-                        </div>
+                                </table>
+
+                            </div>
+                        @else
+                            <div class="alert alert-warning">
+                                لا توجد بيانات
+                            </div>
                     @endif
 
                 </div>
@@ -220,7 +226,8 @@
 
                         <div class="form-group col-md-3">
                             <label>الكميه </label>
-                            <input type="number" value="" class="form-control" id="mirror_quantity" name="quantity">
+                            <input type="number" value="" class="form-control" id="mirror_quantity"
+                                name="quantity">
 
                             @error('quantity')
                                 <span class="text-danger">{{ $message }}</span>

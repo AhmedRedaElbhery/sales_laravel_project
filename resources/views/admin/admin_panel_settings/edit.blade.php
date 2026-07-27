@@ -1,15 +1,15 @@
 @extends('layouts.admin');
 
 @section('title')
-    تعديل الضبط العام
+    {{ __('adminPanelSettings.edit_general_settings') }}
 @endsection
 
 @section('contentheader')
-    الضبط
+    {{ __('adminPanelSettings.settings') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.adminpanelsettings.index') }}"> الضبط </a>
+    <a href="{{ route('admin.adminpanelsettings.index') }}"> {{ __('adminPanelSettings.settings') }} </a>
 @endsection
 
 
@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">تعديل بيانات الضبط العام</h3>
+                    <h3 class="card-title card_title_center"> {{ __('adminPanelSettings.edit_settings_general_data') }}</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -33,7 +33,7 @@
                             @csrf
 
                             <div class="form-group">
-                                <label>اسم الشركه</label>
+                                <label>{{ __('adminPanelSettings.company_name') }}</label>
                                 <input type="text" name="system_name" class="form-control"
                                     value="{{ $data['system_name'] }}" required>
                                 @error('system_name')
@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label>عنوان الشركه</label>
+                                <label>{{ __('adminPanelSettings.company_address') }}</label>
                                 <input type="text" name="address" class="form-control" value="{{ $data['address'] }}">
                                 @error('address')
                                     <span class="text-danger">{{ $message }}</span>
@@ -50,7 +50,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label>هاتف الشركه</label>
+                                <label>{{ __('adminPanelSettings.company_phone') }}</label>
                                 <input type="text" name="phone" class="form-control" value="{{ $data['phone'] }}">
                                 @error('phone')
                                     <span class="text-danger">{{ $message }}</span>
@@ -58,10 +58,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label>الحساب الاساسى للعملاء  </label>
+                                <label>{{ __('adminPanelSettings.customer_parent_account') }}  </label>
                                 <select name="customer_parent_account_number" class="form-control" >
 
-                                    <option value="" selected disabled>اختر الحساب  </option>
+                                    <option value="" selected disabled>{{ __('adminPanelSettings.choose_account') }}    </option>
 
                                     @foreach ($accounts as $item)
                                         <option value="{{ $item->id }}" @if($item->id == $data['customer_parent_account_number'] ) selected
@@ -75,10 +75,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label>الحساب الاساسى للموردين  </label>
+                                <label>{{ __('adminPanelSettings.supplier_parent_account') }}   </label>
                                 <select name="supplier_parent_account_number" class="form-control" >
 
-                                    <option value="" selected disabled>اختر الحساب  </option>
+                                    <option value="" selected disabled>{{ __('adminPanelSettings.choose_account') }}  </option>
 
                                     @foreach ($accounts as $item)
                                         <option value="{{ $item->id }}" @if($item->id == $data['supplier_parent_account_number'] ) selected
@@ -92,7 +92,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label>رساله التنبيه اعلى الشاشه للشركه</label>
+                                <label>{{ __('adminPanelSettings.general_alert') }} </label>
                                 <textarea name="general_alert" class="form-control" rows="4">{{ $data['general_alert'] }}</textarea>
                                 @error('general_alert')
                                     <span class="text-danger">{{ $message }}</span>
@@ -100,7 +100,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label>لوجو الشركه</label>
+                                <label>{{ __('adminPanelSettings.company_logo') }} </label>
 
                                 <div class="mb-2">
                                     <img class="custom_img" src="{{ asset('assets/admin/uploads/' . $data['photo']) }}"
@@ -113,7 +113,7 @@
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success">
-                                    حفظ التعديلات
+                                    {{ __('adminPanelSettings.save_updates') }}
                                 </button>
                             </div>
                         </form>

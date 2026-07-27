@@ -28,4 +28,10 @@ return [
 
     'am' => 'صباحًا',
     'pm' => 'مساءً',
+
+    'edit_general_settings' => 'تعديل الضبط العام',
+
+    'edit_settings_general_data' => 'تعديل بيانات الضبط العام',
+    'save_updates' => 'تعديل ',
+    'choose_account' => 'اختر الحساب',
 ];
