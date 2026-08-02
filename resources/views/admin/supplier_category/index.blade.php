@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-فئات الموردين
+    {{ __('supplierCategory.page_title') }}
 @endsection
 
 @section('contentheader')
-    الحسابات
+    {{ __('supplierCategory.page_title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('suppliers_category.index') }}"> فئات الموردين </a>
+    <a href="{{ route('suppliers_category.index') }}"> {{ __('supplierCategory.page_title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+    {{ __('supplierCategory.view') }}
 @endsection
 
 @section('content')
@@ -23,8 +23,9 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات فئات الموردين</h3>
-                    <a class="btn btn-success" href="{{ route('suppliers_category.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">{{ __('supplierCategory.supplier_categories_data') }}</h3>
+                    <a class="btn btn-success"
+                        href="{{ route('suppliers_category.create') }}">{{ __('supplierCategory.add_new') }}</a>
                 </div>
 
                 <div class="card-body">
@@ -35,11 +36,11 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم الفئه</th>
-                                        <th>حاله التفعيل</th>
-                                        <th>تاريخ الاضافه</th>
-                                        <th>تاريخ التحديث</th>
+                                        <th>{{ __('supplierCategory.serial') }}</th>
+                                        <th>{{ __('supplierCategory.category_name') }}</th>
+                                        <th>{{ __('supplierCategory.status') }}</th>
+                                        <th>{{ __('supplierCategory.created_at') }}</th>
+                                        <th>{{ __('supplierCategory.updated_at') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -53,44 +54,47 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span
+                                                        class="badge badge-success">{{ __('supplierCategory.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">معطل</span>
+                                                    <span
+                                                        class="badge badge-danger">{{ __('supplierCategory.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item['created_at'] != null)
-                                                {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه
+                                                    {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? __('supplierCategory.am') : __('supplierCategory.pm')) }}
+                                                    {{ __('supplierCategory.by') }} {{ __('supplierCategory.by') }}
                                                     {{ $item['added_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                    {{ __('supplierCategory.none') }}
                                                 @endif
 
                                             </td>
 
                                             <td>
                                                 @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
-                                                {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه
+                                                    {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? __('supplierCategory.am') : __('supplierCategory.pm')) }}
+                                                    {{ __('supplierCategory.by') }}
                                                     {{ $item['updated_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                    {{ __('supplierCategory.none') }}
                                                 @endif
                                             </td>
 
 
                                             <td>
                                                 <a href="{{ route('suppliers_category.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
+                                                    class="btn btn-primary">{{ __('supplierCategory.edit') }}</a>
 
                                                 <form action="{{ route('suppliers_category.destroy', $item->id) }}"
-                                                    method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    method="POST" class="d-inline"
+                                                    onsubmit="return confirm('{{ __('supplierCategory.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                                    <button type="submit"
+                                                        class="btn btn-danger">{{ __('supplierCategory.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -104,7 +108,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('supplierCategory.no_data') }}
                         </div>
                     @endif
 

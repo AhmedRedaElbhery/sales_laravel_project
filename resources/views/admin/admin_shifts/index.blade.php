@@ -1,20 +1,21 @@
-@extends('layouts.admin');
+@extends('layouts.admin')
 
 @section('title')
-    حركه شفتات الخزن
+    {{ __('adminShifts.title') }}
 @endsection
 
 @section('contentheader')
-    حركه شفتات الخزن
+    {{ __('adminShifts.content_header') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin_shifts.index') }}"> شفتات الخزن </a>
+    <a href="{{ route('admin_shifts.index') }}">
+        {{ __('adminShifts.content_header_link') }}
+    </a>
 @endsection
 
-
 @section('contentheaderactive')
-    عرض
+    {{ __('adminShifts.content_header_active') }}
 @endsection
 
 @section('content')
@@ -23,8 +24,13 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات شفتات الخزن </h3>
-                    <a class="btn btn-success" href="{{ route('admin_shifts.create') }}">اضافه شفت جديده</a>
+                    <h3 class="card-title card_title_center">
+                        {{ __('adminShifts.treasury_shifts_data') }}
+                    </h3>
+
+                    <a class="btn btn-success" href="{{ route('admin_shifts.create') }}">
+                        {{ __('adminShifts.add_new_shift') }}
+                    </a>
                 </div>
 
                 <div class="card-body">
@@ -37,51 +43,32 @@
                             <form action="{{ route('unit.filter') }}" method="POST">
                                 @csrf
                                 <select name="type" class="form-control" onchange="this.form.submit()">
-                                    @if (!isset($type))
-                                        <option value="all">عرض الكل</option>
-                                        <option value="1">وحدات رئيسيه</option>
-                                        <option value="0">وحدات فرعيه</option>
-                                    @else
-                                        @if ($type == 0)
-                                            <option value="all" >عرض الكل</option>
-                                            <option value="1">وحدات رئيسيه</option>
-                                            <option value="0" selected>وحدات فرعيه</option>
-                                        @elseif($type == 1)
-                                            <option value="all">عرض الكل</option>
-                                            <option value="1" selected>وحدات رئيسيه</option>
-                                            <option value="0">وحدات فرعيه</option>
-                                        @else
-                                            <option value="all" selected>عرض الكل</option>
-                                            <option value="1">وحدات رئيسيه</option>
-                                            <option value="0" >وحدات فرعيه</option>
-                                        @endif
-                                    @endif
+                                    ...
                                 </select>
                             </form>
                         </div>
                     </div> --}}
-
-
 
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show">
                             {{ session('error') }}
                         </div>
                     @endif
+
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
 
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم الخزنه</th>
-                                        <th>اسم المستخدم</th>
-                                        <th>حاله الاستخدام</th>
-                                        <th>وقت البدايه</th>
-                                        <th>وقت النهايه</th>
-                                        <th>حاله المراجعه</th>
-                                        {{-- <th> </th> --}}
+                                        <th>{{ __('adminShifts.serial') }}</th>
+                                        <th>{{ __('adminShifts.treasury_name') }}</th>
+                                        <th>{{ __('adminShifts.user_name') }}</th>
+                                        <th>{{ __('adminShifts.usage_status') }}</th>
+                                        <th>{{ __('adminShifts.start_time') }}</th>
+                                        <th>{{ __('adminShifts.end_time') }}</th>
+                                        <th>{{ __('adminShifts.review_status') }}</th>
+                                        {{-- <th></th> --}}
                                     </tr>
                                 </thead>
 
@@ -91,17 +78,24 @@
                                             <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $item->name }}</td>
+
                                             <td>
                                                 {{ $item->added_by_admin }}
                                             </td>
 
                                             <td>
                                                 @if ($item->is_finished == 0 && $item->end_shift == null)
-                                                    <span class="badge badge-danger p-2">يتم الاستخدام</span>
+                                                    <span class="badge badge-danger p-2">
+                                                        {{ __('adminShifts.in_use') }}
+                                                    </span>
                                                 @elseif($item->is_finished == 1 && $item->end_shift != null)
-                                                    <span class="badge badge-success p-2">انتهى</span>
+                                                    <span class="badge badge-success p-2">
+                                                        {{ __('adminShifts.finished') }}
+                                                    </span>
                                                 @else
-                                                    <span class="badge badge-danger p-2">يتم الاستخدام</span>
+                                                    <span class="badge badge-danger p-2">
+                                                        {{ __('adminShifts.in_use') }}
+                                                    </span>
                                                 @endif
                                             </td>
 
@@ -109,27 +103,25 @@
                                                 @if ($item->start_shift != null)
                                                     {{ $item->start_shift }}
                                                 @else
-                                                    لا يوجد
+                                                    {{ __('adminShifts.no_data') }}
                                                 @endif
-
                                             </td>
 
                                             <td>
                                                 @if ($item->end_shift != null)
                                                     {{ $item->end_shift }}
                                                 @else
-                                                    مازال يعمل
+                                                    {{ __('adminShifts.still_working') }}
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item->is_delivered == 1)
-                                                    تمت المراجعه
+                                                    {{ __('adminShifts.reviewed') }}
                                                 @else
-                                                    لم تتمت المراجعه بعد
+                                                    {{ __('adminShifts.not_reviewed') }}
                                                 @endif
                                             </td>
-
 
                                             {{-- <td>
                                                 <a href="{{ route('admin_shifts.edit', $item->id) }}"
@@ -146,14 +138,16 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
                             <br>
+
                             <div class="mt-3">
                                 {{ $data->links() }}
                             </div>
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('adminShifts.no_records') }}
                         </div>
                     @endif
 

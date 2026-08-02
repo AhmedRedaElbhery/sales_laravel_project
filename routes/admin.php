@@ -106,50 +106,50 @@ Route::group([
     Route::post('supplier_orders/getUnits', [SupplierOrdersController::class, 'getUnits'])->name('supplier_orders.getUnits');
     Route::post('supplier_orders/addunits', [SupplierOrdersController::class, 'addunits'])->name('supplier_orders.addunits');
     Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroy_details'])->name('supplier_orders.destroy_details');
-    Route::post('/supplier_orders/edititem',[SupplierOrdersController::class,'edititem'])->name('supplier_orders.edititem');
+    Route::post('/supplier_orders/edititem', [SupplierOrdersController::class, 'edititem'])->name('supplier_orders.edititem');
     Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'update_item'])->name('supplier_orders.update_item');
     Route::post('supplier_orders/model_approve', [SupplierOrdersController::class, 'model_approve'])->name('supplier_orders.model_approve');
 
 
     /* admin */
-    Route::resource('admin_accounts' , AdminController::class );
+    Route::resource('admin_accounts', AdminController::class);
     Route::post('admin_treasuries', [AdminController::class, 'add_treasuries'])->name('admin_treasuries.addtreasuries');
     Route::delete('admin_treasuries/{id}', [AdminController::class, 'delete_treasuries'])->name('admin_treasuries.deletetreasuries');
 
-//admin shifts
+    //admin shifts
 
-Route::resource('admin_shifts', AdminShiftsController::class);
+    Route::resource('admin_shifts', AdminShiftsController::class);
 
-//collect transaction
+    //collect transaction
 
-Route::resource('collect_transaction', CollectController::class);
+    Route::resource('collect_transaction', CollectController::class);
 
-//exchange transaction
+    //exchange transaction
 
-Route::resource('exchange_transaction', ExchangeController::class);
+    Route::resource('exchange_transaction', ExchangeController::class);
 
-//sales bills
+    //sales bills
+    Route::get('sales_item/mirrorgetUnits', [SalesBillsController::class, 'mirrorgetUnits'])->name('sales_item.mirrorgetUnits');
+    Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirror_get_batches'])->name('sales_item.mirror_get_batches');
 
-Route::resource('sales_bills', SalesBillsController::class);
-Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
-Route::get('sales_item/get_batches', [SalesBillsController::class, 'get_batches'])->name('sales_item.get_batches');
-Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->name('sales_item.get_price');
-Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
-Route::get('sales_bills/print/{auto_serial}', [SalesBillsController::class, 'print'])->name('sales_bills.print');
+    //////////////////////////////////////////////////////////////////////
 
-
-Route::post('sales_item/open_active_bill', [SalesBillsController::class, 'open_active_bill'])->name('sales_item.open_active_bill');
-Route::post('sales_item/save_active_billitems', [SalesBillsController::class, 'save_active_billitems'])->name('sales_item.save_active_billitems');
-Route::get('sales_item/get_active_bill_data', [SalesBillsController::class, 'get_active_bill_data'])->name('sales_item.get_active_bill_data');
-Route::post('sales_item/active_add_items', [SalesBillsController::class, 'active_add_items'])->name('sales_item.active_add_items');
-Route::delete('sales_item/delete_item', [SalesBillsController::class, 'delete_item'])->name('sales_item.delete_item');
-Route::delete('sales_item/active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])->name('sales_item.active_delete_all_items');
-Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])->name('sales_item.approve_active_bill');
+    Route::resource('sales_bills', SalesBillsController::class);
+    Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
+    Route::get('sales_item/get_batches', [SalesBillsController::class, 'get_batches'])->name('sales_item.get_batches');
+    Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->name('sales_item.get_price');
+    Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
+    Route::get('sales_bills/print/{auto_serial}', [SalesBillsController::class, 'print'])->name('sales_bills.print');
 
 
-
+    Route::post('sales_item/open_active_bill', [SalesBillsController::class, 'open_active_bill'])->name('sales_item.open_active_bill');
+    Route::post('sales_item/save_active_billitems', [SalesBillsController::class, 'save_active_billitems'])->name('sales_item.save_active_billitems');
+    Route::get('sales_item/get_active_bill_data', [SalesBillsController::class, 'get_active_bill_data'])->name('sales_item.get_active_bill_data');
+    Route::post('sales_item/active_add_items', [SalesBillsController::class, 'active_add_items'])->name('sales_item.active_add_items');
+    Route::delete('sales_item/delete_item', [SalesBillsController::class, 'delete_item'])->name('sales_item.delete_item');
+    Route::delete('sales_item/active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])->name('sales_item.active_delete_all_items');
+    Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])->name('sales_item.approve_active_bill');
 });
-
 
 Route::get('/lang/{locale}', function ($locale) {
 

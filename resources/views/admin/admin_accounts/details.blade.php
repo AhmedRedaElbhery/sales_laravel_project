@@ -1,40 +1,41 @@
-@extends('layouts.admin');
+@extends('layouts.admin')
 
 @section('title')
-    الصلاحيات
+   {{ __('admin_accounts.title') }}
 @endsection
 
 @section('contentheader')
-    المستخدمين
+   {{ __('admin_accounts.content_header') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin_accounts.index') }}"> المستخدمين </a>
+    <a href="{{ route('admin_accounts.index') }}">
+       {{ __('admin_accounts.content_header_link') }}
+    </a>
 @endsection
 
 @section('contentheaderactive')
-    عرض
+   {{ __('admin_accounts.content_header_active') }}
 @endsection
-
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات المستخدم</h3>
+                    <h3 class="card-title card_title_center">{{ __('admin_accounts.user_data') }}</h3>
                 </div>
 
                 <div class="card-body">
                     @if (isset($data))
                         <table id="example2" class="table table-bordered table-hover">
                             <tr>
-                                <td class="width30">اسم المستخدم</td>
+                                <td class="width30">{{ __('admin_accounts.user_name') }}</td>
                                 <td>{{ $data['name'] }}</td>
                             </tr>
 
                             <tr>
-                                <td>تاريخ الاضافه </td>
+                                <td>{{ __('admin_accounts.created_at') }}</td>
                                 <td>
                                     @if ($data['added_by'] > 0 && $data['added_by'] != null)
                                         @php
@@ -42,22 +43,25 @@
                                             $date = $dt->format('Y-m-d');
                                             $time = $dt->format('h-i');
                                             $newdatetime = date('A', strtotime($time));
-                                            $newdatetimetype = $newdatetime == 'AM' ? 'صباحا' : 'مساء';
+                                            $newdatetimetype =
+                                                $newdatetime == 'AM'
+                                                    ? __('admin_accounts.am')
+                                                    : __('admin_accounts.pm');
                                         @endphp
+
                                         {{ $date }}
                                         {{ $time }}
                                         {{ $newdatetimetype }}
-                                        بواسطه
+                                        {{ __('admin_accounts.added_by') }}
                                         {{ $data['added_by_admin'] }}
                                     @else
-                                        لا يوجد
+                                        {{ __('admin_accounts.no_data') }}
                                     @endif
                                 </td>
-
                             </tr>
 
                             <tr>
-                                <td>تاريخ اخر تحديث </td>
+                                <td>{{ __('admin_accounts.updated_at') }}</td>
                                 <td>
                                     @if ($data['updated_by'] > 0 && $data['updated_by'] != null)
                                         @php
@@ -65,18 +69,25 @@
                                             $date = $dt->format('Y-m-d');
                                             $time = $dt->format('h-i');
                                             $newdatetime = date('A', strtotime($time));
-                                            $newdatetimetype = $newdatetime == 'PM' ? 'صباحا' : 'مساء';
+                                            $newdatetimetype =
+                                                $newdatetime == 'PM'
+                                                    ? __('admin_accounts.am')
+                                                    : __('admin_accounts.pm');
                                         @endphp
+
                                         {{ $date }}
                                         {{ $time }}
                                         {{ $newdatetimetype }}
-                                        بواسطه
+                                        {{ __('admin_accounts.updated_by') }}
                                         {{ $data['updated_by_admin'] }}
                                     @else
-                                        لا يوجد
+                                        {{ __('admin_accounts.no_data') }}
                                     @endif
+
                                     <a href="{{ route('admin.treasuries.edit', $data->id) }}"
-                                        class="btn btn-primary">تعديل</a>
+                                        class="btn btn-primary">
+                                        {{ __('admin_accounts.edit') }}
+                                    </a>
                                 </td>
                             </tr>
 
@@ -84,26 +95,30 @@
                         <br>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('admin_accounts.no_records') }}
                         </div>
                     @endif
 
                     <div class="card-header">
-                        <h3 class="card-title card_title_center"> الخزن المضافه لل ({{ $data['name'] }})</h3>
+                        <h3 class="card-title card_title_center">
+                            {{ __('admin_accounts.user_treasuries') }}
+                            ({{ $data['name'] }})
+                        </h3>
                     </div>
-                    <button type="button" class="btn btn-primary m-2 addtreasuries" data-toggle="modal"
-                        data-target="#addtreasuries">اضافه خزنه جديده
-                    </button>
 
+                    <button type="button" class="btn btn-primary m-2 addtreasuries"
+                        data-toggle="modal" data-target="#addtreasuries">
+                        {{ __('admin_accounts.add_new_treasury') }}
+                    </button>
 
                     @if (isset($admin_treasuries) && count($admin_treasuries) > 0)
                         <table class="table table-bordered table-hover text-center">
                             <thead class="custom_head">
                                 <tr>
-                                    <th>التسلسل</th>
-                                    <th>اسم الخزن</th>
-                                    <th>تاريخ الاضافه </th>
-                                    <th> </th>
+                                    <th>{{ __('admin_accounts.serial') }}</th>
+                                    <th>{{ __('admin_accounts.treasury_name') }}</th>
+                                    <th>{{ __('admin_accounts.created_at') }}</th>
+                                    <th>{{ __('admin_accounts.actions') }}</th>
                                 </tr>
                             </thead>
 
@@ -121,29 +136,34 @@
                                                     $date = $dt->format('Y-m-d');
                                                     $time = $dt->format('h-i');
                                                     $newdatetime = date('A', strtotime($time));
-                                                    $newdatetimetype = $newdatetime == 'PM' ? 'صباحا' : 'مساء';
+                                                    $newdatetimetype =
+                                                        $newdatetime == 'PM'
+                                                            ? __('admin_accounts.am')
+                                                            : __('admin_accounts.pm');
                                                 @endphp
+
                                                 {{ $date }}
                                                 {{ $time }}
                                                 {{ $newdatetimetype }}
-                                                بواسطه
+                                                {{ __('admin_accounts.added_by') }}
                                                 {{ $data['added_by_admin'] }}
                                             @else
-                                                لا يوجد
+                                                {{ __('admin_accounts.no_data') }}
                                             @endif
-
                                         </td>
+
                                         <td>
-                                            <form action="{{ route('admin_treasuries.deletetreasuries', $item->id) }}" method="POST"
-                                                style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                            <form action="{{ route('admin_treasuries.deletetreasuries', $item->id) }}"
+                                                method="POST"
+                                                style="display:inline;"
+                                                onsubmit="return confirm('{{ __('admin_accounts.confirm_delete') }}')">
                                                 @csrf
                                                 @method('DELETE')
 
                                                 <button type="submit" class="btn btn-danger">
-                                                    حذف
+                                                    {{ __('admin_accounts.delete') }}
                                                 </button>
                                             </form>
-
                                         </td>
                                     </tr>
                                 @endforeach
@@ -151,7 +171,7 @@
                         </table>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('admin_accounts.no_records') }}
                         </div>
                     @endif
 
@@ -163,44 +183,51 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content bg-info">
                         <div class="modal-header">
-                            <h4 class="modal-title">الخزن</h4>
+                            <h4 class="modal-title">{{ __('admin_accounts.treasuries') }}</h4>
                             <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span></button>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
 
                         <input type="hidden" id="token_search" value="{{ csrf_token() }}">
                         <input type="hidden" id="admin_id" value="{{ $data->id }}">
-                        <input type="hidden" id="ajax_addtreasuries" value="{{ route('admin_treasuries.addtreasuries') }}">                        <input type="hidden" id="ajax_edititem" value="{{ route('supplier_orders.edititem') }}">
+                        <input type="hidden" id="ajax_addtreasuries" value="{{ route('admin_treasuries.addtreasuries') }}">
+                        <input type="hidden" id="ajax_edititem" value="{{ route('supplier_orders.edititem') }}">
 
                         <div class="modal-body" id="edit_item_model_body"
                             style="background-color: white !important; color: black;">
 
                             <div class="col-4">
-                                <label for="admin_id">اسم الخزنه</label>
-                                <select name="name" id="name" class="form-control">
-                                    <option selected disabled value="">اختر الخزنه</option>
-                                    @foreach ($treasuries as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
+                                <label for="admin_id">{{ __('admin_accounts.treasury_name') }}</label>
 
+                                <select name="name" id="name" class="form-control">
+                                    <option selected disabled value="">
+                                        {{ __('admin_accounts.select_treasury') }}
+                                    </option>
+
+                                    @foreach ($treasuries as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="m-2 text-center">
-                                <button type="button" class="btn btn-info" id="add">اضافه</button>
+                                <button type="button" class="btn btn-info" id="add">
+                                    {{ __('admin_accounts.add') }}
+                                </button>
                             </div>
-
-
 
                         </div>
 
                         <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">اغلاق</button>
+                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                                {{ __('admin_accounts.close') }}
+                            </button>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
                 </div>
-                <!-- /.modal-dialog -->
             </div>
         </div>
     </div>

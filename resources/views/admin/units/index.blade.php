@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-
+{{ __('units.title') }}
 @endsection
 
 @section('contentheader')
-
+{{ __('units.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('unit.index') }}"> الوحدات </a>
+    <a href="{{ route('unit.index') }}">  {{ __('units.title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('units.show') }}
 @endsection
 
 @section('content')
@@ -23,14 +23,14 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات الوحدات </h3>
-                    <a class="btn btn-success" href="{{ route('unit.create') }}">اضافه وحده جديده</a>
+                    <h3 class="card-title card_title_center">{{ __('units.units_data') }} </h3>
+                    <a class="btn btn-success" href="{{ route('unit.create') }}">{{ __('units.add_new_unit') }}</a>
                 </div>
 
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                            <input type="text" id="search_by_name" placeholder="{{ __('units.search_by_name') }}" class="form-control mb-3">
                         </div>
 
                         <div class="col-md-4">
@@ -38,22 +38,22 @@
                                 @csrf
                                 <select name="type" class="form-control" onchange="this.form.submit()">
                                     @if (!isset($type))
-                                        <option value="all">عرض الكل</option>
-                                        <option value="1">وحدات رئيسيه</option>
-                                        <option value="0">وحدات فرعيه</option>
+                                        <option value="all">{{ __('units.show_all') }}</option>
+                                        <option value="1">{{ __('units.master_units') }}</option>
+                                        <option value="0">{{ __('units.sub_units') }}</option>
                                     @else
                                         @if ($type == 0)
-                                            <option value="all" >عرض الكل</option>
-                                            <option value="1">وحدات رئيسيه</option>
-                                            <option value="0" selected>وحدات فرعيه</option>
+                                            <option value="all" >{{ __('units.show_all') }}</option>
+                                            <option value="1">{{ __('units.master_units') }}</option>
+                                            <option value="0" selected>{{ __('units.sub_units') }}</option>
                                         @elseif($type == 1)
-                                            <option value="all">عرض الكل</option>
-                                            <option value="1" selected>وحدات رئيسيه</option>
-                                            <option value="0">وحدات فرعيه</option>
+                                            <option value="all">{{ __('units.show_all') }}</option>
+                                            <option value="1" selected>{{ __('units.master_units') }}</option>
+                                            <option value="0">{{ __('units.sub_units') }}</option>
                                         @else
-                                            <option value="all" selected>عرض الكل</option>
-                                            <option value="1">وحدات رئيسيه</option>
-                                            <option value="0" >وحدات فرعيه</option>
+                                            <option value="all" selected>{{ __('units.show_all') }}</option>
+                                            <option value="1">{{ __('units.master_units') }}</option>
+                                            <option value="0" >{{ __('units.sub_units') }}</option>
                                         @endif
                                     @endif
                                 </select>
@@ -69,12 +69,12 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم الوحده</th>
-                                        <th>رئيسيه؟</th>
-                                        <th>حاله التفعيل</th>
-                                        <th>تاريخ الاضافه</th>
-                                        <th>تاريخ التحديث</th>
+                                        <th>{{ __('units.serial') }}</th>
+                                        <th>{{ __('units.unit_name') }}</th>
+                                        <th>{{ __('units.is_master') }}</th>
+                                        <th>{{ __('units.status') }}</th>
+                                        <th>{{ __('units.created_at') }}</th>
+                                        <th>{{ __('units.updated_at') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -87,51 +87,51 @@
                                             <td>{{ $item->name }}</td>
                                             <td>
                                                 @if ($item->is_master == 1)
-                                                    وحده رئيسية
+                                                {{ __('units.master_unit') }}
                                                 @else
-                                                    وحده فرعية
+                                                {{ __('units.sub_unit') }}
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">{{ __('units.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">معطل</span>
+                                                    <span class="badge badge-danger">{{ __('units.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item['created_at'] != null)
-                                                    {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه
+                                                    {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ?  __('units.am')  : __('units.pm')) }}
+                                                    {{ __('units.by') }}
                                                     {{ $item['added_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                {{ __('units.not_fount') }}
                                                 @endif
 
                                             </td>
 
                                             <td>
                                                 @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
-                                                    {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه
+                                                    {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? __('units.am'): __('units.pm')) }}
+                                                    {{ __('units.by') }}
                                                     {{ $item['updated_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                {{ __('units.not_found') }}
                                                 @endif
                                             </td>
 
 
                                             <td>
                                                 <a href="{{ route('unit.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
+                                                    class="btn btn-primary">{{ __('units.edit') }}</a>
 
                                                 <form action="{{ route('unit.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    class="d-inline" onsubmit="return confirm('{{ __('units.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('units.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -145,7 +145,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('units.no_data') }}
                         </div>
                     @endif
 

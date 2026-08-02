@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-    الاصناف
+    {{ __('items.title') }}
 @endsection
 
 @section('contentheader')
-    الاصناف
+{{ __('items.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('itemcard.index') }}"> الاصناف </a>
+    <a href="{{ route('itemcard.index') }}"> {{ __('items.title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('items.show') }}
 @endsection
 
 
@@ -22,7 +22,7 @@
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">عرض الصنف</h3>
+            <h3 class="card-title card_title_center">{{ __('items.item_data') }}</h3>
         </div>
 
         <div class="card-body border border-dark">
@@ -30,12 +30,12 @@
             <div>
                 <div class="row mb-2">
                     <div class="form-group col-sm-6">
-                        <label> - باركود الصنف : </label>
+                        <label> - {{ __('items.barcode_item') }} : </label>
                         <td> {{ $data->barcode }} </td>
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label> - اسم الصنف : </label>
+                        <label> - {{ __('items.name') }} : </label>
                         <td> {{ $data->name }} </td>
                     </div>
                 </div>
@@ -44,20 +44,20 @@
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-6">
-                        <label> - النوع : </label>
+                        <label> - {{ __('items.type') }} : </label>
                         <tr>
                             @if ($data->item_type == 1)
-                                تجزئه
+                            {{ __('items.stock_item') }}
                             @elseif ($data->item_type == 2)
-                                استهلاكى بصلاحيه
+                            {{ __('items.consumable_expiry') }}
                             @elseif($data->item_type == 3)
-                                عهده
+                            {{ __('items.asset_item') }}
                             @endif
                         </tr>
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label class="ml-1"> - الفئه : </label>
+                        <label class="ml-1"> - {{ __('items.category') }} : </label>
                         <tr>{{ $data->category->name }}
                         </tr>
                     </div>
@@ -67,10 +67,10 @@
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-6">
-                        <label class="ml-1"> - الصنف الاساسى له : </label>
+                        <label class="ml-1"> - {{ __('items.the_main_item') }} : </label>
                         <tr>
                             @if ($data->parent_id == 0)
-                                الصنف اساسى
+                            {{ __('items.main_item') }}
                             @else
                                 {{ $data->items->name }}
                             @endif
@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label> - وحده القياس الاساسيه للصنف : </label>
+                        <label> - {{ __('items.main_unit_of_item') }} : </label>
                         <tr>
                             {{ $data->units->name }}
                         </tr>
@@ -89,13 +89,13 @@
                 <div class="row mb-2">
                     <div class="form-group col-sm-6">
 
-                        <label> - السعر الجمله لل(<span class="text-muted name_parent_unit">{{ $data->units->name }}
+                        <label> - {{ __('items.whole_price') }}(<span class="text-muted name_parent_unit">{{ $data->units->name }}
                             </span>) : </label>
                         <td>{{ $data->Wholesale_price / 100 }} </td>
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label> - السعر النص جمله لل(<span class="name_parent_unit text-muted">
+                        <label> - {{ __('items.part_whole_price') }}(<span class="name_parent_unit text-muted">
                                 {{ $data->units->name }}</span>) :</label>
                         <td>{{ $data->half_Wholesale_price / 100 }} </td>
                     </div>
@@ -104,7 +104,7 @@
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-6">
-                        <label> - السعر القطاعى لل (<span class="name_parent_unit text-muted">{{ $data->units->name }}
+                        <label> - {{ __('items.part_price') }} (<span class="name_parent_unit text-muted">{{ $data->units->name }}
                             </span>)
                             : </label>
                         <td>{{ $data->price / 100 }} </td>
@@ -112,7 +112,7 @@
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label> - السعر تكلفه الشراء لل(<span class="name_parent_unit text-muted">{{ $data->units->name }}
+                        <label> - {{ __('items.cost_price') }}(<span class="name_parent_unit text-muted">{{ $data->units->name }}
                             </span>) :</label>
                         <td>{{ $data->cost_price / 100 }} </td>
                     </div>
@@ -120,12 +120,12 @@
 
 
                 <div class="form-group col-5 mt-3 mb-4">
-                    <label> - هل للصنف وحده تجزئه؟ :</label>
+                    <label> - {{ __('items.has_retail_unit') }} :</label>
                     <td name="has_retail_unit" id="retail_options" class="form-control">
                         @if ($data->has_retail_unit == 1)
-                            نعم
+                        {{ __('items.yes') }}
                         @elseif($data->has_retail_unit == 0)
-                            لا
+                        {{ __('items.no') }}
                         @endif
                     </td>
                 </div>
@@ -134,7 +134,7 @@
 
                     <div class="form-group col-sm-6 retail_divs"
                         @if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - وحده القياس التجزئه :</label>
+                        <label> - {{ __('items.the_retail_unit') }} :</label>
                         <td>
 
                                 {{ $data->retail_units->name }}
@@ -144,9 +144,9 @@
                     <div class="form-group col-sm-6 retail_divs"
                         @if ($data->has_retail_unit != '1') style="display:none" @endif>
 
-                        <label> - عدد وحدات القياس التجزئه (<span
+                        <label> - {{ __('items.retail_unit_number') }} (<span
                                 class="name_retail_unit text-muted ">{{ $data->retail_units->name }}
-                            </span>) لل (<span class="name_parent_unit text-muted ">{{ $data->units->name }} </span>)
+                            </span>)  (<span class="name_parent_unit text-muted ">{{ $data->units->name }} </span>)
                             :</label>
                         <td> {{ $data->retail_unit_to_parent }} </td>
                     </div>
@@ -157,7 +157,7 @@
 
                     <div
                         class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - السعر الجمله لل (<span class="name_retail_unit text-muted">
+                        <label> - {{ __('items.whole_price') }} (<span class="name_retail_unit text-muted">
                                 {{ $data->retail_units->name }}</span>) :</label>
                         <td> {{ $data->retail_Wholesale_price / 100 }} </td>
                     </div>
@@ -165,7 +165,7 @@
 
                     <div
                         class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - السعر النص جمله لل (<span class="name_retail_unit text-muted">
+                        <label> - {{ __('items.part_whole_price') }} (<span class="name_retail_unit text-muted">
                                 {{ $data->retail_units->name }}</span>) :</label>
                         <td> {{ $data->retail_half_Wholesale_price / 100}} </td>
                     </div>
@@ -175,7 +175,7 @@
 
                     <div
                         class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - السعر القطاعى لل (<span
+                        <label> - {{ __('items.part_price') }} (<span
                                 class="name_retail_unit text-muted">{{ $data->retail_units->name }}</span>)
                             :</label>
                         <td> {{ $data->retail_price / 100}} </td>
@@ -183,7 +183,7 @@
 
                     <div
                         class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - السعر تكلفه الشراء لل (<span
+                        <label> - {{ __('items.cost_price') }} (<span
                                 class="name_retail_unit text-muted">{{ $data->retail_units->name }}</span>)
                             :</label>
                         <td> {{ $data->retail_cost_price/ 100 }} </td>
@@ -193,23 +193,23 @@
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-6 ">
-                        <label> - هل للصنف سعر ثابت؟ :</label>
+                        <label> - {{ __('items.const_price') }} :</label>
                         <td>
                             @if ($data->has_fixed_price == 1)
-                                ثابت وغير قابل للتغير
+                            {{ __('items.constant_price') }}
                             @elseif($data->has_fixed_price == 0)
-                                قابل للتغير بالفواتير
+                            {{ __('items.can_change_price') }}
                             @endif
                         </td>
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label> - حالة التفعيل :</label>
+                        <label> - {{ __('items.status') }} :</label>
                         <td>
                             @if ($data->active == 1)
-                                مفعل
+                            {{ __('items.active') }}
                             @elseif($data->active == 0)
-                                معطل
+                            {{ __('items.inactive') }}
                             @endif
                         </td>
                     </div>
@@ -219,7 +219,7 @@
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-8 ml-5">
-                        <label> - صوره الصنف ان وجدت : </label>
+                        <label> - {{ __('items.image') }} : </label>
                         <td>
                             @if (!empty($data->photo))
                                 <img id="img" src="{{ asset('assets/admin/uploads/' . $data->photo) }}"
@@ -234,7 +234,7 @@
 
 
             <a href="{{ route('itemcard.index') }}" class="btn btn-secondary m-4 p-2 col-sm-11">
-                رجوع
+                {{ __('items.cancel') }}
             </a>
 
         </div>

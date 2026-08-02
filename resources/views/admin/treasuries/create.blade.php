@@ -13,7 +13,7 @@
 @endsection
 
 @section('contentheaderactive')
-    إضافة
+{{ __('treasuries.add_new') }}
 @endsection
 
 @section('content')

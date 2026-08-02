@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-    شاشه الصرف
+    {{ __('exchange.page_title') }}
 @endsection
 
 @section('contentheader')
-    شاشه الصرف
+{{ __('exchange.page_title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('exchange_transaction.index') }}"> شاشه الصرف </a>
+    <a href="{{ route('exchange_transaction.index') }}"> {{ __('exchange.page_title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('exchange.view') }}
 @endsection
 
 @section('content')
@@ -23,7 +23,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات شاشه الصرف</h3>
+                    <h3 class="card-title card_title_center">{{ __('exchange.exchange_screen_data') }}</h3>
                 </div>
 
 
@@ -46,7 +46,7 @@
                                 <div class="row mb-2">
 
                                     <div class="form-group col-sm-4">
-                                        <label>الخزنه المتاحه </label>
+                                        <label>{{ __('exchange.available_treasury') }} </label>
                                         <select name="treasuries_id" id="treasuries_id" class="form-control">
                                             <option value="{{ $exist->treasuries_id }}"
                                                 {{ old('treasuries_id', $exist->treasuries_id) == $exist->treasuries_id ? 'selected' : '' }}>
@@ -59,10 +59,10 @@
                                     </div>
 
                                      <div class="form-group col-sm-4">
-                                        <label>اختر الحساب </label>
+                                        <label>{{ __('exchange.select_account') }}  </label>
                                         <select name="account_number" id="account_number" class="form-control">
                                             <option value="" disabled {{ old('account_number') ? '' : 'selected' }}>
-                                                اختر الحساب
+                                                {{ __('exchange.select_account') }}
                                             </option>
 
                                             @foreach ($accounts as $account)
@@ -79,9 +79,9 @@
                                     </div>
 
                                     <div class="form-group col-sm-4">
-                                        <label>نوع الحركه </label>
+                                        <label>{{ __('exchange.movement_type') }}  </label>
                                         <select name="move_type" id="move_type" class="form-control">
-                                            <option value="" selected disabled>اختر نوع الحركه</option>
+                                            <option value="" selected disabled>{{ __('exchange.select_movement_type') }} </option>
                                             @foreach ($move_types as $move_type)
                                                 <option value="{{ $move_type->id }}"
                                                     {{ old('move_type') == $move_type->id ? 'selected' : '' }}>
@@ -103,7 +103,7 @@
                                 <div class="row">
 
                                     <div class="form-group col-4">
-                                        <label>الرصيد المتاح بالخزنه</label>
+                                        <label>{{ __('exchange.available_treasury_balance') }} </label>
                                         <input readonly class="form-control" type="number" name="treasuries_balance"
                                             value="{{ old('treasuries_balance', $treasuries_balance / 100) }}">
 
@@ -113,7 +113,7 @@
                                     </div>
 
                                     <div class="form-group col-4">
-                                        <label>تاريخ الحركه</label>
+                                        <label>{{ __('exchange.movement_date') }} </label>
                                         <input class="form-control" type="date" name="date"
                                             value="{{ old('date') }}">
 
@@ -124,9 +124,9 @@
 
 
                                     <div class="form-group col-4">
-                                        <label>الرصيد المصروف</label>
+                                        <label>{{ __('exchange.spent_amount') }} </label>
                                         <input
-                                            @if ($treasuries_balance / 100 <= 0) disabled placeholder="الرصيد لا يسمح" @endif
+                                            @if ($treasuries_balance / 100 <= 0) disabled placeholder="{{ __('exchange.insufficient_balance') }}" @endif
                                             class="form-control" type="number" name="money" id="money"
                                             value="{{ old('money') }}">
 
@@ -140,7 +140,7 @@
                                 <div class="row">
 
                                     <div class="form-group col-sm-6">
-                                        <label>البيان</label>
+                                        <label>{{ __('exchange.description') }} </label>
                                         <textarea name="byan" class="form-control" style="height: 100px;">{{ old('byan') }}</textarea>
 
                                         @error('byan')
@@ -154,14 +154,14 @@
 
                             <div class="form-group text-center">
                                 <button type="submit" class="btn btn-primary m-2" style="padding: 8px 15px;">
-                                    صرف
+                                    {{ __('exchange.exchange') }}
                                 </button>
                             </div>
 
                         </form>
                     @else
                         <div class="alert alert-danger">
-                            لا يوجد شفت مفتوح لك
+                             {{ __('exchange.no_open_shift') }}
                         </div>
                     @endif
 
@@ -172,12 +172,12 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>كود ايصال الصرف</th>
-                                        <th>الخزنه</th>
-                                        <th>المبلغ المصروف</th>
-                                        <th>نوع الحركه</th>
-                                        <th>بيان الحركه</th>
-                                        <th>المستخدم</th>
+                                        <th>{{ __('exchange.receipt_number') }} </th>
+                                        <th>{{ __('exchange.treasury') }} </th>
+                                        <th>{{ __('exchange.amount') }} </th>
+                                        <th>{{ __('exchange.movement_type_table') }} </th>
+                                        <th>{{ __('exchange.movement_description') }} </th>
+                                        <th>{{ __('exchange.user') }} </th>
 
                                         <th> </th>
                                     </tr>
@@ -202,11 +202,11 @@
                                                 {{ $item->byan }}
                                             </td>
 
-                                            <td>{{ $item->created_at }} <br> بواسطه {{ $item->admin_name }}</td>
+                                            <td>{{ $item->created_at }} <br> {{ __('exchange.by') }} {{ $item->admin_name }}</td>
 
                                             <td>
-                                                <a href="#" class="btn btn-primary">طباعه</a>
-                                                <a href="#" class="btn btn-info">المزيد</a>
+                                                <a href="#" class="btn btn-primary">{{ __('exchange.print') }}</a>
+                                                <a href="#" class="btn btn-info">{{ __('exchange.more') }}</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -219,7 +219,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('exchange.no_data') }}
                         </div>
                     @endif
 

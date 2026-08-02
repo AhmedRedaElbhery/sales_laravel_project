@@ -1,18 +1,36 @@
 <div class="form-group">
-    <label>بيانات الكميات </label>
+
+    <label>{{ __('salesBills.quantity_data') }}</label>
+
     <select id="quantity_with_date" name="quantity_with_date" class="form-control">
 
+        <option value="" selected disabled>
+            {{ __('salesBills.choose_suitable') }}
+        </option>
 
-        <option value="" selected disabled>اختر المناسب</option>
-            @foreach ($batches_data as $data)
-                <option value="{{ $data->id }}"> الكميه المتاحه {{ $data->quantity * 1 }} @if ( $data->production_date != null)
-                    بتاريخ
+        @foreach ($batches_data as $data)
+
+            <option value="{{ $data->id }}">
+
+                {{ __('salesBills.available_quantity') }}
+                {{ $data->quantity * 1 }}
+
+                @if ($data->production_date != null)
+
+                    {{ __('salesBills.with_date') }}
                     {{ $data->production_date }}
-                @endif</option>
-            @endforeach
+
+                @endif
+
+            </option>
+
+        @endforeach
+
     </select>
+
 
     @error('quantity_with_date')
         <span class="text-danger">{{ $message }}</span>
     @enderror
+
 </div>

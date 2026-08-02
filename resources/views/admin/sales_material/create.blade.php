@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    إضافة فئه فواتير جديده
+    {{ __('salesCategories.add_new_category') }}
 @endsection
 
 @section('contentheader')
-    فئات الفواتير
+{{ __('salesCategories.page_title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.sales_material.index') }}">  فئات الفواتير </a>
+    <a href="{{ route('admin.sales_material.index') }}">  {{ __('salesCategories.page_title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    إضافة
+{{ __('salesCategories.add_new') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">إضافة فئه فواتير جديده</h3>
+                    <h3 class="card-title card_title_center">{{ __('salesCategories.add_new_category') }}</h3>
                 </div>
 
                 <div class="card-body">
@@ -36,7 +36,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <label>اسم الفئه </label>
+                            <label>{{ __('salesCategories.category_name') }} </label>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -44,11 +44,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('salesCategories.status') }}</label>
                             <select name="active" class="form-control">
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1">مفعل</option>
-                                <option value="0">معطل</option>
+                                <option value="" selected disabled>{{ __('salesCategories.choose_status') }}</option>
+                                <option value="1">{{ __('salesCategories.active') }}</option>
+                                <option value="0">{{ __('salesCategories.inactive') }}</option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>
@@ -56,11 +56,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary m-2">
-                            حفظ
+                            {{ __('salesCategories.save') }}
                         </button>
 
                         <a href="{{ route('admin.sales_material.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('salesCategories.cancel') }}
                         </a>
 
                     </form>

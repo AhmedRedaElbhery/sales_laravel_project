@@ -126,6 +126,78 @@ class SalesBillsController extends Controller
         //
     }
 
+
+
+    public function mirrorgetUnits(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+            $item_code = $request->item_code;
+
+            $data = ItemCard::where(['item_code' => $item_code, 'com_code' => $com_code])->first();
+            if ($data['has_retail_unit'] == 1) {
+                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
+                $data['retail_unit_name'] = Unit::where(['id' => $data['retail_unit_id']])->value('name');
+            } else {
+                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
+            }
+        }
+        return view('admin.sales_bills.mirrorGetUnits', compact('data'));
+    }
+
+    public function mirror_get_batches(Request $request)
+    {
+        if ($request->ajax()) {
+
+
+            $com_code = auth()->user()->com_code;
+            $item_code = $request->item_code;
+            $item_type = $request->item_type;
+            $unit_id = $request->unit_id;
+            $store_id = $request->store_id;
+
+
+            if ($item_type == 2) {
+                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
+            } else {
+                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
+            }
+            return view('admin.sales_bills.mirrorGetBatches', compact('batches_data'));
+        }
+    }
+
+    public function get_add_items(Request $request)
+    {
+        if ($request->ajax()) {
+            $com_code = auth()->user()->com_code;
+
+            $data['normal_sale'] = $request->normal_sale;
+            $data['store_id'] = $request->store_id;
+            $data['item_code'] = $request->item_code;
+            $data['parent_unit'] = $request->parent_unit;
+            $data['unit_id'] = $request->unit_id;
+            $data['batche_id'] = $request->quantity_with_date;
+            $data['sale_type'] = $request->sale_type;
+            $data['quantity'] = $request->quantity;
+            $data['price'] = $request->price;
+            $data['total_price'] = $request->total_price;
+
+
+            $data['unit_name'] = $request->unit_name;
+            $data['item_name'] = $request->item_name;
+            $data['normal_sale_name'] = $request->normal_sale_name;
+            $data['sale_type_name'] = $request->sale_type_name;
+
+            return view('admin.sales_bills.mirror_get_add_items', compact('data'));
+        }
+    }
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+
     public function getUnits(Request $request)
     {
         if ($request->ajax()) {
@@ -200,32 +272,7 @@ class SalesBillsController extends Controller
         ]);
     }
 
-    public function get_add_items(Request $request)
-    {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
 
-            $data['normal_sale'] = $request->normal_sale;
-            $data['store_id'] = $request->store_id;
-            $data['item_code'] = $request->item_code;
-            $data['parent_unit'] = $request->parent_unit;
-            $data['unit_id'] = $request->unit_id;
-            $data['batche_id'] = $request->quantity_with_date;
-            $data['sale_type'] = $request->sale_type;
-            $data['quantity'] = $request->quantity;
-            $data['price'] = $request->price;
-            $data['total_price'] = $request->total_price;
-
-
-            $data['unit_name'] = $request->unit_name;
-            $data['item_name'] = $request->item_name;
-            $data['normal_sale_name'] = $request->normal_sale_name;
-            $data['sale_type_name'] = $request->sale_type_name;
-
-
-            return view('admin.sales_bills.get_add_items', compact('data'));
-        }
-    }
 
     public function open_active_bill(Request $request)
     {

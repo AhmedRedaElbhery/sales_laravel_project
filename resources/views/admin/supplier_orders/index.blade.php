@@ -1,20 +1,21 @@
-@extends('layouts.admin');
+@extends('layouts.admin')
 
 @section('title')
-    المشتريات
+    {{ __('suppliersOrders.title') }}
 @endsection
 
 @section('contentheader')
-    حركات مخزنيه
+    {{ __('suppliersOrders.inventory_transactions') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('supplier_orders.index') }}"> فواتير المشتريات </a>
+    <a href="{{ route('supplier_orders.index') }}">
+        {{ __('suppliersOrders.supplier_orders') }}
+    </a>
 @endsection
 
-
 @section('contentheaderactive')
-    عرض
+    {{ __('suppliersOrders.show') }}
 @endsection
 
 @section('content')
@@ -23,8 +24,13 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">فواتير المشتريات من الموردين </h3>
-                    <a class="btn btn-success" href="{{ route('supplier_orders.create') }}">اضافه فاتوره جديده</a>
+                    <h3 class="card-title card_title_center">
+                        {{ __('suppliersOrders.supplier_invoices') }}
+                    </h3>
+
+                    <a class="btn btn-success" href="{{ route('supplier_orders.create') }}">
+                        {{ __('suppliersOrders.add_new_invoice') }}
+                    </a>
                 </div>
 
                 <div class="card-body">
@@ -35,13 +41,13 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>كود الفاتوره</th>
-                                        <th>اسم المورد</th>
-                                        <th>نوع الفاتوره</th>
-                                        <th>المخزن</th>
-                                        <th>تاريخ الفاتوره</th>
-                                        <th>حاله الاعتماد </th>
-                                        <th> </th>
+                                        <th>{{ __('suppliersOrders.invoice_code') }}</th>
+                                        <th>{{ __('suppliersOrders.supplier_name') }}</th>
+                                        <th>{{ __('suppliersOrders.invoice_type') }}</th>
+                                        <th>{{ __('suppliersOrders.store') }}</th>
+                                        <th>{{ __('suppliersOrders.invoice_date') }}</th>
+                                        <th>{{ __('suppliersOrders.approval_status') }}</th>
+                                        <th>{{ __('suppliersOrders.actions') }}</th>
                                     </tr>
                                 </thead>
 
@@ -51,62 +57,67 @@
                                             <td>{{ $item->auto_serial }}</td>
 
                                             <td>{{ $item->supplier_name }}</td>
+
                                             <td>
                                                 @if ($item->doc_type == 1)
-                                                    فاتوره مشتريات
+                                                    {{ __('suppliersOrders.purchase_invoice') }}
                                                 @elseif ($item->doc_type == 2)
-                                                    فاتوره مرتحعات
+                                                    {{ __('suppliersOrders.purchase_return_invoice') }}
                                                 @else
-                                                    فاتوره مشتريات
+                                                    {{ __('suppliersOrders.purchase_invoice') }}
                                                 @endif
                                             </td>
 
-                                            <td>
-                                                {{ $item->store_name }}
-                                            </td>
+                                            <td>{{ $item->store_name }}</td>
 
-                                            <td>
-                                                {{ $item->order_date }}
-
-                                            </td>
+                                            <td>{{ $item->order_date }}</td>
 
                                             <td>
                                                 @if ($item->is_approved == 0)
-                                                    <span class="badge badge-danger p-2">غير معتمده</span>
+                                                    <span class="badge badge-danger p-2">
+                                                        {{ __('suppliersOrders.not_approved') }}
+                                                    </span>
                                                 @else
-                                                    <span class="badge badge-success p-2">معتمده</span>
+                                                    <span class="badge badge-success p-2">
+                                                        {{ __('suppliersOrders.approved') }}
+                                                    </span>
                                                 @endif
                                             </td>
 
                                             <td>
-
-
                                                 <a href="{{ route('supplier_orders.show', $item->id) }}"
-                                                    class="btn btn-info">التفاصيل</a>
+                                                    class="btn btn-info">
+                                                    {{ __('suppliersOrders.details') }}
+                                                </a>
+
                                                 @if ($item->is_approved == 0)
                                                     <form action="{{ route('supplier_orders.destroy', $item->id) }}"
-                                                        method="POST" class="d-inline"
-                                                        onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                        method="POST"
+                                                        class="d-inline"
+                                                        onsubmit="return confirm('{{ __('suppliersOrders.confirm_delete') }}')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">حذف</button>
+
+                                                        <button type="submit" class="btn btn-danger">
+                                                            {{ __('suppliersOrders.delete') }}
+                                                        </button>
                                                     </form>
                                                 @endif
-
-
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
                             <br>
+
                             <div class="mt-3">
                                 {{ $data->links() }}
                             </div>
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('suppliersOrders.no_data') }}
                         </div>
                     @endif
 

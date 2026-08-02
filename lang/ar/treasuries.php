@@ -62,5 +62,6 @@ return [
     'save' => 'حفظ',
 
     'add_new_branch' => 'اضافه خزنه فرعيه جديده',
+    'choose_treasury' => 'اختر الخزنه',
 
 ];

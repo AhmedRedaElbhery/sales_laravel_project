@@ -1,19 +1,19 @@
 @extends('layouts.admin');
 
 @section('title')
-    حسابات الموردين
+    {{ __('supplierAccounts.page_title') }}
 @endsection
 
 @section('contentheader')
-    الحسابات
+{{ __('supplierAccounts.page_title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات الموردين </a>
+    <a href="{{ route('customers.index') }}"> {{ __('supplierAccounts.page_title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل
+{{ __('supplierAccounts.edit') }}
 @endsection
 
 @section('content')
@@ -39,7 +39,7 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>اسم الحساب </label>
+                            <label>{{ __('supplierAccounts.name') }} </label>
                             <input type="text" name="name" class="form-control"
                                 value="{{ old('name', $data->name) }}">
 
@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>العنوان </label>
+                            <label>{{ __('supplierAccounts.address') }} </label>
                             <input type="text" name="address" class="form-control"
                                 value="{{ old('address', $data->address) }}">
 
@@ -63,9 +63,9 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>الفئه التابع لها </label>
+                            <label>{{ __('supplierAccounts.supplier_category') }} </label>
                             <select name="category_id" class="form-control">
-                                <option value="" disabled>اختر الفئه </option>
+                                <option value="" disabled>{{ __('supplierAccounts.choose_category') }} </option>
 
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @if ($category->id == $data['supplier_category_id']) selected @endif>
@@ -79,17 +79,17 @@
 
 
                         <div class="form-group col-sm-6">
-                            <label>حاله التفعيل</label>
+                            <label>{{ __('supplierAccounts.status') }}</label>
 
                             <select name="active" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('supplierAccounts.choose_status') }}</option>
 
                                 <option value="1" @selected(old('active', $data->active) == 1)>
-                                    مفعل
+                                    {{ __('supplierAccounts.active') }}
                                 </option>
 
                                 <option value="0" @selected(old('active', $data->active) == 0)>
-                                    مؤرشف وغير مفعل
+                                    {{ __('supplierAccounts.inactive') }}
                                 </option>
                             </select>
 
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label>الملاحظات</label> <br>
+                        <label>{{ __('supplierAccounts.notes') }}</label> <br>
 
                         <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
 
@@ -115,11 +115,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary m-5 p-2 col-sm-5">
-                    تحديث
+                    {{ __('supplierAccounts.update') }}
                 </button>
 
                 <a href="{{ route('suppliers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
-                    رجوع
+                    {{ __('supplierAccounts.cancel') }}
                 </a>
 
             </form>

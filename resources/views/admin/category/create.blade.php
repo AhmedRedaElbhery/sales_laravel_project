@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    إضافة فئه فواتير جديده
+    {{ __('category.add_new_category') }}
 @endsection
 
 @section('contentheader')
-فئات الاصناف
+{{ __('category.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('category.index') }}">  فئات الاصناف </a>
+    <a href="{{ route('category.index') }}">  {{ __('category.title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    إضافة
+{{ __('category.add_new') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">إضافة فئات اصناف جديده</h3>
+                    <h3 class="card-title card_title_center">{{ __('category.add_new_category') }}</h3>
                 </div>
 
                 <div class="card-body">
@@ -36,7 +36,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <label>اسم الصنف </label>
+                            <label>{{ __('category.category_name') }} </label>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -44,11 +44,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('category.status') }}</label>
                             <select name="active" class="form-control">
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1">مفعل</option>
-                                <option value="0">معطل</option>
+                                <option value="" selected disabled>{{ __('category.choose_status') }}</option>
+                                <option value="1">{{ __('category.active') }}</option>
+                                <option value="0">{{ __('category.inactive') }}</option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>
@@ -56,11 +56,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary m-2">
-                            حفظ
+                            {{ __('category.save') }}
                         </button>
 
                         <a href="{{ route('category.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('category.cancel') }}
                         </a>
 
                     </form>

@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    إضافة مخزن جديد
+    {{ __('stores.add_new_store') }}
 @endsection
 
 @section('contentheader')
-    المخازن
+{{ __('stores.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.store.index') }}">  المخازن </a>
+    <a href="{{ route('admin.store.index') }}">  {{ __('stores.title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    إضافة
+{{ __('stores.add_new') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">إضافة مخزن جديد</h3>
+                    <h3 class="card-title card_title_center">{{ __('stores.add_new_store') }}</h3>
                 </div>
 
                 <div class="card-body">
@@ -36,7 +36,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <label>اسم المخزن  </label>
+                            <label>{{ __('stores.store_name') }}  </label>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>الهاتف  </label>
+                            <label>{{ __('stores.phone') }}  </label>
                             <input type="number" name="phone" class="form-control" value="{{ old('phone') }}">
                             @error('phone')
                                 <span class="text-danger">{{ $message }}</span>
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>العنوان   </label>
+                            <label>{{ __('stores.address') }}   </label>
                             <input type="text" name="address" class="form-control" value="{{ old('address') }}">
                             @error('address')
                                 <span class="text-danger">{{ $message }}</span>
@@ -60,11 +60,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('stores.active_status') }}</label>
                             <select name="active" class="form-control">
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1">مفعل</option>
-                                <option value="0">معطل</option>
+                                <option value="" selected disabled>{{ __('stores.choose_status') }}</option>
+                                <option value="1">{{ __('stores.active') }}</option>
+                                <option value="0">{{ __('stores.inactive') }}</option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>
@@ -72,11 +72,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary m-2">
-                            حفظ
+                            {{ __('stores.save') }}
                         </button>
 
                         <a href="{{ route('admin.store.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('stores.cancel') }}
                         </a>
 
                     </form>

@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-المخازن
+{{ __('stores.title') }}
 @endsection
 
 @section('contentheader')
-    المخازن
+{{ __('stores.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin.store.index') }}"> المخازن </a>
+    <a href="{{ route('admin.store.index') }}"> {{ __('stores.title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('stores.show') }}
 @endsection
 
 @section('content')
@@ -23,8 +23,8 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات المخازن </h3>
-                    <a class="btn btn-success" href="{{ route('admin.store.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">{{ __('stores.stores_data') }} </h3>
+                    <a class="btn btn-success" href="{{ route('admin.store.create') }}">{{ __('stores.add_new') }}</a>
                 </div>
 
                 <div class="card-body">
@@ -35,13 +35,13 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>التسلسل</th>
-                                        <th>اسم المخزن</th>
-                                        <th>الهاتف</th>
-                                        <th>العنوان</th>
-                                        <th>حاله التفعيل</th>
-                                        <th>تاريخ الاضافه</th>
-                                        <th>تاريخ التحديث</th>
+                                        <th>{{ __('stores.sequence') }}</th>
+                                        <th>{{ __('stores.store_name') }}</th>
+                                        <th>{{ __('stores.phone') }}</th>
+                                        <th>{{ __('stores.address') }}</th>
+                                        <th>{{ __('stores.active_status') }}</th>
+                                        <th>{{ __('stores.created_at') }}</th>
+                                        <th>{{ __('stores.updated_at') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -57,44 +57,44 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">{{ __('stores.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">معطل</span>
+                                                    <span class="badge badge-danger">{{ __('stores.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 @if ($item['created_at'] != null)
-                                                {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه<br>
+                                                {{ $item['created_at']->format('Y-m-d h:i') . ' ' . ($item['created_at']->format('A') == 'AM' ? __('stores.am') :  __('stores.pm') ) }}
+                                                {{ __('stores.by') }}<br>
                                                     {{ $item['added_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                {{ __('stores.no_data') }}
                                                 @endif
 
                                             </td>
 
                                             <td>
                                                 @if ($item['updated_by'] > 0 && $item['updated_at'] != null)
-                                                {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? 'صباحاً' : 'مساءً') }}
-                                                    بواسطه<br>
+                                                {{ $item['updated_at']->format('Y-m-d h:i') . ' ' . ($item['updated_at']->format('A') == 'AM' ? __('stores.am') : __('stores.pm')) }}
+                                                {{ __('stores.by') }}<br>
                                                     {{ $item['updated_by_admin'] }}
                                                 @else
-                                                    لا يوجد
+                                                {{ __('stores.no_data') }}
                                                 @endif
                                             </td>
 
 
                                             <td>
                                                 <a href="{{ route('admin.store.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
+                                                    class="btn btn-primary">{{ __('stores.edit') }}</a>
 
                                                 <form action="{{ route('admin.store.delete', $item->id) }}"
                                                     method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    class="d-inline" onsubmit="return confirm('{{ __('stores.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('stores.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -108,7 +108,8 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+
+                            {{ __('stores.no_data') }}
                         </div>
                     @endif
 

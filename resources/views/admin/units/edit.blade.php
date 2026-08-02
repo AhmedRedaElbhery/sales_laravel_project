@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    تعديل الوحده
+    {{ __('units.edit_unit') }}
 @endsection
 
 @section('contentheader')
-تعديل الوحده
+{{ __('units.edit_unit') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('unit.index') }}"> الوحدات </a>
+    <a href="{{ route('unit.index') }}"> {{ __('units.units') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل بيانات الوحده
+{{ __('units.edit_unit_data') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">تعديل بيانات الوحده </h3>
+                    <h3 class="card-title card_title_center">{{ __('units.edit_unit_data') }} </h3>
                 </div>
 
                 <div class="card-body">
@@ -37,26 +37,26 @@
                         @method('put')
 
                         <div class="form-group">
-                            <label>اسم الوحده </label>
+                            <label>{{ __('units.unit_name') }} </label>
                             <input type="text" name="name" class="form-control" value="{{ $data->name }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('units.unit_type') }}</label>
 
                             <select name="is_master" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('units.choose_status') }}</option>
 
                                 <option value="1"
                                     {{ old('is_master', $data->is_master) == 1 ? 'selected' : '' }}>
-                                    وحده رئيسيه
+                                    {{ __('units.master_unit') }}
                                 </option>
 
                                 <option value="0"
                                     {{ old('is_master', $data->is_master) == 0 ? 'selected' : '' }}>
-                                    وحده فرعيه
+                                    {{ __('units.sub_unit') }}
                                 </option>
                             </select>
 
@@ -67,19 +67,19 @@
 
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('units.status') }}</label>
 
                             <select name="active" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('units.choose_status') }}</option>
 
                                 <option value="1"
                                     {{ old('active', $data->active) == 1 ? 'selected' : '' }}>
-                                    مفعل
+                                    {{ __('units.active') }}
                                 </option>
 
                                 <option value="0"
                                     {{ old('active', $data->active) == 0 ? 'selected' : '' }}>
-                                    معطل
+                                    {{ __('units.inactive') }}
                                 </option>
                             </select>
 
@@ -89,11 +89,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            حفظ التعديلات
+                            {{ __('units.save') }}
                         </button>
 
                         <a href="{{ route('unit.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('units.cancel') }}
                         </a>
 
                     </form>

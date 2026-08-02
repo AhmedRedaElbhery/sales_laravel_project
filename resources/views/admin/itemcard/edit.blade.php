@@ -1,26 +1,26 @@
 @extends('layouts.admin')
 
 @section('title')
-    تعديل الصنف
+    {{ __('items.edit_item') }}
 @endsection
 
 @section('contentheader')
-    تعديل الصنف
+{{ __('items.edit_item') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('itemcard.index') }}"> الاصناف </a>
+    <a href="{{ route('itemcard.index') }}"> {{ __('items.items') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل الصنف
+{{ __('items.edit_item') }}
 @endsection
 
 @section('content')
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">تعديل الصنف</h3>
+            <h3 class="card-title card_title_center">{{ __('items.edit_item') }}</h3>
         </div>
 
         <div class="card-body">
@@ -36,7 +36,7 @@
                 <div>
                     <div class="row mb-2">
                         <div class="form-group col-sm-6">
-                            <label>باركود الصنف <span class="text-muted">(ف حاله عدم الادخال سيتم ادخاله اليا) </span>
+                            <label>{{ __('items.barcode_item') }} <span class="text-muted">({{ __('items.auto_barcode') }}) </span>
                             </label>
                             <input type="text" name="barcode" class="form-control" value="{{ $data->barcode }}">
                             @error('barcode')
@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>اسم الصنف </label>
+                            <label>{{ __('items.name') }} </label>
                             <input type="text" name="name" class="form-control" value="{{ $data->name }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -57,23 +57,23 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-3">
-                            <label>النوع </label>
+                            <label>{{ __('items.type') }} </label>
                             <select name="item_type" class="form-control">
 
-                                <option value="" disabled>اختر النوع </option>
+                                <option value="" disabled>{{ __('items.choose_type') }} </option>
 
                                 @if ($data->item_type == 1)
-                                    <option value="1" selected>تجزئه </option>
-                                    <option value="2"> استهلاكى بصلاحيه</option>
-                                    <option value="3">عهده</option>
+                                    <option value="1" selected>{{ __('items.stock_item') }} </option>
+                                    <option value="2"> {{ __('items.consumable_expiry') }}</option>
+                                    <option value="3">{{ __('items.asset_item') }}</option>
                                 @elseif ($data->item_type == 2)
-                                    <option value="1">تجزئه </option>
-                                    <option value="2" selected> استهلاكى بصلاحيه</option>
-                                    <option value="3">عهده</option>
+                                    <option value="1">{{ __('items.stock_item') }}  </option>
+                                    <option value="2" selected> {{ __('items.consumable_expiry') }}</option>
+                                    <option value="3">{{ __('items.asset_item') }}</option>
                                 @elseif($data->item_type == 3)
-                                    <option value="1">تجزئه </option>
-                                    <option value="2"> استهلاكى بصلاحيه</option>
-                                    <option value="3" selected>عهده</option>
+                                    <option value="1">{{ __('items.stock_item') }}  </option>
+                                    <option value="2"> {{ __('items.consumable_expiry') }}</option>
+                                    <option value="3" selected>{{ __('items.asset_item') }}</option>
                                 @endif
 
                             </select>
@@ -83,9 +83,9 @@
                         </div>
 
                         <div class="form-group col-sm-3">
-                            <label>الفئه </label>
+                            <label>{{ __('items.category') }} </label>
                             <select name="category_id" class="form-control">
-                                <option value="" selected disabled>اختر الفئه </option>
+                                <option value="" selected disabled>{{ __('items.choose_category') }} </option>
 
                                 @foreach ($categories as $item)
                                     <option value="{{ $item->id }}" @if ($data->categories_id == $item->id) selected @endif>
@@ -99,9 +99,9 @@
                         </div>
 
                         <div class="form-group col-sm-3">
-                            <label>الصنف الاساسى له </label>
+                            <label>{{ __('items.the_main_item') }} </label>
                             <select name="parent_id" class="form-control">
-                                <option value="0"> هذا الصنف اساسى </option>
+                                <option value="0"> {{ __('items.main_item') }} </option>
 
                                 @foreach ($items as $item)
                                     <option value="{{ $item->id }}" @if ($data->parent_id == $item->id) selected @endif>
@@ -115,9 +115,9 @@
                         </div>
 
                         <div class="form-group col-sm-3">
-                            <label>وحده القياس الاساسيه للصنف </label>
+                            <label> {{ __('items.main_unit_of_item') }} </label>
                             <select name="unit_parent_id" id="unit_parent_id" class="form-control">
-                                <option value="" disabled>اختر الوحده </option>
+                                <option value="" disabled> {{ __('items.choose_unit') }} </option>
 
                                 @foreach ($units as $item)
                                     <option value="{{ $item->id }}" @if ($data->parent_unit_id == $item->id) selected @endif>
@@ -139,7 +139,7 @@
                             @php
                                 $unitName = $units->where('id', $data->parent_unit_id)->first()?->name;
                             @endphp
-                            <label>السعر الجمله لل (<span class="text-muted name_parent_unit">{{ $unitName }}
+                            <label>{{ __('items.whole_price') }}  (<span class="text-muted name_parent_unit">{{ $unitName }}
                                 </span>) </label>
                             <input type="text" name="Wholesale_price" class="form-control"
                                 value="{{ $data->Wholesale_price / 100 }}">
@@ -149,7 +149,7 @@
                         </div>
 
                         <div class="form-group col-sm-3 ">
-                            <label>السعر النص جمله لل (<span class="name_parent_unit text-muted">
+                            <label>{{ __('items.part_whole_price') }}  (<span class="name_parent_unit text-muted">
                                     {{ $unitName }}</span>) </label>
                             <input type="text" name="half_Wholesale_price" class="form-control"
                                 value="{{ $data->half_Wholesale_price / 100 }}">
@@ -159,7 +159,7 @@
                         </div>
 
                         <div class="form-group col-sm-3">
-                            <label>السعر القطاعى لل (<span class="name_parent_unit text-muted">{{ $unitName }} </span>)
+                            <label>{{ __('items.part_price') }}  (<span class="name_parent_unit text-muted">{{ $unitName }} </span>)
                             </label>
                             <input type="text" name="price" class="form-control" value="{{ $data->price/ 100 }}">
                             @error('price')
@@ -168,7 +168,7 @@
                         </div>
 
                         <div class="form-group col-sm-3">
-                            <label>السعر تكلفه الشراء لل (<span class="name_parent_unit text-muted">{{ $unitName }}
+                            <label>{{ __('items.cost_price') }}  (<span class="name_parent_unit text-muted">{{ $unitName }}
                                 </span>)</label>
                             <input type="text" name="cost_price" class="form-control" value="{{ $data->cost_price/ 100 }}">
                             @error('cost_price')
@@ -179,11 +179,11 @@
 
 
                     <div class="form-group col-5">
-                        <label>هل للصنف وحده تجزئه ؟</label>
+                        <label>{{ __('items.has_retail_unit') }}</label>
                         <select name="has_retail_unit" id="retail_options" class="form-control">
-                            <option value="" selected disabled>اختر النوع </option>
-                            <option value="1" @if ($data->has_retail_unit == 1) selected @endif>نعم </option>
-                            <option value="0" @if ($data->has_retail_unit == 0) selected @endif> لا</option>
+                            <option value="" selected disabled>{{ __('items.choose_type') }} </option>
+                            <option value="1" @if ($data->has_retail_unit == 1) selected @endif>{{ __('items.yes') }} </option>
+                            <option value="0" @if ($data->has_retail_unit == 0) selected @endif> {{ __('items.no') }}</option>
                         </select>
                         @error('has_retail_unit')
                             <span class="text-danger">{{ $message }}</span>
@@ -194,10 +194,10 @@
 
                         <div class="form-group col-sm-4 retail_divs"
                             @if ($data->has_retail_unit != '1') style="display:none" @endif>
-                            <label>وحده القياس التجزئه </label>
+                            <label>{{ __('items.the_retail_unit') }}  </label>
                             <select id="retail_unit_id" name="retail_units" class="form-control">
-                                <option value="" disabled @if ($data->retail_unit_id == null) selected @endif>اختر
-                                    الوحده </option>
+                                <option value="" disabled @if ($data->retail_unit_id == null) selected @endif>
+                                    {{ __('items.choose_unit') }} </option>
 
                                 @foreach ($retail_units as $item)
                                     <option value="{{ $item->id }}"@if ($data->retail_unit_id == $item->id) selected @endif>
@@ -215,7 +215,7 @@
                             @php
                                 $retailName = $retail_units->where('id', $data->retail_unit_id)->first()?->name;
                             @endphp
-                            <label>عدد وحدات القياس التجزئه (<span
+                            <label> {{ __('items.retail_unit_number') }}  (<span
                                     class="name_retail_unit text-muted ">{{ $retailName }} </span>) لل (<span
                                     class="name_parent_unit text-muted ">{{ $unitName }} </span>)
                             </label>
@@ -228,7 +228,7 @@
 
                         <div
                             class="form-group col-sm-4 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                            <label>السعر الجمله لل (<span class="name_retail_unit text-muted">
+                            <label>{{ __('items.whole_price') }} (<span class="name_retail_unit text-muted">
                                     {{ $retailName }}</span>)</label>
                             <input type="text" name="retail_Wholesale_price" class="form-control"
                                 value="{{ $data->retail_Wholesale_price / 100 }}">
@@ -242,7 +242,7 @@
                     <div class="row mb-2">
                         <div
                             class="form-group col-sm-4 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                            <label>السعر النص جمله لل (<span class="name_retail_unit text-muted">
+                            <label>{{ __('items.part_whole_price') }} (<span class="name_retail_unit text-muted">
                                     {{ $retailName }}</span>)</label>
                             <input type="text" name="retail_half_Wholesale_price" class="form-control"
                                 value="{{ $data->retail_half_Wholesale_price/ 100 }}">
@@ -253,7 +253,7 @@
 
                         <div
                             class="form-group col-sm-4 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                            <label>السعر القطاعى لل (<span
+                            <label>{{ __('items.part_price') }} (<span
                                     class="name_retail_unit text-muted">{{ $retailName }}</span>)</label>
                             <input type="text" name="retail_price" class="form-control"
                                 value="{{ $data->retail_price/ 100 }}">
@@ -264,7 +264,7 @@
 
                         <div
                             class="form-group col-sm-4 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                            <label>السعر تكلفه الشراء لل (<span
+                            <label>{{ __('items.cost_price') }} (<span
                                     class="name_retail_unit text-muted">{{ $retailName }}</span>)</label>
                             <input type="text" name="retail_cost_price" class="form-control"
                                 value="{{ $data->retail_cost_price/ 100 }}">
@@ -277,13 +277,11 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-4 ">
-                            <label> هل للصنف سعر ثابت؟ </label>
+                            <label> {{ __('items.const_price') }} </label>
                             <select name="has_fixed_price" class="form-control">
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1" @if ($data->has_fixed_price == 1) selected @endif>ثابت وغير قابل
-                                    للتغير</option>
-                                <option value="0" @if ($data->has_fixed_price == 0) selected @endif>قابل للتغير
-                                    بالفواتير</option>
+                                <option value="" selected disabled>{{ __('items.choose_status') }}</option>
+                                <option value="1" @if ($data->has_fixed_price == 1) selected @endif>{{ __('items.constant_price') }}</option>
+                                <option value="0" @if ($data->has_fixed_price == 0) selected @endif> {{ __('items.can_change_price') }}</option>
                             </select>
                             @error('has_fixed_price')
                                 <span class="text-danger">{{ $message }}</span>
@@ -296,11 +294,11 @@
 
 
                         <div class="form-group col-sm-5">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('items.status') }}</label>
                             <select name="active" class="form-control">
-                                <option value="" selected disabled>اختر الحاله</option>
-                                <option value="1" @if ($data->active == 1) selected @endif>مفعل</option>
-                                <option value="0" @if ($data->active == 0) selected @endif>معطل</option>
+                                <option value="" selected disabled>{{ __('items.choose_status') }}</option>
+                                <option value="1" @if ($data->active == 1) selected @endif>{{ __('items.active') }}</option>
+                                <option value="0" @if ($data->active == 0) selected @endif>{{ __('items.inactive') }}</option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>
@@ -308,7 +306,7 @@
                         </div>
 
                         <div class="form-group col-sm-6 ml-5">
-                            <label>صوره الصنف ان وجدت </label>
+                            <label>{{ __('items.image') }} </label>
                             <div class="d-flex align-items-center">
 
                                 <input type="file" name="photo" class="form-control">
@@ -320,7 +318,7 @@
                                 @endif
                             </div>
 
-                            <a id="delete_image" class="btn btn-sm btn-danger text-white mt-2">حذف الصوره </a>
+                            <a id="delete_image" class="btn btn-sm btn-danger text-white mt-2">{{ __('items.delete_image') }} </a>
                             @error('photo')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -331,11 +329,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary m-5 p-2 col-sm-5">
-                    حفظ
+                    {{ __('items.save') }}
                 </button>
 
                 <a href="{{ route('itemcard.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
-                    رجوع
+                    {{ __('items.cancel') }}
                 </a>
 
             </form>

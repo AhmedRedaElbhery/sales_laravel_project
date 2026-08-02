@@ -1,7 +1,7 @@
-@extends('layouts.admin');
+@extends('layouts.admin')
 
 @section('title')
-    المشتريات
+    {{ __('suppliersOrders.title') }}
 @endsection
 
 @section('css')
@@ -10,17 +10,19 @@
 @endsection
 
 @section('contentheader')
-    حركات مخزنيه
+    {{ __('suppliersOrders.inventory_transactions') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('supplier_orders.index') }}"> فواتير المشتريات </a>
+    <a href="{{ route('supplier_orders.index') }}">
+        {{ __('suppliersOrders.supplier_orders') }}
+    </a>
 @endsection
-
 
 @section('contentheaderactive')
-    عرض
+    {{ __('suppliersOrders.show') }}
 @endsection
+
 
 @section('content')
     <div class="row">
@@ -36,88 +38,104 @@
                 @endif
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات فاتوره المشتريات</h3>
+                    <h3 class="card-title card_title_center">
+                        {{ __('suppliersOrders.invoice_data') }}
+                    </h3>
                 </div>
 
                 <div class="card-body">
                     @if (isset($data))
                         <table id="example2" class="table table-bordered table-hover">
                             <tr>
-                                <td class="width30">كود الفاتوره الالى</td>
+                                <td class="width30">{{ __('suppliersOrders.auto_invoice_code') }}</td>
                                 <td>{{ $data['auto_serial'] }}</td>
                             </tr>
 
                             <tr>
-                                <td class="width30">كود الفاتوره لدى المورد</td>
+                                <td class="width30">{{ __('suppliersOrders.supplier_invoice_code') }}</td>
                                 <td>{{ $data['doc_number'] }}</td>
                             </tr>
 
                             <tr>
-                                <td class="width30">تاريخ الفاتوره</td>
+                                <td class="width30">{{ __('suppliersOrders.invoice_date') }}</td>
                                 <td>{{ $data['order_date'] }}</td>
                             </tr>
 
                             <tr>
-                                <td class="width30">اسم المورد</td>
+                                <td class="width30">{{ __('suppliersOrders.supplier_name') }}</td>
                                 <td>{{ $data['supplier_name'] }}</td>
                             </tr>
 
                             <tr>
-                                <td>نوع الفاتوره</td>
+                                <td>{{ __('suppliersOrders.invoice_type') }}</td>
                                 <td>
                                     @if ($data['pill_type'] == 0)
-                                        كاش
+                                        {{ __('suppliersOrders.cash') }}
                                     @else
-                                        اجل
+                                        {{ __('suppliersOrders.deferred') }}
                                     @endif
                                 </td>
                             </tr>
 
                             <tr>
-                                <td class="width30">اجمالى الفاتوره قبل الخصم</td>
+                                <td class="width30">{{ __('suppliersOrders.total_before_discount') }}</td>
                                 <td>{{ $data['total_before_discount'] / 100 }}</td>
                             </tr>
 
+
                             @if ($data['descpunt_type'] != null)
                                 <tr>
-                                    <td class="width30">نوع الخصم على الفاتوره</td>
+                                    <td class="width30">{{ __('suppliersOrders.invoice_discount_type') }}</td>
 
                                     @if ($data['discount_type'] == 1)
-                                        <td>خصم نسبه {{ $data['discount_percent'] }} وقيمتها
-                                            {{ $data['discount_value'] }}</td>
+                                        <td>
+                                            {{ __('suppliersOrders.percentage_discount') }}
+                                            {{ $data['discount_percent'] }}
+                                            {{ __('suppliersOrders.discount_value') }}
+                                            {{ $data['discount_value'] }}
+                                        </td>
                                     @else
-                                        <td>خصم يدوى وقيمته {{ $data['discount_value'] }}</td>
+                                        <td>
+                                            {{ __('suppliersOrders.manual_discount') }}
+                                            {{ __('suppliersOrders.discount_value') }}
+                                            {{ $data['discount_value'] }}
+                                        </td>
                                     @endif
                                 </tr>
                             @else
                                 <tr>
-                                    <td class="width30">الخصم على الفاتوره</td>
-                                    <td>لا يوجد خصم</td>
+                                    <td class="width30">{{ __('suppliersOrders.invoice_discount_type') }}</td>
+                                    <td>{{ __('suppliersOrders.no_discount') }}</td>
                                 </tr>
                             @endif
 
-
                             <tr>
-                                <td class="width30"> الضرايب</td>
+                                <td class="width30">{{ __('suppliersOrders.taxes') }}</td>
+
                                 @if ($data['tax_percent'] == 0 || $data['tax_percent'] == null)
-                                    <td> لا يوجد</td>
+                                    <td>{{ __('suppliersOrders.no_tax') }}</td>
                                 @else
-                                    <td>نسبه الضرايب{{ $data['tax_percent'] }} وقيمتها {{ $data['tax_value'] }}</td>
+                                    <td>
+                                        {{ __('suppliersOrders.tax_percentage') }}
+                                        {{ $data['tax_percent'] }}
+                                        {{ __('suppliersOrders.discount_value') }}
+                                        {{ $data['tax_value'] }}
+                                    </td>
                                 @endif
                             </tr>
 
                             <tr>
-                                <td class="width30">اجمالى الفاتوره بعد الخصم</td>
+                                <td class="width30">{{ __('suppliersOrders.total_after_discount') }}</td>
                                 <td>{{ $data['total_cost'] / 100 }}</td>
                             </tr>
 
                             <tr>
-                                <td class="width30">المخزن</td>
+                                <td class="width30">{{ __('suppliersOrders.store') }}</td>
                                 <td>{{ $data['store_name'] }}</td>
                             </tr>
 
                             <tr>
-                                <td>تاريخ الاضافه </td>
+                                <td>{{ __('suppliersOrders.added_at') }}</td>
                                 <td>
                                     @if ($data['added_by'] > 0 && $data['added_by'] != null)
                                         @php
@@ -125,22 +143,25 @@
                                             $date = $dt->format('Y-m-d');
                                             $time = $dt->format('h-i');
                                             $newdatetime = date('A', strtotime($time));
-                                            $newdatetimetype = $newdatetime == 'AM' ? 'صباحا' : 'مساء';
+                                            $newdatetimetype =
+                                                $newdatetime == 'AM'
+                                                    ? __('suppliersOrders.morning')
+                                                    : __('suppliersOrders.evening');
                                         @endphp
+
                                         {{ $date }}
                                         {{ $time }}
                                         {{ $newdatetimetype }}
-                                        بواسطه
+                                        {{ __('suppliersOrders.added_by') }}
                                         {{ $data['added_by_admin'] }}
                                     @else
-                                        لا يوجد
+                                        {{ __('suppliersOrders.no_data') }}
                                     @endif
                                 </td>
-
                             </tr>
 
                             <tr>
-                                <td>تاريخ اخر تحديث </td>
+                                <td>{{ __('suppliersOrders.updated_at') }}</td>
                                 <td>
                                     @if ($data['updated_by'] > 0 && $data['updated_by'] != null)
                                         @php
@@ -148,29 +169,38 @@
                                             $date = $dt->format('Y-m-d');
                                             $time = $dt->format('h-i');
                                             $newdatetime = date('A', strtotime($time));
-                                            $newdatetimetype = $newdatetime == 'PM' ? 'صباحا' : 'مساء';
+                                            $newdatetimetype =
+                                                $newdatetime == 'PM'
+                                                    ? __('suppliersOrders.evening')
+                                                    : __('suppliersOrders.morning');
                                         @endphp
+
                                         {{ $date }}
                                         {{ $time }}
                                         {{ $newdatetimetype }}
-                                        بواسطه
+                                        {{ __('suppliersOrders.added_by') }}
                                         {{ $data['updated_by_admin'] }}
                                     @else
-                                        لا يوجد
+                                        {{ __('suppliersOrders.no_data') }}
                                     @endif
-
                                 </td>
                             </tr>
+
+
+
                             <tr>
                                 <td>
                                     @if ($data['is_approved'] == 0)
                                         <a href="{{ route('supplier_orders.edit', $data->id) }}"
-                                            class="btn btn-primary text-white">تعديل</a>
+                                            class="btn btn-primary text-white">
+                                            {{ __('suppliersOrders.edit') }}
+                                        </a>
 
                                         <button type="button" class="btn btn-success m-2" data-toggle="modal"
-                                            data-target="#load_model_approve">اعتماد</button>
+                                            data-target="#load_model_approve">
+                                            {{ __('suppliersOrders.approve') }}
+                                        </button>
                                     @endif
-
                                 </td>
                             </tr>
                         </table>
@@ -178,34 +208,40 @@
                         @if ($data['is_approved'] == 0)
                             <button type="button" class="btn btn-info m-2" data-toggle="modal"
                                 data-target="#add_item_model">
-                                اضافه صنف للفاتوره
+                                {{ __('suppliersOrders.add_item_to_invoice') }}
                             </button>
                         @endif
 
                         <br>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('suppliersOrders.no_data') }}
                         </div>
                     @endif
 
+
+
                     @if (isset($details) && count($details) > 0)
                         <div class="card-header">
-                            <h3 class="card-title card_title_center">الاصناف المضافه لهذه الفاتوره</h3>
+                            <h3 class="card-title card_title_center">
+                                {{ __('suppliersOrders.invoice_items') }}
+                            </h3>
                         </div>
+
                         <table class="table table-bordered table-hover text-center">
                             <thead class="custom_head">
                                 <tr>
-                                    <th>التسلسل</th>
-                                    <th>اسم الصنف</th>
-                                    <th>وحده الصنف</th>
-                                    <th>سعر وحده الصنف</th>
-                                    <th>الكميه</th>
-                                    <th>الاجمالى</th>
-                                    <th>تاريخ الانتاج </th>
-                                    <th>تاريخ انتهاء الصلاحيه </th>
+                                    <th>{{ __('suppliersOrders.serial') }}</th>
+                                    <th>{{ __('suppliersOrders.item_name') }}</th>
+                                    <th>{{ __('suppliersOrders.item_unit') }}</th>
+                                    <th>{{ __('suppliersOrders.unit_price') }}</th>
+                                    <th>{{ __('suppliersOrders.quantity') }}</th>
+                                    <th>{{ __('suppliersOrders.total') }}</th>
+                                    <th>{{ __('suppliersOrders.production_date') }}</th>
+                                    <th>{{ __('suppliersOrders.expiry_date') }}</th>
+
                                     @if ($data['is_approved'] == 0)
-                                        <th> </th>
+                                        <th></th>
                                     @endif
                                 </tr>
                             </thead>
@@ -225,22 +261,22 @@
 
                                         @if ($data['is_approved'] == 0)
                                             <td>
-
                                                 <button type="button" class="btn btn-primary edititem" data-toggle="modal"
-                                                    data-id = "{{ $bill_item->id }}" data-target="#edit_item_model">تعديل
+                                                    data-id="{{ $bill_item->id }}" data-target="#edit_item_model">
+                                                    {{ __('suppliersOrders.edit') }}
                                                 </button>
+
                                                 <form
                                                     action="{{ route('supplier_orders.destroy_details', $bill_item->id) }}"
                                                     method="POST" style="display:inline;"
-                                                    onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    onsubmit="return confirm('{{ __('suppliersOrders.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
 
                                                     <button type="submit" class="btn btn-danger">
-                                                        حذف
+                                                        {{ __('suppliersOrders.delete') }}
                                                     </button>
                                                 </form>
-
                                             </td>
                                         @endif
 
@@ -250,9 +286,11 @@
                         </table>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('suppliersOrders.no_data') }}
                         </div>
                     @endif
+
+
 
                 </div>
 
@@ -263,9 +301,10 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content bg-info">
                     <div class="modal-header">
-                        <h4 class="modal-title">اضافه اصناف للفاتوره</h4>
+                        <h4 class="modal-title">{{ __('suppliersOrders.add_items') }}</h4>
                         <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span></button>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
 
                     <input type="hidden" id="token_search" value="{{ csrf_token() }}">
@@ -280,18 +319,22 @@
 
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label>بيانات الاصناف </label>
+                                    <label>{{ __('suppliersOrders.item_data') }}</label>
+
                                     <select id="item_card_add" name="items" class="form-control select2">
-                                        <option value="" selected disabled>اختر اسم الصنف</option>
+                                        <option value="" selected disabled>
+                                            {{ __('suppliersOrders.select_item') }}
+                                        </option>
 
                                         @if (isset($items))
                                             @foreach ($items as $item)
                                                 <option data-type="{{ $item->item_type }}" value="{{ $item->item_code }}">
-                                                    {{ $item->name }}</option>
+                                                    {{ $item->name }}
+                                                </option>
                                             @endforeach
                                         @endif
-
                                     </select>
+
                                     @error('items')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -303,69 +346,65 @@
                             </div>
 
                             <div class="col-4 related_to_itemcard" style="display: none">
-
                                 <div class="form-group">
-                                    <label>الكميه المستلمه</label>
+                                    <label>{{ __('suppliersOrders.received_quantity') }}</label>
+
                                     <input type="number" id="quantity_add" name="quantity_add" class="form-control"
                                         value="">
-
                                 </div>
                             </div>
 
                             <div class="col-4 related_to_itemcard" style="display: none">
-
                                 <div class="form-group">
-                                    <label>سعر الوحده </label>
+                                    <label>{{ __('suppliersOrders.price') }}</label>
+
                                     <input type="number" id="price_add" name="price_add" class="form-control"
                                         value="">
-
                                 </div>
                             </div>
 
                             <div class="col-4 related_to_date" style="display: none">
-
                                 <div class="form-group">
-                                    <label>تاريخ الانتاج </label>
+                                    <label>{{ __('suppliersOrders.production_date') }}</label>
+
                                     <input type="date" id="production_date" name="production_date"
                                         class="form-control" value="">
-
                                 </div>
                             </div>
 
                             <div class="col-4 related_to_date" style="display: none">
-
                                 <div class="form-group">
-                                    <label>تاريخ الانتهاء </label>
+                                    <label>{{ __('suppliersOrders.expiry_date') }}</label>
+
                                     <input type="date" id="end_date" name="end_date" class="form-control"
                                         value="">
-
                                 </div>
                             </div>
 
                             <div class="col-4 related_to_itemcard" style="display: none">
-
                                 <div class="form-group">
-                                    <label>الاجمالى </label>
+                                    <label>{{ __('suppliersOrders.grand_total') }}</label>
+
                                     <input readonly type="number" id="total_price" name="total_price"
                                         class="form-control" value="">
-
                                 </div>
                             </div>
 
                             <div class="col-12">
-
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-info" id="addtobill">اضافه الاصناف
-                                        للفاتوره</button>
+                                    <button type="button" class="btn btn-info" id="addtobill">
+                                        {{ __('suppliersOrders.add_items_button') }}
+                                    </button>
                                 </div>
                             </div>
 
-
-
                         </div>
                     </div>
+
                     <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">اغلاق</button>
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                            {{ __('suppliersOrders.close') }}
+                        </button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -374,13 +413,15 @@
         </div>
 
 
+
         <div class="modal fade" id="edit_item_model">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content bg-info">
                     <div class="modal-header">
-                        <h4 class="modal-title">تحديث الصنف</h4>
+                        <h4 class="modal-title">{{ __('suppliersOrders.update_item') }}</h4>
                         <button type="button" class="close color-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span></button>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
 
                     <input type="hidden" id="token_search" value="{{ csrf_token() }}">
@@ -393,8 +434,11 @@
                         style="background-color: white !important; color: black;">
 
                     </div>
+
                     <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">اغلاق</button>
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+                            {{ __('suppliersOrders.close') }}
+                        </button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -402,12 +446,13 @@
             <!-- /.modal-dialog -->
         </div>
 
+
         <div class="modal fade" id="load_model_approve">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content bg-info">
 
                     <div class="modal-header">
-                        <h4 class="modal-title">اعتماد الفاتوره</h4>
+                        <h4 class="modal-title">{{ __('suppliersOrders.approve_invoice') }}</h4>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -416,14 +461,15 @@
                     <input type="hidden" id="token_search" value="{{ csrf_token() }}">
                     <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
                     <input type="hidden" id="total" value="{{ $data['total_before_discount'] }}">
-                    <input type="hidden" id="model_approve_route" value="{{ route('supplier_orders.model_approve') }}">
+                    <input type="hidden" id="model_approve_route"
+                        value="{{ route('supplier_orders.model_approve') }}">
 
                     <div class="modal-body bg-white text-dark">
 
                         <div class="row">
 
                             <div class="form-group col-md-12">
-                                <label>الاجمالى بالفاتوره قبل الخصم والضريبه</label>
+                                <label>{{ __('suppliersOrders.invoice_total_before_discount_tax') }}</label>
                                 <input class="form-control" readonly id="total"
                                     value="{{ $data['total_before_discount'] / 100 }}">
 
@@ -433,7 +479,7 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>ادخل نسبه الضريبه على الفاتوره</label>
+                                <label>{{ __('suppliersOrders.enter_tax_percent') }}</label>
                                 <input type="number" name="tax_percent" id="tax_percent" class="form-control">
 
                                 @error('tax_percent')
@@ -442,12 +488,12 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label> قيمه الضريبه </label>
+                                <label>{{ __('suppliersOrders.tax_value') }}</label>
                                 <input type="number" readonly name="tax_value" id="tax_value" class="form-control">
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>ادخل نسبه الخصم على الفاتوره</label>
+                                <label>{{ __('suppliersOrders.enter_discount_percent') }}</label>
                                 <input type="number" name="discount_percent" id="discount_percent"
                                     class="form-control">
 
@@ -457,15 +503,13 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>قيمه الخصم </label>
+                                <label>{{ __('suppliersOrders.discount_value') }}</label>
                                 <input type="number" readonly name="discount_value" id="discount_value"
                                     class="form-control">
-
-
                             </div>
 
                             <div class="form-group col-md-12">
-                                <label>الاجمالى النهائى</label>
+                                <label>{{ __('suppliersOrders.final_total') }}</label>
                                 <input type="number" readonly name="total_value" id="total_value" class="form-control">
 
                                 @error('total_value')
@@ -474,25 +518,22 @@
                             </div>
 
                             <div class="form-group col-md-12">
-                                <label>الخزنة الحالية</label>
+                                <label>{{ __('suppliersOrders.current_treasury') }}</label>
                                 <select class="form-control" id="treasuries_id" disabled>
                                     <option value="{{ $shift->treasuries_id }}" selected>
                                         {{ $shift->treasuries_name }}
                                     </option>
                                 </select>
-
-
                             </div>
 
                             <div class="form-group col-md-12">
-                                <label>الرصيد المتاح بالخزنه</label>
+                                <label>{{ __('suppliersOrders.available_treasury_balance') }}</label>
                                 <input class="form-control" readonly id="treasuries_balance"
                                     value="{{ $shift->treasuries_balance / 100 }}">
                             </div>
 
-
                             <div class="form-group col-md-6">
-                                <label>المبلغ المدفوع </label>
+                                <label>{{ __('suppliersOrders.paid_amount') }}</label>
                                 <input class="form-control" id="what_paid" name="what_paid">
 
                                 @error('what_paid')
@@ -501,7 +542,7 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>المبلغ المتبقى </label>
+                                <label>{{ __('suppliersOrders.remaining_amount') }}</label>
                                 <input readonly class="form-control" id="what_remain" name="what_remain">
 
                                 @error('what_remain')
@@ -509,12 +550,10 @@
                                 @enderror
                             </div>
 
-
-
                             <div class="col-12">
-
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-info" id="approve_bill"> اعتماد الفاتوره
+                                    <button type="button" class="btn btn-info" id="approve_bill">
+                                        {{ __('suppliersOrders.approve_invoice') }}
                                     </button>
                                 </div>
                             </div>
@@ -525,7 +564,7 @@
 
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-outline-light" data-dismiss="modal">
-                            اغلاق
+                            {{ __('suppliersOrders.close') }}
                         </button>
                     </div>
 

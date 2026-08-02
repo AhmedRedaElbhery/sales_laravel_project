@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-    شاشه التحصيل
+    {{ __('collect.page_title') }}
 @endsection
 
 @section('contentheader')
-    شاشه التحصيل
+{{ __('collect.page_title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('collect_transaction.index') }}"> شاشه التحصيل </a>
+    <a href="{{ route('collect_transaction.index') }}">  {{ __('collect.page_title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('collect.view') }}
 @endsection
 
 @section('content')
@@ -23,7 +23,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">بيانات شاشه التحصيل</h3>
+                    <h3 class="card-title card_title_center"> {{ __('collect.collection_screen_data') }}</h3>
                 </div>
 
 
@@ -47,7 +47,7 @@
                                 <div class="row mb-2">
 
                                     <div class="form-group col-sm-4">
-                                        <label>الخزنه المتاحه </label>
+                                        <label>{{ __('collect.available_treasury') }} </label>
                                         <select name="treasuries_id" id="treasuries_id" class="form-control">
                                             <option value="{{ $exist->treasuries_id }}"
                                                 {{ old('treasuries_id', $exist->treasuries_id) == $exist->treasuries_id ? 'selected' : '' }}>
@@ -60,9 +60,9 @@
                                     </div>
 
                                     <div class="form-group col-sm-4">
-                                        <label>نوع الحركه </label>
+                                        <label>{{ __('collect.movement_type') }} </label>
                                         <select name="move_type" id="move_type" class="form-control">
-                                            <option value="" selected disabled>اختر نوع الحركه</option>
+                                            <option value="" selected disabled>{{ __('collect.select_movement_type') }}</option>
                                             @foreach ($move_types as $move_type)
                                             <option value="{{ $move_type->id }}"
                                                 {{ old('move_type') == $move_type->id ? 'selected' : '' }}>
@@ -77,10 +77,10 @@
                                     </div>
 
                                     <div class="form-group col-sm-4">
-                                        <label>اختر الحساب </label>
+                                        <label>{{ __('collect.select_account') }} </label>
                                         <select name="account_number" id="start_balance_status" class="form-control">
                                             <option value="" disabled {{ old('account_number') ? '' : 'selected' }}>
-                                                اختر الحساب
+                                                {{ __('collect.select_account') }}
                                             </option>
 
                                             @foreach ($accounts as $account)
@@ -103,7 +103,7 @@
                                 <div class="row">
 
                                     <div class="form-group col-4">
-                                        <label>الرصيد المتاح بالخزنه</label>
+                                        <label>{{ __('collect.available_treasury_balance') }}</label>
                                         <input readonly class="form-control" type="number" name="treasuries_balance"
                                             value="{{ old('treasuries_balance', $treasuries_balance/100) }}">
 
@@ -113,7 +113,7 @@
                                     </div>
 
                                     <div class="form-group col-4">
-                                        <label>تاريخ الحركه</label>
+                                        <label>{{ __('collect.movement_date') }}</label>
                                         <input class="form-control" type="date" name="date"
                                             value="{{ old('date') }}">
 
@@ -123,7 +123,7 @@
                                     </div>
 
                                     <div class="form-group col-4">
-                                        <label>الرصيد المحصل</label>
+                                        <label>{{ __('collect.collected_amount') }}</label>
                                         <input class="form-control" type="number" name="money" id="money"
                                             value="{{ old('money') }}">
 
@@ -137,7 +137,7 @@
                                 <div class="row">
 
                                     <div class="form-group col-sm-6">
-                                        <label>البيان</label>
+                                        <label>{{ __('collect.description') }}</label>
                                         <textarea name="byan" class="form-control" style="height: 100px;">{{ old('byan') }}</textarea>
 
                                         @error('byan')
@@ -151,14 +151,14 @@
 
                             <div class="form-group text-center">
                                 <button type="submit" class="btn btn-primary m-2" style="padding: 8px 15px;">
-                                    تحصيل
+                                    {{ __('collect.collect') }}
                                 </button>
                             </div>
 
                         </form>
                     @else
                         <div class="alert alert-danger">
-                            لا يوجد شفت مفتوح لك
+                            {{ __('collect.no_open_shift') }}
                         </div>
                     @endif
 
@@ -169,12 +169,12 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>كود ايصال التحصيل</th>
-                                        <th>الخزنه</th>
-                                        <th>المبلغ المحصل</th>
-                                        <th>نوع الحركه</th>
-                                        <th>بيان الحركه</th>
-                                        <th>المستخدم</th>
+                                        <th>{{ __('collect.receipt_number') }}</th>
+                                        <th>{{ __('collect.treasury') }}</th>
+                                        <th>{{ __('collect.amount') }}</th>
+                                        <th>{{ __('collect.movement_type_table') }}</th>
+                                        <th>{{ __('collect.movement_description') }}</th>
+                                        <th>{{ __('collect.user') }}</th>
 
                                         <th> </th>
                                     </tr>
@@ -199,13 +199,13 @@
                                                 {{ $item->byan }}
                                             </td>
 
-                                            <td>{{ $item->created_at }} <br> بواسطه {{ $item->admin_name }}</td>
+                                            <td>{{ $item->created_at }} <br> {{ __('collect.by') }} {{ $item->admin_name }}</td>
 
                                             <td>
                                                 <a href="#"
-                                                    class="btn btn-primary">طباعه</a>
+                                                    class="btn btn-primary">{{ __('collect.print') }}</a>
                                                 <a href="#"
-                                                    class="btn btn-info">المزيد</a>
+                                                    class="btn btn-info">{{ __('collect.more') }}</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -218,7 +218,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('collect.no_data') }}
                         </div>
                     @endif
 

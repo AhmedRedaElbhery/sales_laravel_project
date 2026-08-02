@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-حسابات الموردين
+{{ __('supplierAccounts.page_title') }}
 @endsection
 
 @section('contentheader')
-الحسابات
+{{ __('supplierAccounts.page_title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات الموردين </a>
+    <a href="{{ route('customers.index') }}"> {{ __('supplierAccounts.page_title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('supplierAccounts.view') }}
 @endsection
 
 @section('content')
@@ -23,15 +23,15 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">حسابات الموردين </h3>
-                    <a class="btn btn-success" href="{{ route('suppliers.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">{{ __('supplierAccounts.page_title') }} </h3>
+                    <a class="btn btn-success" href="{{ route('suppliers.create') }}">{{ __('supplierAccounts.add_new') }}</a>
                 </div>
 
                 <div class="card-body">
 
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                            <input type="text" id="search_by_name" placeholder="{{ __('supplierAccounts.search_by_name') }}" class="form-control mb-3">
                         </div>
 
 
@@ -43,12 +43,12 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>الاسم</th>
-                                        <th>كود او رقم العميل</th>
-                                        <th>رقم الحساب </th>
-                                        <th>الفئه التابع لها </th>
-                                        <th>الرصيد الحالى </th>
-                                        <th>حاله التفعيل</th>
+                                        <th>{{ __('supplierAccounts.name') }}</th>
+                                        <th>{{ __('supplierAccounts.supplier_code') }}</th>
+                                        <th>{{ __('supplierAccounts.account_number') }} </th>
+                                        <th>{{ __('supplierAccounts.supplier_category') }} </th>
+                                        <th>{{ __('supplierAccounts.current_balance') }} </th>
+                                        <th>{{ __('supplierAccounts.status') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -66,21 +66,21 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">{{ __('supplierAccounts.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">مؤرشف وغير مفعل</span>
+                                                    <span class="badge badge-danger">{{ __('supplierAccounts.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 <a href="{{ route('suppliers.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
+                                                    class="btn btn-primary">{{ __('supplierAccounts.edit') }}</a>
 
                                                 <form action="{{ route('suppliers.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    class="d-inline" onsubmit="return confirm('{{ __('supplierAccounts.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('supplierAccounts.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>

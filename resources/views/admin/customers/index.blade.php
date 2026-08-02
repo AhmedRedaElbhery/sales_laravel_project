@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-حسابات العملاء
+{{ __('customers.page_title') }}
 @endsection
 
 @section('contentheader')
-الحسابات
+{{ __('customers.accounts') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
+    <a href="{{ route('customers.index') }}"> {{ __('customers.page_title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-    عرض
+{{ __('customers.view') }}
 @endsection
 
 @section('content')
@@ -23,15 +23,15 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">حسابات العملاء </h3>
-                    <a class="btn btn-success" href="{{ route('customers.create') }}">اضافه جديد</a>
+                    <h3 class="card-title card_title_center">{{ __('customers.page_title') }} </h3>
+                    <a class="btn btn-success" href="{{ route('customers.create') }}">{{ __('customers.add_new') }}</a>
                 </div>
 
                 <div class="card-body">
 
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
+                            <input type="text" id="search_by_name" placeholder="{{ __('customers.search_by_name') }}" class="form-control mb-3">
                         </div>
 
 
@@ -43,11 +43,11 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>الاسم</th>
-                                        <th>كود او رقم العميل</th>
-                                        <th>رقم الحساب </th>
-                                        <th>الرصيد الحالى </th>
-                                        <th>حاله التفعيل</th>
+                                        <th>{{ __('customers.name') }}</th>
+                                        <th>{{ __('customers.customer_code') }}</th>
+                                        <th>{{ __('customers.account_number') }} </th>
+                                        <th>{{ __('customers.current_balance') }} </th>
+                                        <th>{{ __('customers.status') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -64,21 +64,21 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">مفعل</span>
+                                                    <span class="badge badge-success">{{ __('customers.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">مؤرشف وغير مفعل</span>
+                                                    <span class="badge badge-danger">{{ __('customers.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
                                                 <a href="{{ route('customers.edit', $item->id) }}"
-                                                    class="btn btn-primary">تعديل</a>
+                                                    class="btn btn-primary">{{ __('customers.edit') }}</a>
 
                                                 <form action="{{ route('customers.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                                    class="d-inline" onsubmit="return confirm('{{ __('customers.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('customers.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -92,7 +92,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('customers.no_data') }}
                         </div>
                     @endif
 

@@ -1,20 +1,21 @@
-@extends('layouts.admin');
+@extends('layouts.admin')
 
 @section('title')
-    حركه شفتات الخزن
+    {{ __('adminShifts.title') }}
 @endsection
 
 @section('contentheader')
-    حركه شفتات الخزن
+    {{ __('adminShifts.content_header') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('admin_shifts.index') }}"> شفتات الخزن </a>
+    <a href="{{ route('admin_shifts.index') }}">
+        {{ __('adminShifts.content_header_link') }}
+    </a>
 @endsection
 
-
 @section('contentheaderactive')
-    إضافة
+    {{ __('adminShifts.create') }}
 @endsection
 
 @section('content')
@@ -23,7 +24,9 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">استلام خزنه لشفت جديد</h3>
+                    <h3 class="card-title card_title_center">
+                        {{ __('adminShifts.receive_new_shift') }}
+                    </h3>
                 </div>
 
                 <div class="card-body">
@@ -37,28 +40,33 @@
                         @csrf
 
                         <div class="form-group">
-                            <label>الخزن المتاحه للاستخدام </label>
+                            <label>{{ __('adminShifts.available_treasuries') }}</label>
+
                             <select name="treasuries_id" class="form-control">
-                                <option value="" selected disabled>اختر نوع الوحده</option>
+                                <option value="" selected disabled>
+                                    {{ __('adminShifts.select_treasury') }}
+                                </option>
+
                                 @foreach ($treasuries as $item)
                                     @if ($item->status == true)
                                         <option value="{{ $item->treasuries_id }}">
-                                            {{ $item->name }}</option>
+                                            {{ $item->name }}
+                                        </option>
                                     @endif
                                 @endforeach
-
                             </select>
+
                             @error('treasuries_id')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary m-2">
-                            حفظ
+                            {{ __('adminShifts.save') }}
                         </button>
 
                         <a href="{{ route('admin_shifts.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('adminShifts.back') }}
                         </a>
 
                     </form>

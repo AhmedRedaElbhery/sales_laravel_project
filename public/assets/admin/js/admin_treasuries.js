@@ -3,7 +3,7 @@ $(document).ready(function () {
     $(document).on("click", "#add", function () {
         var treasuries = $("#name").val();
         if (treasuries == null) {
-            alert("من فضلك اختر الصنف");
+            alert("من فضلك اختر الخزنه");
             $("#name").focus();
             return false;
         }

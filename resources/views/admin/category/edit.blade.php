@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 
 @section('title')
-    تعديل فئات الاصناف
+    {{ __('category.edit_categories') }}
 @endsection
 
 @section('contentheader')
-تعديل فئات الاصناف
+{{ __('category.edit_categories') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('category.index') }}"> فئات الاصناف </a>
+    <a href="{{ route('category.index') }}"> {{ __('category.title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل بيانات فئات الاصناف
+{{ __('category.edit_categories_data') }}
 @endsection
 
 @section('content')
@@ -22,7 +22,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">تعديل بيانات فئات الاصناف </h3>
+                    <h3 class="card-title card_title_center">{{ __('category.edit_categories_data') }} </h3>
                 </div>
 
                 <div class="card-body">
@@ -37,7 +37,7 @@
                         @method('put')
 
                         <div class="form-group">
-                            <label>اسم الفئه </label>
+                            <label>{{ __('category.category_name') }} </label>
                             <input type="text" name="name" class="form-control" value="{{ $data->name }}">
                             @error('name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -45,19 +45,19 @@
                         </div>
 
                         <div class="form-group">
-                            <label>حالة التفعيل</label>
+                            <label>{{ __('category.status') }}</label>
 
                             <select name="active" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('category.choose_status') }}</option>
 
                                 <option value="1"
                                     {{ old('active', $data->active) == 1 ? 'selected' : '' }}>
-                                    مفعل
+                                    {{ __('category.active') }}
                                 </option>
 
                                 <option value="0"
                                     {{ old('active', $data->active) == 0 ? 'selected' : '' }}>
-                                    معطل
+                                    {{ __('category.inactive') }}
                                 </option>
                             </select>
 
@@ -67,11 +67,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            حفظ التعديلات
+                            {{ __('category.save') }}
                         </button>
 
                         <a href="{{ route('category.index') }}" class="btn btn-secondary">
-                            رجوع
+                            {{ __('category.cancel') }}
                         </a>
 
                     </form>

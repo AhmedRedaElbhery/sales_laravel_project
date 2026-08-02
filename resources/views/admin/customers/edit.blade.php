@@ -1,26 +1,26 @@
 @extends('layouts.admin');
 
 @section('title')
-تعديل حساب العميل
+{{ __('customers.edit_customer_account') }}
 @endsection
 
 @section('contentheader')
-الحسابات
+{{ __('customers.accounts') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> حسابات العملاء </a>
+    <a href="{{ route('customers.index') }}"> {{ __('customers.page_title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-    تعديل
+{{ __('customers.edit') }}
 @endsection
 
 @section('content')
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">تعديل حساب العميل</h3>
+            <h3 class="card-title card_title_center">{{ __('customers.edit_customer_account') }}</h3>
         </div>
 
         <div class="card-body">
@@ -39,7 +39,7 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>اسم الحساب </label>
+                            <label>{{ __('customers.name') }} </label>
                             <input type="text" name="name" class="form-control"
                                 value="{{ old('name', $data->name) }}">
 
@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>العنوان </label>
+                            <label>{{ __('customers.address') }} </label>
                             <input type="text" name="address" class="form-control"
                                 value="{{ old('address', $data->address) }}">
 
@@ -63,19 +63,19 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>حاله التفعيل</label>
+                            <label>{{ __('customers.status') }}</label>
 
                             <select name="active" class="form-control">
-                                <option value="" disabled>اختر الحاله</option>
+                                <option value="" disabled>{{ __('customers.choose_status') }}</option>
 
                                 <option value="1"
                                     @selected(old('active', $data->active) == 1)>
-                                    مفعل
+                                    {{ __('customers.active') }}
                                 </option>
 
                                 <option value="0"
                                     @selected(old('active', $data->active) == 0)>
-                                    مؤرشف وغير مفعل
+                                    {{ __('customers.inactive') }}
                                 </option>
                             </select>
 
@@ -85,7 +85,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>الملاحظات</label> <br>
+                            <label>{{ __('customers.notes') }}</label> <br>
 
                             <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
 
@@ -101,11 +101,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary m-5 p-2 col-sm-5">
-                    تحديث
+                    {{ __('customers.update') }}
                 </button>
 
                 <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
-                    رجوع
+                    {{ __('customers.cancel') }}
                 </a>
 
             </form>

@@ -18,8 +18,9 @@
         <td>{{ $data->total_price / 100 }}</td>
         @if ($is_approved == 0)
             <td>
-                <button class="btn btn-danger" id="delete">حذف</button>
+                <button class="btn btn-danger" id="delete">{{ __('salesBills.delete') }}</button>
             </td>
         @endif
 
-    </tr @endforeach
+    </tr>
+@endforeach
