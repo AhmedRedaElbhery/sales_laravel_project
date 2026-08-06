@@ -73,6 +73,6 @@ return [
     'can_change_price' => 'the price can be change',
 
     'add_new_item' => 'add new item',
-'item_data'=>'the item data',
+    'item_data' => 'the item data',
 
 ];

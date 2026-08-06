@@ -21,17 +21,19 @@
 
             <div class="company">
 
-                <h2>{{ $data->company->company_name ?? 'Company Name' }}</h2>
+                <p> <strong>company Name : </strong> {{ $data->company->system_name }}</p>
+                <br>
 
-                <p>{{ $data->company->address ?? '' }}</p>
-
+                <p><strong> Address :</strong> {{ $data->company->address ?? '' }}</p>
+                <br>
                 <p>
-                    Phone :
+                    <strong> Phone : </strong>
                     {{ $data->company->phone ?? '' }}
                 </p>
+                <br>
 
                 <p>
-                    Email :
+                    <strong> Email :</strong>
                     {{ $data->company->email ?? '' }}
                 </p>
 
@@ -39,18 +41,15 @@
 
             <div class="invoice-info">
 
-                <p><strong>Customer Name :</strong></p>
-                <p>{{ $data->customer->name }}</p>
+                <p><strong>Customer Name : </strong> {{ $data->customer->name }}</p>
 
                 <br>
 
-                <p><strong>Customer Phone :</strong></p>
-                <p>{{ $data->customer->phone }}</p>
+                <p><strong>Customer Phone :</strong> {{ $data->customer->phone }} </p>
 
                 <br>
 
-                <p><strong>Customer Address :</strong></p>
-                <p>{{ $data->customer->address }}</p>
+                <p><strong>Customer Address : </strong> {{ $data->customer->address }}</p>
 
                 <br>
 
@@ -62,7 +61,7 @@
 
         <div class="invoice-title">
 
-            INVOICE
+            INVOICE {{ $data->auto_serial }}
 
         </div>
 
@@ -233,13 +232,6 @@
             </p>
 
         </div>
-
-        <div class="footer">
-
-            Thank you for your business.
-
-        </div>
-
     </div>
 
 </body>

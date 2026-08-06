@@ -172,7 +172,7 @@
 
 
                 <input type="hidden" id="token_search" value="{{ csrf_token() }}">
-                <input type="hidden" id="mirror_sales_item_getUnits_url" value="{{ route('sales_item.mirrorgetUnits') }}">
+                {{-- <input type="hidden" id="mirror_sales_item_getUnits_url" value="{{ route('sales_item.mirrorgetUnits') }}"> --}}
                 <input type="hidden" id="mirror_sales_item_get_batches_url"
                     value="{{ route('sales_item.mirror_get_batches') }}">
                 <input type="hidden" id="sales_item_getprice_url" value="{{ route('sales_item.get_price') }}">

@@ -128,11 +128,12 @@ Route::group([
 
     Route::resource('exchange_transaction', ExchangeController::class);
 
-    //sales bills
-    Route::get('sales_item/mirrorgetUnits', [SalesBillsController::class, 'mirrorgetUnits'])->name('sales_item.mirrorgetUnits');
-    Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirror_get_batches'])->name('sales_item.mirror_get_batches');
+//sales bills
 
-    //////////////////////////////////////////////////////////////////////
+Route::get('sales_item/mirrorGetUnits', [SalesBillsController::class, 'mirrorGetUnits'])->name('sales_item.mirrorgetUnits');
+Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirror_get_batches'])->name('sales_item.mirror_get_batches');
+
+//////////////////////////////////////////////////////////////////////////////////
 
     Route::resource('sales_bills', SalesBillsController::class);
     Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
