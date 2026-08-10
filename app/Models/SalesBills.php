@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin;
 
 class SalesBills extends Model
 {
     use HasFactory;
-    protected $table= 'sales_bills';
+    protected $table = 'sales_bills';
     protected $fillable = [
         'auto_serial',
         'doc_number',
@@ -38,4 +39,10 @@ class SalesBills extends Model
         'updated_by',
         'account_number',
     ];
+
+
+    public function creator()
+    {
+        return $this->belongsTo(Admin::class, 'added_by');
+    }
 }

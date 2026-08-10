@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\BillCreated;
 use App\Http\Controllers\Controller;
 use App\Models\Accounts;
 use App\Models\Admin;
@@ -300,7 +301,9 @@ class SalesBillsController extends Controller
 
             $data = SalesBills::create($data);
 
+
             if ($data) {
+                event(new BillCreated($data));
 
                 $customers = Customer::select('customer_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
                 $delegates = Delegate::select('delegate_code', 'name')->where(['active' => 1, 'com_code' => $com_code])->get();
