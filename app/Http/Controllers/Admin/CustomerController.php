@@ -84,19 +84,19 @@ class CustomerController extends Controller
 
         if ($request->start_balance_status == 1) {
             if ($request->start_balance > 0) {
-                $data['start_balance'] = $request->start_balance * (-1);
+                $data['start_balance'] = $request->start_balance * (100);
             } elseif ($request->start_balance == 0) {
                 return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
             } else {
-                $data['start_balance'] = $request->start_balance;
+                $data['start_balance'] = $request->start_balance * (-100);
             }
         } elseif ($request->start_balance_status == 2) {
             if ($request->start_balance < 0) {
-                $data['start_balance'] = $request->start_balance * (-1);
+                $data['start_balance'] = $request->start_balance * (100);
             } elseif ($request->start_balance == 0) {
                 return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
             } else {
-                $data['start_balance'] = $request->start_balance;
+                $data['start_balance'] = $request->start_balance * (-100);
             }
         } elseif ($request->start_balance_status == 3) {
             $data['start_balance'] = 0;
@@ -112,6 +112,7 @@ class CustomerController extends Controller
         $data['active'] = $request->active;
         $data['current_balance'] = 0;
         $data['start_balance_status'] = $request->start_balance_status;
+        $data['current_balance'] = $data['start_balance'];
 
 
         $flage = Customer::create($data);
@@ -119,11 +120,18 @@ class CustomerController extends Controller
 
         if ($flage) {
 
-            $data['is_archived'] = $request->active;
+            if($request->active == 1)
+            {
+                $data['is_archived'] = 0;
+            }
+            else{
+                $data['is_archived'] = 1;
+            }
+
             $data['account_type'] = 3;
             $data['is_parent'] = 0;
             $data['other_table_fk'] =  $data['customer_code'];
-            $data['parent_account_number'] = AdminPanalSettings::select('customer_parent_account_number')->where('com_code', $data['com_code'])->first()?->customer_parent_account_number;
+            $data['parent_account_number'] = AdminPanalSettings::select('customer_parent_account_number')->where('com_code', $data['com_code'])->value('customer_parent_account_number');
             Accounts::create($data);
         }
 

@@ -8,6 +8,7 @@ use App\Models\Accounts;
 use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminShifts;
+use App\Models\Customer;
 use App\Models\MoveType;
 use App\Models\Suppliers;
 use App\Models\Treasuries;
@@ -112,10 +113,19 @@ class ExchangeController extends Controller
                 'current_balance' => $the_final_balance,
             ]);
 
-            $supplier = Accounts::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
-            $supplier->update([
-                'current_balance' => $the_final_balance,
-            ]);
+            if ($account_data->account_type == 3) {
+                $customer_data = Customer::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+                $customer_data->update([
+                    'current_balance' => $the_final_balance,
+                ]);
+            }
+
+            if ($account_data->account_type == 2) {
+                $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+                $supplier->update([
+                    'current_balance' => $the_final_balance,
+                ]);
+            }
 
             return redirect()->route('exchange_transaction.index');
         }

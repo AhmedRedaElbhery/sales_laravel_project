@@ -76,9 +76,9 @@
                                 </option>
 
                                 @foreach ($accounts as $item)
-                                @if ($item->id != $data->id)
-                                <option value="{{ $item->id }}"
-                                    @selected(old('parent_account_number', $data->parent_account_number) == $item->id)>
+                                @if ($item->account_number != $data->account_number)
+                                <option value="{{ $item->account_number }}"
+                                    @selected(old('parent_account_number', $data->parent_account_number) == $item->account_number)>
                                     {{ $item->name }}
                                 </option>
                                 @endif

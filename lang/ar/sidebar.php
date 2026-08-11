@@ -9,6 +9,7 @@ return [
     'customers' => 'حسابات العملاء',
     'supplier_categories' => 'فئات الموردين',
     'suppliers' => 'حسابات الموردين',
+    'delegates' => 'حسابات المناديب',
     'collect_transaction' => 'شاشه تحصيل النقديه',
     'exchange_transaction' => 'شاشه صرف النقديه',
     'inventory_settings' => 'ضبط الخزن',

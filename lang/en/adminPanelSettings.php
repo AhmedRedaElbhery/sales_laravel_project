@@ -18,6 +18,8 @@ return [
 
     'customer_parent_account' => 'Customer Parent Financial Account',
     'supplier_parent_account' => 'Supplier Parent Financial Account',
+    'delegate_parent_account' => 'delegate Parent Financial Account',
+    'employess_parent_account' => 'employess Parent Financial Account',
     'account_number' => 'Account Number',
 
     'last_update' => 'Last Update',

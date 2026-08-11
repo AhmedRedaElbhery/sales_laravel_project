@@ -7,15 +7,16 @@ use App\Models\Admin;
 use App\Models\AdminPanalSettings;
 use App\Http\Requests\AdminPanelSettingRequest;
 use App\Models\Accounts;
-use App\Models\AccountType;
 
 class AdminPanelSettingsController extends Controller
 {
     public function index()
     {
         $data = AdminPanalSettings::where('com_code', auth()->user()->com_code)->first();
-        $data['customer_parent_account_name'] = Accounts::select('name')->where('id', $data['customer_parent_account_number'])->first()?->name;
-        $data['supplier_parent_account_name'] = Accounts::select('name')->where('id', $data['supplier_parent_account_number'])->value('name');
+        $data['customer_parent_account_name'] = Accounts::select('name')->where('account_number', $data['customer_parent_account_number'])->value('name');
+        $data['supplier_parent_account_name'] = Accounts::select('name')->where('account_number', $data['supplier_parent_account_number'])->value('name');
+        $data['delegate_parent_account_name'] = Accounts::select('name')->where('account_number', $data['delegate_parent_account_number'])->value('name');
+        $data['employess_parent_account_name'] = Accounts::select('name')->where('account_number', $data['employess_parent_account_number'])->value('name');
         if (!empty($data)) {
             if ($data['updated_by'] != null && $data['updated_by'] > 0) {
                 $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
@@ -34,6 +35,7 @@ class AdminPanelSettingsController extends Controller
 
     public function update(AdminPanelSettingRequest $request)
     {
+
         $data = AdminPanalSettings::where('com_code', auth()->user()->com_code)->first();
 
         $data->system_name = $request->system_name;
@@ -41,6 +43,8 @@ class AdminPanelSettingsController extends Controller
         $data->phone = $request->phone;
         $data->customer_parent_account_number = $request->customer_parent_account_number;
         $data->supplier_parent_account_number = $request->supplier_parent_account_number;
+        $data->delegate_parent_account_number = $request->delegate_parent_account_number;
+        $data->employess_parent_account_number = $request->employess_parent_account_number;
         $data->general_alert = $request->general_alert;
         $data->updated_by = auth()->guard('admin')->id();
         $data->updated_at = date("Y-m-d H:i:s");

@@ -90,9 +90,9 @@
 
                                             <td>
                                                 @if ($item->is_parent == 1)
-                                                    <span class="badge badge-success">{{ __('accounts.yes') }}</span>
+                                                    <span class="badge badge-success p-2">{{ __('accounts.yes') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">{{ __('accounts.no') }}</span>
+                                                    <span class="badge badge-danger p-2">{{ __('accounts.no') }}</span>
                                                 @endif
                                             </td>
 
@@ -105,9 +105,9 @@
 
                                             <td>
                                                 @if ($item->is_archived == 0)
-                                                    <span class="badge badge-success">{{ __('accounts.active') }}</span>
+                                                    <span class="badge badge-success p-2">{{ __('accounts.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">{{ __('accounts.inactive') }}</span>
+                                                    <span class="badge badge-danger p-2">{{ __('accounts.inactive') }}</span>
                                                 @endif
                                             </td>
 

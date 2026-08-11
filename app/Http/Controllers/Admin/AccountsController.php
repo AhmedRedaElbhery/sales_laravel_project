@@ -38,7 +38,7 @@ class AccountsController extends Controller
                 }
 
                 if ($item->parent_account_number != null && $item->parent_account_number > 0) {
-                    $item['parent_account_name'] = Accounts::where(['id' => $item->parent_account_number])->value('name');
+                    $item['parent_account_name'] = Accounts::where(['account_number' => $item->parent_account_number])->value('name');
                 } else {
                     $item['parent_account_name'] = "لا يوجد";
                 }
@@ -97,19 +97,19 @@ class AccountsController extends Controller
 
         if ($request->start_balance_status == 1) {
             if ($request->start_balance > 0) {
-                $data['start_balance'] = $request->start_balance * (-1);
+                $data['start_balance'] = $request->start_balance * (100);
             } elseif ($request->start_balance == 0) {
                 return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
             } else {
-                $data['start_balance'] = $request->start_balance;
+                $data['start_balance'] = $request->start_balance * (-100);
             }
         } elseif ($request->start_balance_status == 2) {
             if ($request->start_balance < 0) {
-                $data['start_balance'] = $request->start_balance * (-1);
+                $data['start_balance'] = $request->start_balance * (100);
             } elseif ($request->start_balance == 0) {
                 return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
             } else {
-                $data['start_balance'] = $request->start_balance;
+                $data['start_balance'] = $request->start_balance * (-100);
             }
         } elseif ($request->start_balance_status == 3) {
             $data['start_balance'] = 0;
@@ -127,6 +127,7 @@ class AccountsController extends Controller
         $data['is_archived'] = $request->is_archived;
         $data['start_balance_status'] = $request->start_balance_status;
         $data['other_table_fk'] = $customer_data['customer_code'];
+        $data['current_balance'] = $data['start_balance'];
 
         //dd($request->parent_account_id);
         $flage = Accounts::create($data);

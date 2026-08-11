@@ -8,6 +8,7 @@ use App\Models\Accounts;
 use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminShifts;
+use App\Models\Customer;
 use App\Models\MoveType;
 use App\Models\Suppliers;
 use App\Models\Treasuries;
@@ -31,7 +32,7 @@ class CollectController extends Controller
             foreach ($data as $item) {
                 $item->treasuries_name = Treasuries::where(['id' => $item->treasuries_id])->value('name');
                 $item->admin_name = Admin::where(['com_code' => $com_code, 'id' => auth()->user()->id])->value('name');
-                $item->move_type_name = MoveType::where(['id'=>$item->move_type])->value('name');
+                $item->move_type_name = MoveType::where(['id' => $item->move_type])->value('name');
             }
         }
 
@@ -42,7 +43,7 @@ class CollectController extends Controller
         }
 
 
-        $accounts = Accounts::select('name', 'account_type' ,'account_number')->where(['com_code' => $com_code, 'is_archived' => 0, 'is_parent' => 0])->get();
+        $accounts = Accounts::select('name', 'account_type', 'account_number')->where(['com_code' => $com_code, 'is_archived' => 0, 'is_parent' => 0])->get();
         foreach ($accounts as $account) {
             $account->account_type_name = AccountType::where(['id' => $account->account_type])->value('name');
         }
@@ -72,7 +73,7 @@ class CollectController extends Controller
     public function store(TransactionsRequest $request)
     {
         $com_code = auth()->user()->com_code;
-        $isal_number = Treasuries::where(['com_code' => $com_code , 'id' => $request->treasuries_id])->max('last_isal_collect');
+        $isal_number = Treasuries::where(['com_code' => $com_code, 'id' => $request->treasuries_id])->max('last_isal_collect');
 
 
         $shift_id = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'treasuries_id' => $request->treasuries_id, 'is_finished' => 0])->whereNull('end_shift')->value('id');
@@ -108,10 +109,21 @@ class CollectController extends Controller
                 'current_balance' => $the_final_balance,
             ]);
 
-            $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
-            $supplier->update([
-                'current_balance' => $the_final_balance,
-            ]);
+            if ($account_data->account_type == 3) {
+                $customer_data = Customer::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+                $customer_data->update([
+                    'current_balance' => $the_final_balance,
+                ]);
+            }
+
+            if ($account_data->account_type == 2) {
+                $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+                $supplier->update([
+                    'current_balance' => $the_final_balance,
+                ]);
+            }
+
+
 
 
 
@@ -119,7 +131,7 @@ class CollectController extends Controller
         }
 
 
-        return redirect()->back()->with(['error'=> 'حدث خطا ما']);
+        return redirect()->back()->with(['error' => 'حدث خطا ما']);
     }
 
     /**

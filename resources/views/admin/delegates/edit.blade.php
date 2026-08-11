@@ -1,0 +1,119 @@
+@extends('layouts.admin');
+
+@section('title')
+{{ __('customers.edit_customer_account') }}
+@endsection
+
+@section('contentheader')
+{{ __('customers.accounts') }}
+@endsection
+
+@section('contentheaderlink')
+    <a href="{{ route('customers.index') }}"> {{ __('customers.page_title') }} </a>
+@endsection
+
+@section('contentheaderactive')
+{{ __('customers.edit') }}
+@endsection
+
+@section('content')
+    <div class="card">
+
+        <div class="card-header">
+            <h3 class="card-title card_title_center">{{ __('customers.edit_customer_account') }}</h3>
+        </div>
+
+        <div class="card-body">
+            @if (session('error'))
+                <div class="alert alert-danger text-center">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <form action="{{ route('customers.update', $data->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div>
+
+                    <div class="row mb-2">
+
+                        <div class="form-group col-sm-6">
+                            <label>{{ __('customers.name') }} </label>
+                            <input type="text" name="name" class="form-control"
+                                value="{{ old('name', $data->name) }}">
+
+                            @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label>{{ __('customers.address') }} </label>
+                            <input type="text" name="address" class="form-control"
+                                value="{{ old('address', $data->address) }}">
+
+                            @error('address')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-2">
+
+                        <div class="form-group col-sm-6">
+                            <label>{{ __('customers.status') }}</label>
+
+                            <select name="active" class="form-control">
+                                <option value="" disabled>{{ __('customers.choose_status') }}</option>
+
+                                <option value="1"
+                                    @selected(old('active', $data->active) == 1)>
+                                    {{ __('customers.active') }}
+                                </option>
+
+                                <option value="0"
+                                    @selected(old('active', $data->active) == 0)>
+                                    {{ __('customers.inactive') }}
+                                </option>
+                            </select>
+
+                            @error('active')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-sm-6">
+                            <label>{{ __('customers.notes') }}</label> <br>
+
+                            <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
+
+                            @error('notes')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+                <button type="submit" class="btn btn-primary m-5 p-2 col-sm-5">
+                    {{ __('customers.update') }}
+                </button>
+
+                <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                    {{ __('customers.cancel') }}
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+@endsection
+
+@section('script')
+@endsection

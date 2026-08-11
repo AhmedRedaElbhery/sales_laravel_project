@@ -19,8 +19,8 @@ return [
     'inactive' => 'معطل',
 
     // Internal Accounts
-    'yes_can_be_added' => 'نعم يمكن إضافته',
-    'no_is_main' => 'لا يمكن، هذا رئيسي',
+    'yes_can_be_added' => 'نعم يمكن إضافته من شاشات داخليه له',
+    'no_is_main' => 'لا يمكن، هذا رئيسي يضاف فقط من شاشه الحسابات',
 
     // Messages
     'no_data' => 'لا توجد بيانات',

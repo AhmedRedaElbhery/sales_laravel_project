@@ -18,6 +18,8 @@ return [
 
     'customer_parent_account' => 'اسم الحساب المالي للعملاء الأساسي',
     'supplier_parent_account' => 'اسم الحساب المالي للموردين الأساسي',
+    'delegate_parent_account' => 'اسم الحساب المالي للمناديب الأساسي',
+    'employess_parent_account' => 'اسم الحساب المالي للموظفين الأساسي',
     'account_number' => 'رقم حساب مالي',
 
     'last_update' => 'تاريخ آخر تحديث',

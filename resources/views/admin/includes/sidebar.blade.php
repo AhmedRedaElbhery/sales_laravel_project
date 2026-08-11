@@ -65,9 +65,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'delegate.*', 'suppliers_category.*', 'suppliers.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin.accounttypes.index', 'collect_transaction.*', 'exchange_transaction.*' , 'accounts.*', 'customers.*', 'delegate.*','suppliers_category.*', 'suppliers.*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.accounts') }}
@@ -123,6 +123,17 @@
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             {{ __('sidebar.suppliers') }}
+                                        </p>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a href="{{ route('delegate.index') }}"
+                                        class="nav-link {{ request()->routeIs('delegate.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            {{ __('sidebar.delegates') }}
                                         </p>
                                     </a>
                                 </li>

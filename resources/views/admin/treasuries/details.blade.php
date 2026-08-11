@@ -109,7 +109,10 @@
                                     {{ __('treasuries.none') }}
                                     @endif
                                     <a href="{{ route('admin.treasuries.edit', $data->id) }}"
-                                        class="btn btn-primary ml-3"> {{ __('treasuries.edit') }} </a>
+                                        class="btn btn-primary m-2"> {{ __('treasuries.edit') }} </a>
+
+                                        <a href="{{ route('admin.treasuries.index')}}"
+                                            class="btn btn-danger m-2"> {{ __('treasuries.cancel') }} </a>
                                 </td>
                             </tr>
 

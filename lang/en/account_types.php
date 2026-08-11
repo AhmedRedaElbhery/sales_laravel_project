@@ -19,8 +19,8 @@ return [
     'inactive' => 'Inactive',
 
     // Internal Accounts
-    'yes_can_be_added' => 'Yes, can be added',
-    'no_is_main' => 'No, this is a main account',
+    'yes_can_be_added' => 'Yes, can be added from inside',
+    'no_is_main' => 'No, this is a main account can be added only from accounts page',
 
     // Messages
     'no_data' => 'No data available',

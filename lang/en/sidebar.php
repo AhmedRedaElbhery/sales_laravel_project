@@ -11,6 +11,7 @@ return [
     'customers'             => 'Customer Accounts',
     'supplier_categories'   => 'Supplier Categories',
     'suppliers'             => 'Supplier Accounts',
+    'delegates'             => 'Delegates Accounts',
     'collect_transaction'   => 'Cash Collection',
     'exchange_transaction'  => 'Cash Disbursement',
 

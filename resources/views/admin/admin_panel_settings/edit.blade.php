@@ -64,8 +64,8 @@
                                     <option value="" selected disabled>{{ __('adminPanelSettings.choose_account') }}    </option>
 
                                     @foreach ($accounts as $item)
-                                        <option value="{{ $item->id }}" @if($item->id == $data['customer_parent_account_number'] ) selected
-                                        @endif  @selected(old('customer_parent_account_number') == $item->id)>{{ $item->name }}
+                                        <option value="{{ $item->account_number }}" @if($item->account_number == $data['customer_parent_account_number'] ) selected
+                                        @endif  @selected(old('customer_parent_account_number') == $item->account_number)>{{ $item->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -81,8 +81,8 @@
                                     <option value="" selected disabled>{{ __('adminPanelSettings.choose_account') }}  </option>
 
                                     @foreach ($accounts as $item)
-                                        <option value="{{ $item->id }}" @if($item->id == $data['supplier_parent_account_number'] ) selected
-                                        @endif  @selected(old('supplier_parent_account_number') == $item->id)>{{ $item->name }}
+                                        <option value="{{ $item->account_number }}" @if($item->account_number == $data['supplier_parent_account_number'] ) selected
+                                        @endif  @selected(old('supplier_parent_account_number') == $item->account_number)>{{ $item->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -90,6 +90,42 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
+
+
+                            <div class="form-group">
+                                <label>{{ __('adminPanelSettings.delegate_parent_account') }}   </label>
+                                <select name="delegate_parent_account_number" class="form-control" >
+
+                                    <option value="" selected disabled>{{ __('adminPanelSettings.choose_account') }}  </option>
+
+                                    @foreach ($accounts as $item)
+                                        <option value="{{ $item->account_number }}" @if($item->account_number == $data['delegate_parent_account_number'] ) selected
+                                        @endif  @selected(old('delegate_parent_account_number') == $item->account_number)>{{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('delegate_parent_account_number')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label>{{ __('adminPanelSettings.employess_parent_account') }}   </label>
+                                <select name="employess_parent_account_number" class="form-control" >
+
+                                    <option value="" selected disabled>{{ __('adminPanelSettings.choose_account') }}  </option>
+
+                                    @foreach ($accounts as $item)
+                                        <option value="{{ $item->account_number }}" @if($item->account_number == $data['employess_parent_account_number'] ) selected
+                                        @endif  @selected(old('employess_parent_account_number') == $item->account_number)>{{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('employess_parent_account_number')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
 
                             <div class="form-group mb-3">
                                 <label>{{ __('adminPanelSettings.general_alert') }} </label>

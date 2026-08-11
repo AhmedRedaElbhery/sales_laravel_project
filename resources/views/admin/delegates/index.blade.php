@@ -1,20 +1,20 @@
 @extends('layouts.admin');
 
 @section('title')
-{{ __('supplierAccounts.page_title') }}
+{{ __('delegates.page_title') }}
 @endsection
 
 @section('contentheader')
-{{ __('supplierAccounts.page_title') }}
+{{ __('delegates.accounts') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> {{ __('supplierAccounts.page_title') }} </a>
+    <a href="{{ route('customers.index') }}"> {{ __('delegates.page_title') }} </a>
 @endsection
 
 
 @section('contentheaderactive')
-{{ __('supplierAccounts.view') }}
+{{ __('delegates.view') }}
 @endsection
 
 @section('content')
@@ -23,15 +23,15 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">{{ __('supplierAccounts.page_title') }} </h3>
-                    <a class="btn btn-success" href="{{ route('suppliers.create') }}">{{ __('supplierAccounts.add_new') }}</a>
+                    <h3 class="card-title card_title_center">{{ __('delegates.page_title') }} </h3>
+                    <a class="btn btn-success" href="{{ route('delegate.create') }}">{{ __('delegates.add_new') }}</a>
                 </div>
 
                 <div class="card-body">
 
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="{{ __('supplierAccounts.search_by_name') }}" class="form-control mb-3">
+                            <input type="text" id="search_by_name" placeholder="{{ __('delegates.search_by_name') }}" class="form-control mb-3">
                         </div>
 
 
@@ -43,12 +43,11 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th>{{ __('supplierAccounts.name') }}</th>
-                                        <th>{{ __('supplierAccounts.supplier_code') }}</th>
-                                        <th>{{ __('supplierAccounts.account_number') }} </th>
-                                        <th>{{ __('supplierAccounts.supplier_category') }} </th>
-                                        <th>{{ __('supplierAccounts.current_balance') }} </th>
-                                        <th>{{ __('supplierAccounts.status') }}</th>
+                                        <th>{{ __('delegates.name') }}</th>
+                                        <th>{{ __('delegates.delegate_code') }}</th>
+                                        <th>{{ __('delegates.account_number') }} </th>
+                                        <th>{{ __('delegates.current_balance') }} </th>
+                                        <th>{{ __('delegates.status') }}</th>
                                         <th> </th>
                                     </tr>
                                 </thead>
@@ -57,30 +56,29 @@
                                     @foreach ($data as $item)
                                         <tr>
                                             <td>{{ $item->name }}</td>
-                                            <td>{{ $item->supplier_code }}</td>
+                                            <td>{{ $item->delegate_code }}</td>
 
                                             <td>{{ $item->account_number }}</td>
-                                            <td>{{ $item->supplier_category_name }}</td>
 
                                             <td>{{ $item->current_balance /100 }}</td>
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success p-2">{{ __('supplierAccounts.active') }}</span>
+                                                    <span class="badge badge-success">{{ __('delegates.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger p-2">{{ __('supplierAccounts.inactive') }}</span>
+                                                    <span class="badge badge-danger">{{ __('delegates.inactive') }}</span>
                                                 @endif
                                             </td>
 
                                             <td>
-                                                <a href="{{ route('suppliers.edit', $item->id) }}"
-                                                    class="btn btn-primary">{{ __('supplierAccounts.edit') }}</a>
+                                                <a href="{{ route('delegate.edit', $item->id) }}"
+                                                    class="btn btn-primary">{{ __('delegates.edit') }}</a>
 
-                                                <form action="{{ route('suppliers.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('{{ __('supplierAccounts.confirm_delete') }}')">
+                                                <form action="{{ route('delegate.destroy', $item->id) }}" method="POST"
+                                                    class="d-inline" onsubmit="return confirm('{{ __('delegates.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">{{ __('supplierAccounts.delete') }}</button>
+                                                    <button type="submit" class="btn btn-danger">{{ __('delegates.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -94,7 +92,7 @@
                         </div>
                     @else
                         <div class="alert alert-warning">
-                            لا توجد بيانات
+                            {{ __('delegates.no_data') }}
                         </div>
                     @endif
 

@@ -86,6 +86,20 @@
                             </tr>
 
                             <tr>
+                                <td>{{ __('adminpanelsettings.delegate_parent_account') }} </td>
+                                <td>{{ $data['delegate_parent_account_name'] }}
+                                    {{ __('adminpanelsettings.account_number') }}
+                                    ({{ $data['delegate_parent_account_number'] }})</td>
+                            </tr>
+
+                            <tr>
+                                <td>{{ __('adminpanelsettings.employess_parent_account') }} </td>
+                                <td>{{ $data['employess_parent_account_name'] }}
+                                    {{ __('adminpanelsettings.account_number') }}
+                                    ({{ $data['employess_parent_account_number'] }})</td>
+                            </tr>
+
+                            <tr>
                                 <td>{{ __('adminpanelsettings.last_update') }} </td>
                                 <td>
                                     @if ($data['updated_by'] > 0 && $data['updated_by'] != null)

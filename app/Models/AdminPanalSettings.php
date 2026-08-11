@@ -22,6 +22,8 @@ class AdminPanalSettings extends Model
         'updated_at',
         'com_code',
         'customer_parent_account_number',
-        'supplier_parent_account_number'
+        'supplier_parent_account_number',
+        'delegate_parent_account_number',
+        'employess_parent_account_number',
     ];
 }

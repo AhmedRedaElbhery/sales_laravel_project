@@ -53,11 +53,11 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">
+                                                    <span class="badge badge-success p-2">
                                                         {{ __('account_types.active') }}
                                                     </span>
                                                 @else
-                                                    <span class="badge badge-danger">
+                                                    <span class="badge badge-danger p-2">
                                                         {{ __('account_types.inactive') }}
                                                     </span>
                                                 @endif
@@ -65,11 +65,11 @@
 
                                             <td>
                                                 @if ($item->relatedinternalaccounts == 1)
-                                                    <span class="badge badge-success">
+                                                    <span class="badge badge-success p-2">
                                                         {{ __('account_types.yes_can_be_added') }}
                                                     </span>
                                                 @else
-                                                    <span class="badge badge-danger">
+                                                    <span class="badge badge-danger p-2">
                                                         {{ __('account_types.no_is_main') }}
                                                     </span>
                                                 @endif

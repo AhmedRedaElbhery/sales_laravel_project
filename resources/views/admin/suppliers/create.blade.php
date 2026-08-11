@@ -61,8 +61,8 @@
                             <label>{{ __('supplierAccounts.status') }} </label>
                             <select name="active" class="form-control" >
                                 <option value="" selected disabled>{{ __('supplierAccounts.choose_status') }} </option>
-                                <option value="0"  @selected(old('active') == 1)> {{ __('supplierAccounts.active') }} </option>
-                                <option value="1"  @selected(old('active') === '0')> {{ __('supplierAccounts.inactive') }} </option>
+                                <option value="1"  @selected(old('active') == 1)> {{ __('supplierAccounts.active') }} </option>
+                                <option value="0"  @selected(old('active') === '0')> {{ __('supplierAccounts.inactive') }} </option>
                             </select>
                             @error('active')
                                 <span class="text-danger">{{ $message }}</span>

@@ -29,6 +29,8 @@ class AdminPanelSettingRequest extends FormRequest
             'phone'=> 'required',
             'customer_parent_account_number'=> 'required',
             'supplier_parent_account_number'=> 'required',
+            'delegate_parent_account_number'=> 'required',
+            'employess_parent_account_number'=> 'required',
 
         ];
     }
@@ -38,6 +40,9 @@ class AdminPanelSettingRequest extends FormRequest
             'address.required'=>' العنوان مطلوب',
             'phone.required'=>' الهاتف مطلوب',
             'supplier_parent_account_number.required'=>'  اختر الحساب',
+            'customer_parent_account_number.required'=>'  اختر الحساب',
+            'delegate_parent_account_number.required'=>'  اختر الحساب',
+            'employess_parent_account_number.required'=>'  اختر الحساب',
         ];
     }
 }

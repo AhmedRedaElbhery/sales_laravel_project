@@ -10,7 +10,7 @@ use App\Models\Admin;
 use App\Models\AdminPanalSettings;
 use App\Models\SupplierCategory;
 use App\Models\Suppliers;
-use Illuminate\Http\Request;
+
 
 class SuppliersController extends Controller
 {
@@ -88,19 +88,19 @@ class SuppliersController extends Controller
 
         if ($request->start_balance_status == 1) {
             if ($request->start_balance > 0) {
-                $data['start_balance'] = $request->start_balance * (-1);
+                $data['start_balance'] = $request->start_balance * (100);
             } elseif ($request->start_balance == 0) {
                 return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
             } else {
-                $data['start_balance'] = $request->start_balance;
+                $data['start_balance'] = $request->start_balance * (-100);
             }
         } elseif ($request->start_balance_status == 2) {
             if ($request->start_balance < 0) {
-                $data['start_balance'] = $request->start_balance * (-1);
+                $data['start_balance'] = $request->start_balance * (100);
             } elseif ($request->start_balance == 0) {
                 return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
             } else {
-                $data['start_balance'] = $request->start_balance;
+                $data['start_balance'] = $request->start_balance * (-100);
             }
         } elseif ($request->start_balance_status == 3) {
             $data['start_balance'] = 0;
@@ -115,7 +115,7 @@ class SuppliersController extends Controller
         $data['notes'] = $request->notes;
         $data['active'] = $request->active;
         $data['supplier_category_id'] = $request->category_id;
-        $data['current_balance'] = 0;
+        $data['current_balance'] = $data['start_balance'];
         $data['start_balance_status'] = $request->start_balance_status;
 
 
@@ -123,7 +123,14 @@ class SuppliersController extends Controller
 
         if ($flage) {
 
-            $data['is_archived'] = $request->active;
+            if( $request->active == 1)
+            {
+                $data['is_archived'] =0;
+            }
+            else{
+                $data['is_archived'] =1;
+            }
+
             $data['account_type'] = 2;
             $data['is_parent'] = 0;
             $data['other_table_fk'] =  $data['supplier_code'];

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\SalesBillsController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
 use App\Http\Controllers\Admin\SupplierOrdersController;
 use App\Http\Controllers\Admin\SuppliersController;
+use App\Http\Controllers\DelegateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,11 +96,14 @@ Route::group([
     /* start customers */
     Route::resource('customers', CustomerController::class);
 
-    /* start suppliers */
+    /* start suppliers category */
     Route::resource('suppliers_category', SupplierCategoriesController::class);
 
     /* start suppliers */
     Route::resource('suppliers', SuppliersController::class);
+
+    /* start delegates */
+    Route::resource('delegate', DelegateController::class);
 
     /* start supplier orders */
     Route::resource('supplier_orders', SupplierOrdersController::class);
