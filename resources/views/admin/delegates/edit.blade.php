@@ -1,26 +1,26 @@
 @extends('layouts.admin');
 
 @section('title')
-{{ __('customers.edit_customer_account') }}
+{{ __('delegates.edit_delegate_account') }}
 @endsection
 
 @section('contentheader')
-{{ __('customers.accounts') }}
+{{ __('delegates.accounts') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> {{ __('customers.page_title') }} </a>
+    <a href="{{ route('delegate.index') }}"> {{ __('delegates.page_title') }} </a>
 @endsection
 
 @section('contentheaderactive')
-{{ __('customers.edit') }}
+{{ __('delegates.edit') }}
 @endsection
 
 @section('content')
     <div class="card">
 
         <div class="card-header">
-            <h3 class="card-title card_title_center">{{ __('customers.edit_customer_account') }}</h3>
+            <h3 class="card-title card_title_center">{{ __('delegates.edit_delegate_account') }}</h3>
         </div>
 
         <div class="card-body">
@@ -30,7 +30,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('customers.update', $data->id) }}" method="POST">
+            <form action="{{ route('delegate.update', $data->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -39,7 +39,7 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>{{ __('customers.name') }} </label>
+                            <label>{{ __('delegates.name') }} </label>
                             <input type="text" name="name" class="form-control"
                                 value="{{ old('name', $data->name) }}">
 
@@ -49,7 +49,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>{{ __('customers.address') }} </label>
+                            <label>{{ __('delegates.address') }} </label>
                             <input type="text" name="address" class="form-control"
                                 value="{{ old('address', $data->address) }}">
 
@@ -63,19 +63,19 @@
                     <div class="row mb-2">
 
                         <div class="form-group col-sm-6">
-                            <label>{{ __('customers.status') }}</label>
+                            <label>{{ __('delegates.status') }}</label>
 
                             <select name="active" class="form-control">
-                                <option value="" disabled>{{ __('customers.choose_status') }}</option>
+                                <option value="" disabled>{{ __('delegates.choose_status') }}</option>
 
                                 <option value="1"
                                     @selected(old('active', $data->active) == 1)>
-                                    {{ __('customers.active') }}
+                                    {{ __('delegates.active') }}
                                 </option>
 
                                 <option value="0"
                                     @selected(old('active', $data->active) == 0)>
-                                    {{ __('customers.inactive') }}
+                                    {{ __('delegates.inactive') }}
                                 </option>
                             </select>
 
@@ -85,7 +85,7 @@
                         </div>
 
                         <div class="form-group col-sm-6">
-                            <label>{{ __('customers.notes') }}</label> <br>
+                            <label>{{ __('delegates.notes') }}</label> <br>
 
                             <textarea name="notes" style="height: 80px; width: 580px">{{ old('notes', $data->notes) }}</textarea>
 
@@ -101,11 +101,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary m-5 p-2 col-sm-5">
-                    {{ __('customers.update') }}
+                    {{ __('delegates.update') }}
                 </button>
 
-                <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
-                    {{ __('customers.cancel') }}
+                <a href="{{ route('delegate.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                    {{ __('delegates.cancel') }}
                 </a>
 
             </form>

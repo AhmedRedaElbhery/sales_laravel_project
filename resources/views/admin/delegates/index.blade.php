@@ -64,9 +64,9 @@
 
                                             <td>
                                                 @if ($item->active == 1)
-                                                    <span class="badge badge-success">{{ __('delegates.active') }}</span>
+                                                    <span class="badge badge-success p-2">{{ __('delegates.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">{{ __('delegates.inactive') }}</span>
+                                                    <span class="badge badge-danger p-2">{{ __('delegates.inactive') }}</span>
                                                 @endif
                                             </td>
 

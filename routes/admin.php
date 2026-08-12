@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CollectController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\DelegateController as AdminDelegateController;
 use App\Http\Controllers\Admin\ExchangeController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\Admin\SalesBillsController;
@@ -103,7 +104,7 @@ Route::group([
     Route::resource('suppliers', SuppliersController::class);
 
     /* start delegates */
-    Route::resource('delegate', DelegateController::class);
+    Route::resource('delegate', AdminDelegateController::class);
 
     /* start supplier orders */
     Route::resource('supplier_orders', SupplierOrdersController::class);

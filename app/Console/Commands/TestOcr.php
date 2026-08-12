@@ -2,8 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Database\QueryBuilder;
-use App\Database\TestDB;
+use App\Facades\SqlDB;
 use App\Database\DB;
 use Illuminate\Console\Command;
 
@@ -29,6 +28,7 @@ class TestOcr extends Command
      *
      * @return int
      */
+
     public function handle()
     {
 
@@ -54,14 +54,13 @@ class TestOcr extends Command
 
         //dump($json);
 
-
-        $data['com_code'] = DB::table('admin_panal_settings')->where('system_name', $json['company_name'])->value('com_code');
-
-
-        $data['account_number'] = DB::table('customers')->where('name', $json['customer_name'])->value('account_number');
+        $data['com_code'] = SqlDB::table('admin_panal_settings')->where('system_name', $json['company_name'])->value('com_code');
 
 
-        DB::table('invoices_pdf')->insert([
+        $data['account_number'] = SqlDB::table('customers')->where('name', $json['customer_name'])->value('account_number');
+
+
+        SqlDB::table('invoices_pdf')->insert([
             'company_code' =>  $data['com_code'],
             'account_number' =>  $data['account_number'],
             'invoice_auto_serial' => $json['auto_serial'],

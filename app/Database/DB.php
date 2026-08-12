@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Database;
+
 use InvalidArgumentException;
 use PDO;
 
 class DB
 {
+    /*
     public static function table(string $table): QueryBuilder
     {
         $pdo = new PDO(
@@ -26,6 +28,13 @@ class DB
         );
 
         return new QueryBuilder($pdo, $table);
+    }
+    */
+    public function __construct(private PDO $pdo) {}
+
+    public function table(string $table): QueryBuilder
+    {
+        return new QueryBuilder($this->pdo, $table);
     }
 }
 

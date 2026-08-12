@@ -9,6 +9,7 @@ use App\Models\Accounts;
 use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\Delegate;
 use App\Models\Suppliers;
 use Illuminate\Http\Request;
 
@@ -237,6 +238,17 @@ class AccountsController extends Controller
                 $supplier_data['active'] = $active;
                 $supplier_data->save();
             }
+
+            if ($data['account_type'] == 4) {
+
+                $delegate_data = Delegate::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
+
+                $delegate_data['name'] = $request->name;
+                $delegate_data['updated_by'] = auth()->user()->id;
+                $delegate_data['notes'] = $request->notes;
+                $delegate_data['active'] = $active;
+                $delegate_data->save();
+            }
         }
 
         return redirect()->route('accounts.index');
@@ -270,6 +282,17 @@ class AccountsController extends Controller
             ])->value('id');
             Suppliers::destroy($supplier_id);
         }
+
+        if ($data['account_type'] == 4) {
+
+            $delegate_id = Delegate::select('id')->where([
+                'account_number' => $data['account_number'],
+                'com_code' => $data['com_code'],
+                'delegate_code' => $data['other_table_fk'],
+            ])->value('id');
+            Delegate::destroy($delegate_id);
+        }
+
         Accounts::destroy($id);
         return redirect()->route('accounts.index');
     }

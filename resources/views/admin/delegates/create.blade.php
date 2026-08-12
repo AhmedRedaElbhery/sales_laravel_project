@@ -9,7 +9,7 @@
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('customers.index') }}"> {{ __('delegates.page_title') }} </a>
+    <a href="{{ route('delegate.index') }}"> {{ __('delegates.page_title') }} </a>
 @endsection
 
 @section('contentheaderactive')
@@ -30,7 +30,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('customers.store') }}" method="POST">
+            <form action="{{ route('delegate.store') }}" method="POST">
                 @csrf
                 <div>
                     <div class="row mb-2">
@@ -112,7 +112,7 @@
                     {{ __('delegates.save') }}
                 </button>
 
-                <a href="{{ route('customers.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
+                <a href="{{ route('delegate.index') }}" class="btn btn-secondary m-4 p-2 col-sm-5">
                     {{ __('delegates.cancel') }}
                 </a>
 
