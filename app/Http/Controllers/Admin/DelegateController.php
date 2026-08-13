@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DelegateRequest;
+use App\Http\Requests\UpdateDelegateRequest;
 use App\Models\Accounts;
 use App\Models\AccountType;
 use App\Models\Admin;
@@ -54,7 +56,7 @@ class DelegateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DelegateRequest $request)
     {
         $delegate_code = Delegate::max('delegate_code');
         $account_number = Accounts::max('account_number');
@@ -112,11 +114,11 @@ class DelegateController extends Controller
         $data['current_balance'] = 0;
         $data['start_balance_status'] = $request->start_balance_status;
         $data['current_balance'] = $data['start_balance'];
-        $data['commission_type'] = 0;
-        $data['percent_Wholesale_commission'] = 0;
-        $data['percent_half_wholesale_commission'] =0;
-        $data['percent_retail_commission'] = 0;
-        $data['percent_collect_commission'] = 0;
+        $data['commission_type'] = $request->commission_type;
+        $data['percent_Wholesale_commission'] = $request->percent_Wholesale_commission;
+        $data['percent_half_wholesale_commission'] =$request->percent_half_wholesale_commission;
+        $data['percent_retail_commission'] = $request->percent_retail_commission;
+        $data['percent_collect_commission'] = $request->percent_collect_commission;
 
 
         $flage = Delegate::create($data);
@@ -170,7 +172,7 @@ class DelegateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateDelegateRequest $request, $id)
     {
 
         $data = Delegate::find($id);
@@ -179,6 +181,11 @@ class DelegateController extends Controller
             return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
         }
 
+        $data['commission_type'] = $request->commission_type;
+        $data['percent_Wholesale_commission'] = $request->percent_Wholesale_commission;
+        $data['percent_half_wholesale_commission'] =$request->percent_half_wholesale_commission;
+        $data['percent_retail_commission'] = $request->percent_retail_commission;
+        $data['percent_collect_commission'] = $request->percent_collect_commission;
         $data['name'] = $request->name;
         $data['address'] = $request->address;
         $data['notes'] = $request->notes;

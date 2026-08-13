@@ -43,28 +43,6 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="form-group">
-                            <label>{{ __('units.unit_type') }}</label>
-
-                            <select name="is_master" class="form-control">
-                                <option value="" disabled>{{ __('units.choose_status') }}</option>
-
-                                <option value="1"
-                                    {{ old('is_master', $data->is_master) == 1 ? 'selected' : '' }}>
-                                    {{ __('units.master_unit') }}
-                                </option>
-
-                                <option value="0"
-                                    {{ old('is_master', $data->is_master) == 0 ? 'selected' : '' }}>
-                                    {{ __('units.sub_unit') }}
-                                </option>
-                            </select>
-
-                            @error('active')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
 
                         <div class="form-group">
                             <label>{{ __('units.status') }}</label>

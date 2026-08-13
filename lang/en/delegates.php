@@ -52,4 +52,17 @@ return [
     'save' => 'save',
 
 
+
+    'commission_type' => 'commission type',
+    'choose_commission_type' => 'choose commission type',
+    'conistant_money' => 'conistant money',
+    'percant' => 'percant',
+
+    'percent_Wholesale_commission' => 'percent Wholesale commission',
+    'percent_half_wholesale_commission' => 'percent half wholesale commission',
+    'percent_retail_commission' => 'percent retail commission',
+    'percant_for_collect' => 'percant for collect',
+
+
+
 ];

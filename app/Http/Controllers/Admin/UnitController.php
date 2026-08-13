@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\unitsRequest;
+use App\Http\Requests\UpdateUnitRequest;
 use App\Models\Admin;
 use App\Models\unit;
 use Illuminate\Http\Request;
@@ -96,7 +97,7 @@ class UnitController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(unitsRequest $request, $id)
+    public function update(UpdateUnitRequest $request, $id)
     {
         $data = unit::findOrFail($id);
         $com_code = auth()->user()->com_code;
@@ -110,7 +111,6 @@ class UnitController extends Controller
 
         $data->update([
             'name' => $request->name,
-            'is_master' => $request->is_master,
             'active' => $request->active,
             'updated_by' => auth()->user()->id,
         ]);

@@ -53,4 +53,16 @@ return [
     'save' => 'حفظ',
 
 
+
+    'commission_type' => 'نوع عموله المندوب',
+    'choose_commission_type' => 'اختر النوع',
+    'conistant_money' => 'اجر ثابت',
+    'percant' => 'نسبه على كل فاتوره',
+
+    'percent_Wholesale_commission' => 'نسبه عموله المندوب على الجمله',
+    'percent_half_wholesale_commission' => 'نسبه عموله المندوب على النص جمله',
+    'percent_retail_commission' => 'نسبه عموله المندوب على الفواتير القطاعى',
+    'percant_for_collect' => 'نسبه عموله المندوب من تحصيل الفواتير',
+
+
 ];
