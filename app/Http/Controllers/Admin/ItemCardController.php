@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemCardRequest;
+use App\Http\Requests\UpdateItemCardRequest;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\ItemCard;
+use App\Models\ItemMovement;
+use App\Models\ItemMovementType;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 
@@ -19,7 +22,7 @@ class ItemCardController extends Controller
      */
     public function index()
     {
-        $categories = Category::select('id','name')->get();
+        $categories = Category::select('id', 'name')->get();
         $data = ItemCard::orderby('id', 'DESC')->paginate(5);
         if (!empty($data)) {
             foreach ($data as $item) {
@@ -156,13 +159,20 @@ class ItemCardController extends Controller
     {
 
         $data = ItemCard::find($id);
+        $com_code = auth()->user()->com_code;
 
-        $data['category'] = Category::select('name')->where(['id'=>$data->categories_id])->first();
-        $data['units'] = Unit::select('name')->where(['id'=>$data->parent_unit_id])->first();
-        $data['retail_units'] = Unit::select('id', 'name')->where(['id'=>$data->retail_unit_id])->first();
-        $data['items'] = ItemCard::select('id', 'name')->where(['id'=>$data->id])->first();
+        $data['category'] = Category::select('name')->where(['id' => $data->categories_id])->first();
+        $data['units'] = Unit::select('name')->where(['id' => $data->parent_unit_id])->first();
+        $data['retail_units'] = Unit::select('id', 'name')->where(['id' => $data->retail_unit_id])->first();
+        $data['items'] = ItemCard::select('id', 'name')->where(['id' => $data->id])->first();
+        $movments = ItemMovement::select('byan', 'date' , 'quantity_before_movement' ,'quantity_after_movement','movement_type')->where(['item_code' => $data->item_code, 'com_code' => $com_code])->orderby('id', 'DESC')->paginate(10);
 
-        return view('admin.itemcard.show', compact('data'));
+        foreach($movments as $movment)
+        {
+            $movment['movment_type_name'] = ItemMovementType::where(['id'=>$movment->movement_type])->value('name');
+        }
+
+        return view('admin.itemcard.show', compact('data', 'movments'));
     }
 
     /**
@@ -192,7 +202,7 @@ class ItemCardController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ItemCardRequest $request, $id)
+    public function update(UpdateItemCardRequest $request, $id)
     {
         $data = ItemCard::find($id);
 
@@ -252,35 +262,36 @@ class ItemCardController extends Controller
 
 
         $data['name'] = $request->name;
-        $data['item_type'] = $request->item_type;
-        $data['categories_id'] = $request->category_id;
+
+        $data['Wholesale_price'] = $request->Wholesale_price * 100;
+        $data['half_Wholesale_price'] = $request->half_Wholesale_price * 100;
+        $data['price'] = $request->price * 100;
+        $data['cost_price'] = $request->cost_price * 100;
 
 
-        $data['parent_id'] = $request->parent_id;
-        $data['parent_unit_id'] = $request->unit_parent_id;
-        $data['Wholesale_price'] = $request->Wholesale_price;
-        $data['half_Wholesale_price'] = $request->half_Wholesale_price;
-        $data['price'] = $request->price;
-        $data['cost_price'] = $request->cost_price;
-
-
-
-        $data['has_retail_unit'] = $request->has_retail_unit;
-
-        if ($request->has_retail_unit == 1) {
-            $data['retail_unit_id'] = $request->retail_units;
+        if ($data['has_retail_unit'] == 1) {
             $data['retail_unit_to_parent'] = $request->retail_unit_to_parent;
-            $data['retail_Wholesale_price'] = $request->retail_Wholesale_price;
-            $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price;
-            $data['retail_price'] = $request->retail_price;
-            $data['retail_cost_price'] = $request->retail_cost_price;
+            $data['retail_Wholesale_price'] = $request->retail_Wholesale_price * 100;
+            $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price * 100;
+            $data['retail_price'] = $request->retail_price * 100;
+            $data['retail_cost_price'] = $request->retail_cost_price * 100;
         } else {
-            $data['retail_unit_id'] = null;
-            $data['retail_unit_to_parent'] = null;
-            $data['retail_Wholesale_price'] = null;
-            $data['retail_half_Wholesale_price'] = null;
-            $data['retail_price'] = null;
-            $data['retail_cost_price'] = null;
+            if ($request->has_retail_unit == 0) {
+                $data['retail_unit_id'] = null;
+                $data['retail_unit_to_parent'] = null;
+                $data['retail_Wholesale_price'] = null;
+                $data['retail_half_Wholesale_price'] = null;
+                $data['retail_price'] = null;
+                $data['retail_cost_price'] = null;
+            } else {
+                $data['has_retail_unit'] = $request->has_retail_unit;
+                $data['retail_unit_id'] = $request->retail_units;
+                $data['retail_unit_to_parent'] = $request->retail_unit_to_parent;
+                $data['retail_Wholesale_price'] = $request->retail_Wholesale_price * 100;
+                $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price * 100;
+                $data['retail_price'] = $request->retail_price * 100;
+                $data['retail_cost_price'] = $request->retail_cost_price * 100;
+            }
         }
 
         $data['has_fixed_price'] = $request->has_fixed_price;

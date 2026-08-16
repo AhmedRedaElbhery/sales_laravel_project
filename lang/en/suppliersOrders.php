@@ -119,4 +119,11 @@ return [
     'select_store' => 'select store',
 
 
+
+    'add_new_supplier' => 'add new supplier',
+    'select_name' => 'select supplier name',
+    'credit' => 'credit',
+    'date' => 'date',
+
+
 ];

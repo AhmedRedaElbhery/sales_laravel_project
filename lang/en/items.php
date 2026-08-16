@@ -75,4 +75,15 @@ return [
     'add_new_item' => 'add new item',
     'item_data' => 'the item data',
 
+
+
+    'date' => 'date',
+    'movment' => 'movment',
+    'quantity_before_movmetn' => 'quantity before movmetn using parent unit',
+    'quantity_after_movmetn' => 'quantity after movmetn using parent unit',
+    'movmetn_byan' => 'movmetn byan',
+    'item_movments' => 'item movments',
+    'no_movments' => ' no movments',
+    'quantity' => 'quantity',
+
 ];

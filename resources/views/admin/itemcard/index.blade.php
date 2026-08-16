@@ -39,13 +39,14 @@
                             <table class="table table-bordered table-hover text-center">
                                 <thead class="custom_head">
                                     <tr>
-                                        <th> {{ __('items.serial') }}</th>
+
                                         <th> {{ __('items.name') }}</th>
                                         <th> {{ __('items.type') }}</th>
                                         <th> {{ __('items.category') }} </th>
                                         <th> {{ __('items.parent_item') }} </th>
                                         <th> {{ __('items.parent_unit') }} </th>
                                         <th> {{ __('items.retail_unit') }} </th>
+                                        <th> {{ __('items.quantity') }}</th>
                                         <th> {{ __('items.status') }}</th>
                                         <th> </th>
                                     </tr>
@@ -54,7 +55,6 @@
                                 <tbody>
                                     @foreach ($data as $item)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
 
                                             <td>{{ $item->name }}</td>
                                             <td>
@@ -85,6 +85,8 @@
                                             <td>{{ $item->unit_name }}</td>
 
                                             <td>{{ $item->retail_unit_name }}</td>
+
+                                            <td>{{ $item->quantity * 1}} ووحدتها {{ $item->unit_name}}</td>
 
                                             <td>
                                                 @if ($item->active == 1)

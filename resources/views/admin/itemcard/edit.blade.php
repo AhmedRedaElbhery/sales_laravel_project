@@ -58,7 +58,7 @@
 
                         <div class="form-group col-sm-3">
                             <label>{{ __('items.type') }} </label>
-                            <select name="item_type" class="form-control">
+                            <select disabled name="item_type" class="form-control">
 
                                 <option value="" disabled>{{ __('items.choose_type') }} </option>
 
@@ -84,7 +84,7 @@
 
                         <div class="form-group col-sm-3">
                             <label>{{ __('items.category') }} </label>
-                            <select name="category_id" class="form-control">
+                            <select disabled name="category_id" class="form-control">
                                 <option value="" selected disabled>{{ __('items.choose_category') }} </option>
 
                                 @foreach ($categories as $item)
@@ -100,7 +100,7 @@
 
                         <div class="form-group col-sm-3">
                             <label>{{ __('items.the_main_item') }} </label>
-                            <select name="parent_id" class="form-control">
+                            <select disabled name="parent_id" class="form-control">
                                 <option value="0"> {{ __('items.main_item') }} </option>
 
                                 @foreach ($items as $item)
@@ -116,7 +116,7 @@
 
                         <div class="form-group col-sm-3">
                             <label> {{ __('items.main_unit_of_item') }} </label>
-                            <select name="unit_parent_id" id="unit_parent_id" class="form-control">
+                            <select disabled name="unit_parent_id" id="unit_parent_id" class="form-control">
                                 <option value="" disabled> {{ __('items.choose_unit') }} </option>
 
                                 @foreach ($units as $item)
@@ -180,7 +180,7 @@
 
                     <div class="form-group col-5">
                         <label>{{ __('items.has_retail_unit') }}</label>
-                        <select name="has_retail_unit" id="retail_options" class="form-control">
+                        <select @if ($data->has_retail_unit == 1) disabled @endif name="has_retail_unit" id="retail_options" class="form-control">
                             <option value="" selected disabled>{{ __('items.choose_type') }} </option>
                             <option value="1" @if ($data->has_retail_unit == 1) selected @endif>{{ __('items.yes') }} </option>
                             <option value="0" @if ($data->has_retail_unit == 0) selected @endif> {{ __('items.no') }}</option>
@@ -195,7 +195,7 @@
                         <div class="form-group col-sm-4 retail_divs"
                             @if ($data->has_retail_unit != '1') style="display:none" @endif>
                             <label>{{ __('items.the_retail_unit') }}  </label>
-                            <select id="retail_unit_id" name="retail_units" class="form-control">
+                            <select  @if ($data->has_retail_unit == 1) disabled @endif id="retail_unit_id" name="retail_units" class="form-control">
                                 <option value="" disabled @if ($data->retail_unit_id == null) selected @endif>
                                     {{ __('items.choose_unit') }} </option>
 

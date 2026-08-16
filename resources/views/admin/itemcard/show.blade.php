@@ -5,7 +5,7 @@
 @endsection
 
 @section('contentheader')
-{{ __('items.title') }}
+    {{ __('items.title') }}
 @endsection
 
 @section('contentheaderlink')
@@ -14,7 +14,7 @@
 
 
 @section('contentheaderactive')
-{{ __('items.show') }}
+    {{ __('items.show') }}
 @endsection
 
 
@@ -47,11 +47,11 @@
                         <label> - {{ __('items.type') }} : </label>
                         <tr>
                             @if ($data->item_type == 1)
-                            {{ __('items.stock_item') }}
+                                {{ __('items.stock_item') }}
                             @elseif ($data->item_type == 2)
-                            {{ __('items.consumable_expiry') }}
+                                {{ __('items.consumable_expiry') }}
                             @elseif($data->item_type == 3)
-                            {{ __('items.asset_item') }}
+                                {{ __('items.asset_item') }}
                             @endif
                         </tr>
                     </div>
@@ -70,7 +70,7 @@
                         <label class="ml-1"> - {{ __('items.the_main_item') }} : </label>
                         <tr>
                             @if ($data->parent_id == 0)
-                            {{ __('items.main_item') }}
+                                {{ __('items.main_item') }}
                             @else
                                 {{ $data->items->name }}
                             @endif
@@ -89,7 +89,8 @@
                 <div class="row mb-2">
                     <div class="form-group col-sm-6">
 
-                        <label> - {{ __('items.whole_price') }}(<span class="text-muted name_parent_unit">{{ $data->units->name }}
+                        <label> - {{ __('items.whole_price') }}(<span
+                                class="text-muted name_parent_unit">{{ $data->units->name }}
                             </span>) : </label>
                         <td>{{ $data->Wholesale_price / 100 }} </td>
                     </div>
@@ -104,7 +105,8 @@
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-6">
-                        <label> - {{ __('items.part_price') }} (<span class="name_parent_unit text-muted">{{ $data->units->name }}
+                        <label> - {{ __('items.part_price') }} (<span
+                                class="name_parent_unit text-muted">{{ $data->units->name }}
                             </span>)
                             : </label>
                         <td>{{ $data->price / 100 }} </td>
@@ -112,7 +114,8 @@
                     </div>
 
                     <div class="form-group col-sm-6">
-                        <label> - {{ __('items.cost_price') }}(<span class="name_parent_unit text-muted">{{ $data->units->name }}
+                        <label> - {{ __('items.cost_price') }}(<span
+                                class="name_parent_unit text-muted">{{ $data->units->name }}
                             </span>) :</label>
                         <td>{{ $data->cost_price / 100 }} </td>
                     </div>
@@ -123,82 +126,82 @@
                     <label> - {{ __('items.has_retail_unit') }} :</label>
                     <td name="has_retail_unit" id="retail_options" class="form-control">
                         @if ($data->has_retail_unit == 1)
-                        {{ __('items.yes') }}
+                            {{ __('items.yes') }}
                         @elseif($data->has_retail_unit == 0)
-                        {{ __('items.no') }}
+                            {{ __('items.no') }}
                         @endif
                     </td>
                 </div>
                 @if ($data->has_retail_unit == '1')
-                <div class="row mb-2">
+                    <div class="row mb-2">
 
-                    <div class="form-group col-sm-6 retail_divs"
-                        @if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - {{ __('items.the_retail_unit') }} :</label>
-                        <td>
+                        <div class="form-group col-sm-6 retail_divs"
+                            @if ($data->has_retail_unit != '1') style="display:none" @endif>
+                            <label> - {{ __('items.the_retail_unit') }} :</label>
+                            <td>
 
                                 {{ $data->retail_units->name }}
-                        </td>
-                    </div>
+                            </td>
+                        </div>
 
-                    <div class="form-group col-sm-6 retail_divs"
-                        @if ($data->has_retail_unit != '1') style="display:none" @endif>
+                        <div class="form-group col-sm-6 retail_divs"
+                            @if ($data->has_retail_unit != '1') style="display:none" @endif>
 
-                        <label> - {{ __('items.retail_unit_number') }} (<span
-                                class="name_retail_unit text-muted ">{{ $data->retail_units->name }}
-                            </span>)  (<span class="name_parent_unit text-muted ">{{ $data->units->name }} </span>)
-                            :</label>
-                        <td> {{ $data->retail_unit_to_parent }} </td>
-                    </div>
-                </div>
-
-
-                <div class="row mb-2">
-
-                    <div
-                        class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - {{ __('items.whole_price') }} (<span class="name_retail_unit text-muted">
-                                {{ $data->retail_units->name }}</span>) :</label>
-                        <td> {{ $data->retail_Wholesale_price / 100 }} </td>
+                            <label> - {{ __('items.retail_unit_number') }} (<span
+                                    class="name_retail_unit text-muted ">{{ $data->retail_units->name }}
+                                </span>) (<span class="name_parent_unit text-muted ">{{ $data->units->name }} </span>)
+                                :</label>
+                            <td> {{ $data->retail_unit_to_parent }} </td>
+                        </div>
                     </div>
 
 
-                    <div
-                        class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - {{ __('items.part_whole_price') }} (<span class="name_retail_unit text-muted">
-                                {{ $data->retail_units->name }}</span>) :</label>
-                        <td> {{ $data->retail_half_Wholesale_price / 100}} </td>
-                    </div>
-                </div>
+                    <div class="row mb-2">
 
-                <div class="row mb-2">
+                        <div
+                            class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
+                            <label> - {{ __('items.whole_price') }} (<span class="name_retail_unit text-muted">
+                                    {{ $data->retail_units->name }}</span>) :</label>
+                            <td> {{ $data->retail_Wholesale_price / 100 }} </td>
+                        </div>
 
-                    <div
-                        class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - {{ __('items.part_price') }} (<span
-                                class="name_retail_unit text-muted">{{ $data->retail_units->name }}</span>)
-                            :</label>
-                        <td> {{ $data->retail_price / 100}} </td>
+
+                        <div
+                            class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
+                            <label> - {{ __('items.part_whole_price') }} (<span class="name_retail_unit text-muted">
+                                    {{ $data->retail_units->name }}</span>) :</label>
+                            <td> {{ $data->retail_half_Wholesale_price / 100 }} </td>
+                        </div>
                     </div>
 
-                    <div
-                        class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
-                        <label> - {{ __('items.cost_price') }} (<span
-                                class="name_retail_unit text-muted">{{ $data->retail_units->name }}</span>)
-                            :</label>
-                        <td> {{ $data->retail_cost_price/ 100 }} </td>
+                    <div class="row mb-2">
+
+                        <div
+                            class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
+                            <label> - {{ __('items.part_price') }} (<span
+                                    class="name_retail_unit text-muted">{{ $data->retail_units->name }}</span>)
+                                :</label>
+                            <td> {{ $data->retail_price / 100 }} </td>
+                        </div>
+
+                        <div
+                            class="form-group col-sm-6 retail_divs"@if ($data->has_retail_unit != '1') style="display:none" @endif>
+                            <label> - {{ __('items.cost_price') }} (<span
+                                    class="name_retail_unit text-muted">{{ $data->retail_units->name }}</span>)
+                                :</label>
+                            <td> {{ $data->retail_cost_price / 100 }} </td>
+                        </div>
                     </div>
-                </div>
-@endif
+                @endif
                 <div class="row mb-2">
 
                     <div class="form-group col-sm-6 ">
                         <label> - {{ __('items.const_price') }} :</label>
                         <td>
                             @if ($data->has_fixed_price == 1)
-                            {{ __('items.constant_price') }}
+                                {{ __('items.constant_price') }}
                             @elseif($data->has_fixed_price == 0)
-                            {{ __('items.can_change_price') }}
+                                {{ __('items.can_change_price') }}
                             @endif
                         </td>
                     </div>
@@ -207,9 +210,9 @@
                         <label> - {{ __('items.status') }} :</label>
                         <td>
                             @if ($data->active == 1)
-                            {{ __('items.active') }}
+                                {{ __('items.active') }}
                             @elseif($data->active == 0)
-                            {{ __('items.inactive') }}
+                                {{ __('items.inactive') }}
                             @endif
                         </td>
                     </div>
@@ -230,6 +233,8 @@
                 </div>
 
 
+
+
             </div>
 
 
@@ -237,10 +242,61 @@
                 {{ __('items.cancel') }}
             </a>
 
+            <hr style="border:1px solid rgb(2, 72, 75)">
+
+            <h4 class="text-center m-2"> {{ __('items.item_movments') }} </h4>
+
+            @if (isset($movments) && count($movments) > 0)
+                <div>
+
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="custom_head">
+                            <tr>
+                                <th> {{ __('items.date') }} </th>
+                                <th> {{ __('items.movment') }} </th>
+                                <th> {{ __('items.quantity_before_movmetn') }} </th>
+                                <th>{{ __('items.quantity_after_movmetn') }} </th>
+                                <th>{{ __('items.movmetn_byan') }}</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($movments as $movment)
+                                <tr>
+                                    <td>{{ $movment->date }}</td>
+
+                                    <td>{{ $movment->movment_type_name }}</td>
+
+                                    <td>{{ $movment->quantity_before_movement *1 }}</td>
+
+                                    <td>
+                                        {{ $movment->quantity_after_movement  * 1}}
+                                    </td>
+
+                                    <td>
+                                        {{ $movment->byan }}
+                                    </td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <br>
+                    <div class="mt-3">
+                        {{ $movments->links() }}
+                    </div>
+                </div>
+            @else
+                <div class="alert alert-warning">
+                    {{ __('items.no_movments') }}
+                </div>
+            @endif
+
         </div>
 
-    </div>
-    </div>
+
+
+
     </div>
 @endsection
 

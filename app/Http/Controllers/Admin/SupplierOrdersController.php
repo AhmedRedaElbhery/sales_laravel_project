@@ -360,6 +360,16 @@ class SupplierOrdersController extends Controller
                 ]);
             }
 
+            $exist = SupplierOrdersDetails::where(['supplier_auto_serial' => $auto_serial])->exists();
+
+            if (!$exist) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'لا يمكن اعتماد هذه الفاتوره لانها لاتحتوى على اصناف ',
+                    'redirect' => route('supplier_orders.show', $data->id),
+                ]);
+            }
+
             if ($data->pill_type == 0) {
                 if ($what_paid < $total_value) {
                     return response()->json([
@@ -495,8 +505,12 @@ class SupplierOrdersController extends Controller
                         $batche['end_date'] = $item->end_date;
                         $batche['com_code'] = auth()->user()->com_code;
                         $batche['added_by'] = auth()->user()->id;
-                        Batche::create($batche);
+                        $batch = Batche::create($batche);
                     }
+
+                    $item->update([
+                        'batch_id' => $batch->id,
+                    ]);
 
                     //movement in item table
                     $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item->item_code])->sum('quantity');
@@ -509,7 +523,7 @@ class SupplierOrdersController extends Controller
                     $item_movement['item_code'] = $item->item_code;
                     $item_movement['table_code'] = $auto_serial;
                     $item_movement['table_details_code'] = $item->id;
-                    $item_movement['byan'] = "مشتريات من مورد" . "" . $supplier_name;
+                    $item_movement['byan'] = " مشتريات من مورد "  . "" . $supplier_name;
                     ItemMovement::create($item_movement);
 
 
@@ -537,24 +551,22 @@ class SupplierOrdersController extends Controller
                             'retail_cost_price' => $retail_unit_price,
                             'cost_price' => $unit_price,
                         ]);
-                    }
-                    else{
+                    } else {
 
-                         // update the quantity
+                        // update the quantity
 
-                         $current_quantity = $item_card->quantity;
+                        $current_quantity = $item_card->quantity;
 
-                         if ($item->isparentunit == 1) {
-                             $quantity = $item->delivered_quantity;
-                         } else {
-                             $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
-                         }
+                        if ($item->isparentunit == 1) {
+                            $quantity = $item->delivered_quantity;
+                        } else {
+                            $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
+                        }
 
-                         $item_card->update([
-                             'quantity' => $current_quantity + $quantity,
-                             'all_retail_quantity' => ($current_quantity + $quantity) * $item_card->retail_unit_to_parent,
-                         ]);
-
+                        $item_card->update([
+                            'quantity' => $current_quantity + $quantity,
+                            'all_retail_quantity' => ($current_quantity + $quantity) * $item_card->retail_unit_to_parent,
+                        ]);
                     }
                 }
             }

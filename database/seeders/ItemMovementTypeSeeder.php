@@ -38,9 +38,6 @@ class ItemMovementTypeSeeder extends Seeder
                 'name'=> 'مبيعات صرف مباشر لعميل',
             ],
             [
-                'name'=> 'مبيعات صرف مباشر لعميل',
-            ],
-            [
                 'name'=> 'مبيعات صرف لمندوب التوصيل',
             ],
             [
@@ -54,6 +51,9 @@ class ItemMovementTypeSeeder extends Seeder
             ],
             [
                 'name'=> 'رد انتاج لخط التصنيع',
+            ],
+            [
+                'name'=> 'مرتجعات من فاتوره',
             ],
         ];
 

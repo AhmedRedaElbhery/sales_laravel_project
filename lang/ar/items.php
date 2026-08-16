@@ -79,6 +79,16 @@ return [
     'item_data' => 'عرض بيانات الصنف',
 
 
+    'date' => 'التاريخ',
+    'movment' => 'الحدث',
+    'quantity_before_movmetn' => 'الكميه قبل الحركه بالوحده الاب',
+    'quantity_after_movmetn' => 'الكميه بعد الحركه بالوحده الاب',
+    'movmetn_byan' => 'بيان الحركه',
+    'item_movments' => 'حركات هذا الصنف',
+    'no_movments' => 'لا يوجد حركات على الصنف',
+    'quantity' => 'الكميه ',
+
+
 
 
 
