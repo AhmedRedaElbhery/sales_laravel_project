@@ -1,15 +1,15 @@
 @if ($isapproved != 1)
 
-    @if (!empty($item_cards))
+    @if (!empty($itemCards))
 
-        @if (!empty($item_data))
+        @if (!empty($itemData))
 
             <div class="row">
 
                 <div class="col-4">
 
                     <div class="form-group">
-                        <input id="id" type="number" hidden value="{{ $item_data->id }}">
+                        <input id="id" type="number" hidden value="{{ $itemData->id }}">
 
                         <label>{{ __('suppliersOrders.item_data') }}</label>
 
@@ -18,10 +18,10 @@
                                 {{ __('suppliersOrders.select_item') }}
                             </option>
 
-                            @if (isset($item_cards))
-                                @foreach ($item_cards as $item)
+                            @if (isset($itemCards))
+                                @foreach ($itemCards as $item)
                                     <option disabled
-                                        @selected($item->item_code == $item_data->item_code)
+                                        @selected($item->item_code == $itemData->item_code)
                                         data-type="{{ $item->item_type }}"
                                         value="{{ $item->item_code }}">
                                         {{ $item->name }}
@@ -47,30 +47,30 @@
                                 {{ __('suppliersOrders.select_unit') }}
                             </option>
 
-                            @if (isset($item_card_data) && $item_card_data != null)
+                            @if (isset($itemCardData) && $itemCardData != null)
 
-                                @if ($item_card_data->has_retail_unit == 1)
+                                @if ($itemCardData->has_retail_unit == 1)
                                     <option
                                         data-isparentunit="1"
-                                        @selected($item_data->unit_id == $item_card_data->parent_unit_id)
-                                        value="{{ $item_card_data->parent_unit_id }}">
-                                        {{ $item_card_data->parent_unit_name }}
+                                        @selected($itemData->unit_id == $itemCardData->parent_unit_id)
+                                        value="{{ $itemCardData->parent_unit_id }}">
+                                        {{ $itemCardData->parent_unit_name }}
                                         ({{ __('suppliersOrders.main_unit') }})
                                     </option>
 
                                     <option
                                         data-isparentunit="0"
-                                        @selected($item_data->unit_id == $item_card_data->retail_unit_id)
-                                        value="{{ $item_card_data->retail_unit_id }}">
-                                        {{ $item_card_data->retail_unit_name }}
+                                        @selected($itemData->unit_id == $itemCardData->retail_unit_id)
+                                        value="{{ $itemCardData->retail_unit_id }}">
+                                        {{ $itemCardData->retail_unit_name }}
                                         ({{ __('suppliersOrders.retail_unit') }})
                                     </option>
                                 @else
                                     <option
                                         data-isparentunit="1"
                                         selected
-                                        value="{{ $item_card_data->parent_unit_id }}">
-                                        {{ $item_card_data->parent_unit_name }}
+                                        value="{{ $itemCardData->parent_unit_id }}">
+                                        {{ $itemCardData->parent_unit_name }}
                                         ({{ __('suppliersOrders.main_unit') }})
                                     </option>
                                 @endif
@@ -95,7 +95,7 @@
                             id="quantity_edit"
                             name="quantity_add"
                             class="form-control"
-                            value="{{ $item_data->delivered_quantity * 1 }}">
+                            value="{{ $itemData->delivered_quantity * 1 }}">
                     </div>
                 </div>
 
@@ -108,11 +108,11 @@
                             id="price_edit"
                             name="price_add"
                             class="form-control"
-                            value="{{ $item_data->unit_price / 100 }}">
+                            value="{{ $itemData->unit_price / 100 }}">
                     </div>
                 </div>
 
-                @if ($item_data->production_date != null && $item_data->end_date != null)
+                @if ($itemData->production_date != null && $itemData->end_date != null)
 
                     <div class="col-4 related_to_date">
 
@@ -123,7 +123,7 @@
                                 id="production_date_edit"
                                 name="production_date"
                                 class="form-control"
-                                value="{{ $item_data->production_date }}">
+                                value="{{ $itemData->production_date }}">
                         </div>
                     </div>
 
@@ -136,7 +136,7 @@
                                 id="end_date_edit"
                                 name="end_date"
                                 class="form-control"
-                                value="{{ $item_data->end_date }}">
+                                value="{{ $itemData->end_date }}">
                         </div>
                     </div>
 
@@ -152,7 +152,7 @@
                             id="total_price_edit"
                             name="total_price"
                             class="form-control"
-                            value="{{ $item_data->total_price / 100 }}">
+                            value="{{ $itemData->total_price / 100 }}">
                     </div>
                 </div>
 

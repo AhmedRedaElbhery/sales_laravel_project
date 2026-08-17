@@ -20,6 +20,7 @@ return [
     'items' => 'الاصناف',
     'inventory_transactions' => 'حركات مخزنيه',
     'purchase_invoices' => 'فواتير الشراء',
+    'general_return_orders' => 'مرتجعات الشراء العامه',
     'sales' => 'المبيعات',
     'sales_invoices' => 'فواتير المبيعات',
     'services' => 'خدمات داخليه وخارجيه',

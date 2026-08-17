@@ -231,9 +231,9 @@
                         </li>
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'supplier_orders.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'supplier_orders.*','general_return_orders.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'supplier_orders.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*', 'supplier_orders.*','general_return_orders.*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.inventory_transactions') }}
@@ -249,6 +249,16 @@
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             {{ __('sidebar.purchase_invoices') }}
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('general_return_orders.index') }}"
+                                        class="nav-link {{ request()->routeIs('general_return_orders.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            {{ __('sidebar.general_return_orders') }}
                                         </p>
                                     </a>
                                 </li>

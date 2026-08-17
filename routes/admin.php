@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\CollectController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DelegateController as AdminDelegateController;
 use App\Http\Controllers\Admin\ExchangeController;
+use App\Http\Controllers\Admin\GeneralReturnOrdersController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\Admin\SalesBillsController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
@@ -109,11 +110,11 @@ Route::group([
     /* start supplier orders */
     Route::resource('supplier_orders', SupplierOrdersController::class);
     Route::post('supplier_orders/getUnits', [SupplierOrdersController::class, 'getUnits'])->name('supplier_orders.getUnits');
-    Route::post('supplier_orders/addunits', [SupplierOrdersController::class, 'addunits'])->name('supplier_orders.addunits');
-    Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroy_details'])->name('supplier_orders.destroy_details');
-    Route::post('/supplier_orders/edititem', [SupplierOrdersController::class, 'edititem'])->name('supplier_orders.edititem');
-    Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'update_item'])->name('supplier_orders.update_item');
-    Route::post('supplier_orders/model_approve', [SupplierOrdersController::class, 'model_approve'])->name('supplier_orders.model_approve');
+    Route::post('supplier_orders/addunits', [SupplierOrdersController::class, 'addUnits'])->name('supplier_orders.addunits');
+    Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroyDetails'])->name('supplier_orders.destroy_details');
+    Route::post('/supplier_orders/edititem', [SupplierOrdersController::class, 'editItem'])->name('supplier_orders.edititem');
+    Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'updateItem'])->name('supplier_orders.update_item');
+    Route::post('supplier_orders/model_approve', [SupplierOrdersController::class, 'modelApprove'])->name('supplier_orders.model_approve');
 
 
     /* admin */
@@ -133,12 +134,12 @@ Route::group([
 
     Route::resource('exchange_transaction', ExchangeController::class);
 
-//sales bills
+    //sales bills
 
-Route::get('sales_item/mirrorGetUnits', [SalesBillsController::class, 'mirrorGetUnits'])->name('sales_item.mirrorgetUnits');
-Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirror_get_batches'])->name('sales_item.mirror_get_batches');
+    Route::get('sales_item/mirrorGetUnits', [SalesBillsController::class, 'mirrorGetUnits'])->name('sales_item.mirrorgetUnits');
+    Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirror_get_batches'])->name('sales_item.mirror_get_batches');
 
-//////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////
 
     Route::resource('sales_bills', SalesBillsController::class);
     Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
@@ -155,6 +156,12 @@ Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirro
     Route::delete('sales_item/delete_item', [SalesBillsController::class, 'delete_item'])->name('sales_item.delete_item');
     Route::delete('sales_item/active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])->name('sales_item.active_delete_all_items');
     Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])->name('sales_item.approve_active_bill');
+
+
+    //general return orders
+    Route::resource('general_return_orders', GeneralReturnOrdersController::class);
+
+
 });
 
 Route::get('/lang/{locale}', function ($locale) {

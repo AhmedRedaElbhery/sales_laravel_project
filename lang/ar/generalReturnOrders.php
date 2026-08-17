@@ -3,14 +3,14 @@
 return [
 
     // Page Titles
-    'title' => 'المشتريات',
+    'title' => ' مرتجعات المشتريات بدون اصل فاتوره',
     'inventory_transactions' => 'حركات مخزنية',
-    'supplier_orders' => 'فواتير المشتريات',
+    'supplier_orders' => 'مرتجعات المشتريات بدون اصل فاتوره',
     'show' => 'عرض',
 
     // Header
-    'supplier_invoices' => 'فواتير المشتريات من الموردين',
-    'add_new_invoice' => 'إضافة فاتورة جديدة',
+    'supplier_invoices' => 'مرتجعات المشتريات بدون اصل فاتوره',
+    'add_new_invoice' => 'إضافة فاتورة مرتجعات جديده',
 
     // Table Headers
     'invoice_code' => 'كود الفاتورة',
@@ -22,8 +22,7 @@ return [
     'actions' => 'الإجراءات',
 
     // Invoice Types
-    'purchase_invoice' => 'فاتورة مشتريات',
-    'purchase_return_invoice' => 'فاتورة مرتجعات',
+    'purchase_return_invoice' => 'فاتورة مرتجعات عامه',
 
     // Status
     'not_approved' => 'غير معتمدة',
@@ -36,13 +35,26 @@ return [
     // Messages
     'confirm_delete' => 'هل أنت متأكد من الحذف؟',
     'no_data' => 'لا توجد بيانات',
+    'add' => 'اضافه',
 
+    'select_name' => 'اختر المورد',
+    'cash' => 'كاش',
+    'credit' => 'اجل',
+    'date' => 'التاريخ',
+
+    'notes' => 'الملاحظات',
+    'back' => 'رجوع',
+    'select_supplier' => 'اختر المورد',
+    'select_type' => 'اختر النوع',
+    'select_store' => 'اختر المخزن',
+    'save' => 'حفظ',
+
+
+    /*
     // Show Page
     'invoice_data' => 'بيانات فاتورة المشتريات',
     'auto_invoice_code' => 'كود الفاتورة الآلي',
     'supplier_invoice_code' => 'كود الفاتورة لدى المورد',
-    'cash' => 'كاش',
-    'deferred' => 'آجل',
     'total_before_discount' => 'إجمالي الفاتورة قبل الخصم',
     'invoice_discount_type' => 'نوع الخصم على الفاتورة',
     'percentage_discount' => 'خصم نسبة',
@@ -104,7 +116,6 @@ return [
     'item_units' => 'وحدات الصنف',
     'main_unit' => 'الوحده الرئيسيه',
     'retail_unit' => 'وحده التجزئه',
-    'save' => 'حفظ',
     'select_unit' => 'اختر الوحده',
     'invoice_total_before_discount_tax' => 'الاجمالى قبل الضريبه والخصم',
     'enter_tax_percent' => 'ادخل نسبه الضريبه',
@@ -112,20 +123,11 @@ return [
     'available_treasury_balance' => 'الرصيد المتاح بالخزنه',
     'edit_supplier_invoice' => 'تعديل فاتوره المورد',
     'supplier_invoice_number' => 'رقم فاتوره المورد',
-    'notes' => 'الملاحظات',
-    'back' => 'رجوع',
-    'select_supplier' => 'اختر المورد',
-    'select_type' => 'اختر النوع',
-    'select_store' => 'اختر المخزن',
-
-
 
     'add_new_supplier' => 'اضافه مورد جديد',
-    'select_name' => 'اختر المورد',
-    'credit' => 'اجل',
-    'date' => 'التاريخ',
-    'add' => 'اضافه',
 
+
+*/
 
 
 ];

@@ -29,28 +29,27 @@ class SupplierOrdersController extends Controller
      */
     public function index()
     {
-        $com_code = auth()->user()->com_code;
-        $data = SupplierOrders::where(['com_code' => $com_code])->orderby('id', 'DESC')->paginate(11);
+        $comCode = auth()->user()->com_code;
+        $data = SupplierOrders::where(['com_code' => $comCode,'order_type'=>1])->orderby('id', 'DESC')->paginate(11);
 
-        if (!empty($data)) {
-            foreach ($data as $item) {
-                $item['store_name'] = Store::where('id', $item['store_id'])->value('name');
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                $item['supplier_name'] = Suppliers::where(['supplier_code' => $item->supplier_code, 'com_code' => $com_code])->value('name');
-                if ($item->updated_at && $item->updated_at  != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+        foreach ($data as $item) {
+            $item['store_name'] = Store::where('id', $item['store_id'])->value('name');
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            $item['supplier_name'] = Suppliers::where(['supplier_code' => $item->supplier_code, 'com_code' => $comCode])->value('name');
+            if ($item->updated_at && $item->updated_at  != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
+
         return view('admin.supplier_orders.index', compact('data'));
     }
 
 
     public function create()
     {
-        $com_code = auth()->user()->com_code;
-        $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $com_code])->get();
-        $stores = Store::select('name', 'id')->where(['com_code' => $com_code, 'active' => 1])->get();
+        $comCode = auth()->user()->com_code;
+        $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $comCode])->get();
+        $stores = Store::select('name', 'id')->where(['com_code' => $comCode, 'active' => 1])->get();
         return view('admin.supplier_orders.create', compact('suppliers', 'stores'));
     }
 
@@ -62,17 +61,13 @@ class SupplierOrdersController extends Controller
      */
     public function store(SupplierOrderRequest $request)
     {
-        $com_code = auth()->user()->com_code;
+        $comCode = auth()->user()->com_code;
         $serial = SupplierOrders::max('auto_serial');
 
 
-        if ($serial == null) {
-            $data['auto_serial'] = 1;
-        } else {
-            $data['auto_serial'] = $serial + 1;
-        }
+        $data['auto_serial'] = $serial == null ? 1 : $serial + 1;
 
-        $account_number = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $com_code])->value('account_number');
+        $accountNumber = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $comCode])->value('account_number');
 
         $data['order_date'] = $request->order_date;
         $data['store_id'] = $request->store;
@@ -82,8 +77,8 @@ class SupplierOrdersController extends Controller
         $data['supplier_code'] = $request->supplier_code;
 
         $data['added_by'] = auth()->user()->id;
-        $data['com_code'] = $com_code;
-        $data['account_number'] = $account_number;
+        $data['com_code'] = $comCode;
+        $data['account_number'] = $accountNumber;
         $data['order_type'] = 1;
 
         SupplierOrders::create($data);
@@ -98,51 +93,51 @@ class SupplierOrdersController extends Controller
      */
     public function show($id)
     {
-        $com_code = auth()->user()->com_code;
+        $comCode = auth()->user()->com_code;
         $data = SupplierOrders::find($id);
-        if (!empty($data)) {
-            $details = SupplierOrdersDetails::where(['supplier_auto_serial' => $data['auto_serial'], 'com_code' => $data['com_code'], 'order_type' => $data['order_type']])->get();
 
-            $data['supplier_name'] = Suppliers::where('account_number', $data['account_number'])->value('name');
-            $data['store_name'] = Store::where('id', $data['store_id'])->value('name');
-
-            $data['added_by_admin'] = Admin::where('id', $data['added_by'])->value('name');
-
-            if ($data['updated_by'] != null && $data['updated_by'] > 0) {
-                $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
-            }
-
-            if ($details) {
-
-                foreach ($details as $unit) {
-
-                    $unit['item_name'] = ItemCard::where(['item_code' => $unit->item_code])->value('name');
-                    $unit['unit_name'] = Unit::where(['id' => $unit->unit_id])->value('name');
-
-                    $unit['added_by_admin'] = Admin::where('id', $unit->added_by)->value('name');
-
-                    if ($unit['updated_by'] != null && $unit['updated_by'] > 0) {
-                        $unit['updated_by_admin'] = Admin::where('id', $unit->updated_by)->value('name');
-                    }
-                }
-            }
-            $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
-            if ($shift != null) {
-                $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
-                $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
-            }
-
-            if ($data['is_approved'] != 1) {
-
-                $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $com_code, 'active' => 1])->get();
-                return view('admin.supplier_orders.details', compact('data', 'details', 'items', 'shift'));
-            }
-
-
-
-            return view('admin.supplier_orders.details', compact('data', 'details', 'shift'));
+        if (empty($data)) {
+            return redirect()->route('supplier_orders.index');
         }
-        return redirect()->route('supplier_orders.index');
+
+        $data['supplier_name'] = Suppliers::where('account_number', $data['account_number'])->value('name');
+        $data['store_name'] = Store::where('id', $data['store_id'])->value('name');
+
+        $data['added_by_admin'] = Admin::where('id', $data['added_by'])->value('name');
+
+        if ($data['updated_by'] != null && $data['updated_by'] > 0) {
+            $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
+        }
+
+
+        $details = SupplierOrdersDetails::where(['supplier_auto_serial' => $data['auto_serial'], 'com_code' => $data['com_code'], 'order_type' => $data['order_type']])->get();
+
+        foreach ($details as $unit) {
+
+            $unit['item_name'] = ItemCard::where(['item_code' => $unit->item_code])->value('name');
+            $unit['unit_name'] = Unit::where(['id' => $unit->unit_id])->value('name');
+
+            $unit['added_by_admin'] = Admin::where('id', $unit->added_by)->value('name');
+
+            if ($unit['updated_by'] != null && $unit['updated_by'] > 0) {
+                $unit['updated_by_admin'] = Admin::where('id', $unit->updated_by)->value('name');
+            }
+        }
+
+        $shift = AdminShifts::where(['com_code' => $comCode, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($shift != null) {
+            $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+            $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+        }
+
+        $items = [];
+
+        if ($data['is_approved'] != 1) {
+
+            $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $comCode, 'active' => 1])->get();
+        }
+
+        return view('admin.supplier_orders.details', compact('data', 'details', 'items', 'shift'));
     }
 
     /**
@@ -153,9 +148,9 @@ class SupplierOrdersController extends Controller
      */
     public function edit($id)
     {
-        $com_code = auth()->user()->com_code;
-        $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $com_code])->get();
-        $stores = Store::select('name', 'id')->where(['com_code' => $com_code, 'active' => 1])->get();
+        $comCode = auth()->user()->com_code;
+        $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $comCode])->get();
+        $stores = Store::select('name', 'id')->where(['com_code' => $comCode, 'active' => 1])->get();
         $data = SupplierOrders::find($id);
         return view('admin.supplier_orders.edit', compact('data', 'suppliers', 'stores'));
     }
@@ -169,17 +164,17 @@ class SupplierOrdersController extends Controller
      */
     public function update($id, SupplierOrderRequest $request)
     {
-        $com_code = auth()->user()->com_code;
+        $comCode = auth()->user()->com_code;
 
-        $data = SupplierOrders::where(['id' => $id, 'com_code' => $com_code])->first();
-        $account_number = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $com_code])->value('account_number');
+        $data = SupplierOrders::where(['id' => $id, 'com_code' => $comCode])->first();
+        $accountNumber = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $comCode])->value('account_number');
 
         $data->update([
             'supplier_code' => $request->supplier_code,
             'pill_type' => $request->pill_type,
             'doc_number' => $request->doc_number,
             'store_id' => $request->store,
-            'account_number' => $account_number,
+            'account_number' => $accountNumber,
             'updated_by' => auth()->user()->id,
         ]);
         return redirect()->route('supplier_orders.show', $id);
@@ -202,7 +197,7 @@ class SupplierOrdersController extends Controller
         return redirect()->route('supplier_orders.index');
     }
 
-    public function destroy_details($id)
+    public function destroyDetails($id)
     {
         $data = SupplierOrdersDetails::select('total_price', 'supplier_auto_serial', 'order_type', 'com_code')->where(['id' => $id])->first();
         $flage = SupplierOrdersDetails::destroy($id);
@@ -222,361 +217,422 @@ class SupplierOrdersController extends Controller
 
     public function getUnits(Request $request)
     {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
-            $item_code = $request->item_code;
-
-            $data = ItemCard::where(['item_code' => $item_code, 'com_code' => $com_code])->first();
-            if ($data['has_retail_unit'] == 1) {
-                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
-                $data['retail_unit_name'] = Unit::where(['id' => $data['retail_unit_id']])->value('name');
-            } else {
-                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
-            }
+        if (!$request->ajax()) {
+            return;
         }
+
+        $comCode = auth()->user()->com_code;
+        $itemCode = $request->item_code;
+
+        $data = ItemCard::where(['item_code' => $itemCode, 'com_code' => $comCode])->first();
+
+        $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
+        if ($data['has_retail_unit'] == 1) {
+            $data['retail_unit_name'] = Unit::where(['id' => $data['retail_unit_id']])->value('name');
+        }
+
         return view('admin.supplier_orders.getUnits', compact('data'));
     }
 
-    public function addunits(Request $request)
+    public function addUnits(Request $request)
     {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
-            $parent_data = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->first();
-            if ($parent_data->is_approved != 1) {
-                $data['supplier_auto_serial'] = $request->autoserialparent;
-                $data['order_type'] = 1;
-                $data['item_code'] = $request->item_card;
-                $data['delivered_quantity'] = $request->quantity;
-                $data['unit_price'] = $request->price * 100;
-                $data['total_price'] = $request->total_price * 100;
-                $data['com_code'] = $com_code;
-                $data['order_date'] = $parent_data->order_date;
-                $data['isparentunit'] = $request->isparent;
-                $data['unit_id'] = $request->unit;
-                $data['item_card_type'] = $request->type;
-                $data['added_by'] = auth()->user()->id;
-                if ($request->type == 2) {
-                    $data['production_date'] = $request->production_date;
-                    $data['end_date'] = $request->end_date;
-                }
-
-                $flage = SupplierOrdersDetails::create($data);
-                if ($flage) {
-
-                    $total = SupplierOrdersDetails::where(['com_code' => $com_code, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
-                    SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $com_code])->update([
-                        'updated_by' => auth()->user()->id,
-                        'total_before_discount' => $total,
-                        'total_cost' => $total - $parent_data->discount_value + $parent_data->tax_value,
-                    ]);
-
-                    echo json_encode('done');
-                }
-            }
+        if (!$request->ajax()) {
+            return;
         }
+
+        $comCode = auth()->user()->com_code;
+        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => 1])->first();
+
+        if (!$parentData || $parentData->is_approved == 1) {
+            return;
+        }
+
+        $data['supplier_auto_serial'] = $request->autoserialparent;
+        $data['order_type'] = 1;
+        $data['item_code'] = $request->item_card;
+        $data['delivered_quantity'] = $request->quantity;
+        $data['unit_price'] = $request->price * 100;
+        $data['total_price'] = $request->total_price * 100;
+        $data['com_code'] = $comCode;
+        $data['order_date'] = $parentData->order_date;
+        $data['isparentunit'] = $request->isparent;
+        $data['unit_id'] = $request->unit;
+        $data['item_card_type'] = $request->type;
+        $data['added_by'] = auth()->user()->id;
+
+        if ($request->type == 2) {
+            $data['production_date'] = $request->production_date;
+            $data['end_date'] = $request->end_date;
+        }
+
+        SupplierOrdersDetails::create($data);
+
+        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $comCode])->update([
+            'updated_by' => auth()->user()->id,
+            'total_before_discount' => $total,
+            'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
+        ]);
+
+        echo json_encode('done');
     }
 
-    public function edititem(Request $request)
+    public function editItem(Request $request)
     {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
-            $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->value('is_approved');
-
-            if ($isapproved != 1) {
-
-                $item_data = SupplierOrdersDetails::find($request->id);
-                $item_card_data = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $item_data->item_code, 'com_code' => $com_code])->first();
-                $item_cards = ItemCard::where(['active' => 1, 'com_code' => $com_code])->get();
-                if ($item_card_data->has_retail_unit == 1) {
-                    $item_card_data->parent_unit_name = Unit::where('id', $item_card_data->parent_unit_id)->value('name');
-                    $item_card_data->retail_unit_name = Unit::where('id', $item_card_data->retail_unit_id)->value('name');
-                } else {
-                    $item_card_data->parent_unit_name = Unit::where('id', $item_card_data->parent_unit_id)->value('name');
-                }
-                return view('admin.supplier_orders.edititem', compact('isapproved', 'item_card_data', 'item_data', 'item_cards'));
-            }
+        if (!$request->ajax()) {
+            return;
         }
-    }
+        $comCode = auth()->user()->com_code;
+        $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => 1])->value('is_approved');
 
-
-    public function update_item(Request $request)
-    {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
-            $parent_data = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $com_code, 'order_type' => 1])->first();
-            if ($parent_data->is_approved != 1) {
-
-
-                $flage = SupplierOrdersDetails::where('id', $request->id)->update([
-                    'delivered_quantity' => $request->quantity,
-                    'unit_price'         => $request->price * 100,
-                    'total_price'        => $request->total_price * 100,
-                    'isparentunit'       => $request->isparent,
-                    'unit_id'            => $request->unit,
-                    'production_date'    => $request->production_date,
-                    'end_date'           => $request->end_date,
-                ]);
-                if ($flage) {
-
-                    $total = SupplierOrdersDetails::where(['com_code' => $com_code, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
-                    SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $com_code])->update([
-                        'updated_by' => auth()->user()->id,
-                        'total_before_discount' => $total,
-                        'total_cost' => $total - $parent_data->discount_value + $parent_data->tax_value,
-                    ]);
-
-                    echo json_encode('done');
-                }
-            }
+        if ($isapproved == 1) {
+            return;
         }
+
+        $itemData = SupplierOrdersDetails::find($request->id);
+        $itemCardData = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $itemData->item_code, 'com_code' => $comCode])->first();
+        $itemCards = ItemCard::where(['active' => 1, 'com_code' => $comCode])->get();
+
+        $itemCardData->parent_unit_name = Unit::where('id', $itemCardData->parent_unit_id)->value('name');
+        if ($itemCardData->has_retail_unit == 1) {
+            $itemCardData->retail_unit_name = Unit::where('id', $itemCardData->retail_unit_id)->value('name');
+        }
+        return view('admin.supplier_orders.edititem', compact('isapproved', 'itemCardData', 'itemData', 'itemCards'));
     }
 
 
-    public function model_approve(ApproveBillRequest $request)
+    public function updateItem(Request $request)
     {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
-            $auto_serial = $request->autoserialparent;
+        if (!$request->ajax()) {
+            return;
+        }
 
-            $tax_percent = $request->tax_percent;
-            $tax_value = $request->tax_value;
-            $discount_percent = $request->discount_percent;
-            $discount_value = $request->discount_value;
+        $comCode = auth()->user()->com_code;
+        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => 1])->first();
+        if ($parentData->is_approved == 1) {
+            return;
+        }
+        SupplierOrdersDetails::where('id', $request->id)->update([
+            'delivered_quantity' => $request->quantity,
+            'unit_price'         => $request->price * 100,
+            'total_price'        => $request->total_price * 100,
+            'isparentunit'       => $request->isparent,
+            'unit_id'            => $request->unit,
+            'production_date'    => $request->production_date,
+            'end_date'           => $request->end_date,
+        ]);
 
-            $what_paid = $request->what_paid;
-            $what_remain = $request->what_remain;
+        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $comCode])->update([
+            'updated_by' => auth()->user()->id,
+            'total_before_discount' => $total,
+            'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
+        ]);
 
-            $total_value = $request->total_value;
-            $treasuries_id = $request->treasuries_id;
-            $treasuries_balance = $request->treasuries_balance;
+        echo json_encode('done');
+    }
 
-            $data = SupplierOrders::where(['auto_serial' => $auto_serial, 'com_code' => $com_code])->first();
-            $supplier_name = Suppliers::where(['account_number' => $data->account_number])->value('name');
-            if ($data->is_approved == 1) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'هذه الفاتورة معتمدة من قبل',
-                    'redirect' => route('supplier_orders.show', $data->id),
-                ]);
-            }
 
-            $exist = SupplierOrdersDetails::where(['supplier_auto_serial' => $auto_serial])->exists();
+    public function modelApprove(ApproveBillRequest $request)
+    {
+        if (!$request->ajax()) {
+            return;
+        }
 
-            if (!$exist) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'لا يمكن اعتماد هذه الفاتوره لانها لاتحتوى على اصناف ',
-                    'redirect' => route('supplier_orders.show', $data->id),
-                ]);
-            }
 
-            if ($data->pill_type == 0) {
-                if ($what_paid < $total_value) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
-                    ]);
-                }
+        $comCode = auth()->user()->com_code;
+        $autoSerial = $request->autoserialparent;
+
+        $taxPercent = $request->tax_percent;
+        $taxValue = $request->tax_value;
+        $discount_percent = $request->discount_percent;
+        $discount_value = $request->discount_value;
+
+        $whatPaid = $request->what_paid;
+        $whatRemain = $request->what_remain;
+
+        $totalValue = $request->total_value;
+
+        $data = SupplierOrders::where(['auto_serial' => $autoSerial, 'com_code' => $comCode])->first();
+        $supplierName = Suppliers::where(['account_number' => $data->account_number])->value('name');
+
+        if ($data->is_approved == 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'هذه الفاتورة معتمدة من قبل',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        $allGood = $this->checkOnBill($autoSerial, $data, $whatPaid, $totalValue, $comCode);
+
+        if ($allGood instanceof \Illuminate\Http\JsonResponse) {
+            return $allGood;
+        }
+
+        $shift = $this->checkOnShift($data, $whatPaid, $comCode);
+
+        if ($shift instanceof \Illuminate\Http\JsonResponse) {
+            return $shift;
+        }
+
+        $flage = $data->update([
+            'is_approved' => 1,
+            'discount_percent' => $discount_percent,
+            'discount_value' => $discount_value * 100,
+            'tax_percent' => $taxPercent,
+            'tax_value' => $taxValue * 100,
+            'total_cost' => $totalValue * 100,
+            'what_paid' => $whatPaid * 100,
+            'what_remain' => $whatRemain * 100,
+            'money_for_account' => $whatPaid * 100,
+            'updated_by' => auth()->user()->id,
+        ]);
+
+
+        if(!$flage)
+        {
+            return;
+        }
+
+        //money movement
+        if ($whatPaid > 0) {
+            $this->moneyTransaction($data, $whatPaid, $shift, $comCode);
+        }
+
+        //items and quantity movement
+        $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $autoSerial, 'com_code' => $comCode])->get();
+        foreach ($items as $item) {
+            $itemCard = ItemCard::where(['com_code' => $comCode, 'item_code' => $item->item_code])->first();
+            $quantityBeforeMovement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
+
+            //convert the coming unit to be a parent unit to store all item using parent units
+            if ($item->isparentunit == 1) {
+                $quantity = $item->delivered_quantity;
+                $unitPrice = $item->unit_price;
             } else {
 
-                if ($what_paid == $total_value) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
-
-                    ]);
-                }
+                $quantity = $item->delivered_quantity / $itemCard->retail_unit_to_parent;
+                $unitPrice = $itemCard->retail_unit_to_parent * $item->unit_price;
             }
 
-            $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
-            if ($shift != null) {
-                $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
-                $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
 
-                $treasuries_balance = $shift->treasuries_balance / 100;
+            //movment in batche table
+            $this->addBatche($data, $item, $autoSerial, $quantity, $unitPrice, $comCode);
 
-                if ($what_paid > $treasuries_balance) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => ' الرصيد المتاح لا يسمح بالدفع',
-                        'redirect' => route('supplier_orders.show', $data->id),
-                    ]);
-                }
-            } else {
+            //add the movment in itemMovment table
+            $this->addItemMovment($item, $autoSerial, $quantityBeforeMovement, $supplierName, $comCode);
+
+            //update the price and quantity to the new one
+            $this->updateItemData($itemCard, $item);
+        }
+
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم اعتماد الفاتورة بنجاح',
+            'redirect' => route('supplier_orders.index'),
+        ]);
+    }
+
+    private function checkOnBill($autoSerial, $data, $whatPaid, $totalValue, $comCode)
+    {
+        $exist = SupplierOrdersDetails::where(['supplier_auto_serial' => $autoSerial, 'com_code' => $comCode])->exists();
+
+        if (!$exist) {
+            return response()->json([
+                'status' => false,
+                'message' => 'لا يمكن اعتماد هذه الفاتوره لانها لاتحتوى على اصناف ',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        if ($data->pill_type == 0) {
+            if ($whatPaid < $totalValue) {
                 return response()->json([
                     'status' => false,
-                    'message' => ' لا يوجد شفت مفتوح',
-                    'redirect' => route('supplier_orders.show', $data->id),
+                    'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
                 ]);
             }
+        } else {
 
-            $flage = $data->update([
-                'is_approved' => 1,
-                'discount_percent' => $discount_percent,
-                'discount_value' => $discount_value * 100,
-                'tax_percent' => $tax_percent,
-                'tax_value' => $tax_value * 100,
-                'total_cost' => $total_value * 100,
-                'what_paid' => $what_paid * 100,
-                'what_remain' => $what_remain * 100,
-                'money_for_account' => $what_paid * 100,
+            if ($whatPaid == $totalValue) {
+                return response()->json([
+                    'status' => false,
+                    'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
+
+                ]);
+            }
+        }
+    }
+
+
+    private function checkOnShift($data, $whatPaid, $comCode)
+    {
+        $shift = AdminShifts::where(['com_code' => $comCode, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($shift == null) {
+            return response()->json([
+                'status' => false,
+                'message' => ' لا يوجد شفت مفتوح',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+        $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+
+        $treasuriesBalance = $shift->treasuries_balance / 100;
+
+        if ($whatPaid > $treasuriesBalance) {
+            return response()->json([
+                'status' => false,
+                'message' => ' الرصيد المتاح لا يسمح بالدفع',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        return $shift;
+    }
+
+    private function moneyTransaction($data, $whatPaid, $shift, $comCode)
+    {
+
+        //get the treasury
+        $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $comCode])->first();
+        if ($treasuries->last_isal_exchange == null) {
+            $treasuries->last_isal_exchange = 0;
+        }
+
+        //add the transaction on table transactions
+        TreasuriesTransaction::create([
+            'treasuries_id' => $shift->treasuries_id,
+            'bill_code' => $data->auto_serial,
+            'is_approved' => 1,
+            'shift_id' => $shift->id,
+            'com_code' => $comCode,
+            'money' => $whatPaid * (-100),
+            'isal_number' => $treasuries->last_isal_exchange + 1,
+            'date' => date('Y-m-d'),
+            'byan' => 'فاتوره مشتريات',
+            'move_type' => 1,
+            'account_number' => $data->account_number,
+            'money_for_account' => $whatPaid * (100),
+            'added_by' => auth()->user()->id,
+        ]);
+
+        //update the last isal in treasury
+        $treasuries->update([
+            'last_isal_exchange' => $treasuries->last_isal_exchange + 1,
+        ]);
+
+        //add the money in accounts and supplier tables
+        $accountData = Accounts::where(['account_number' => $data->account_number, 'com_code' => $comCode, 'is_parent' => 0])->first();
+
+        $moneyForAccountTransaction = TreasuriesTransaction::where(['account_number' => $data->account_number, 'com_code' => $comCode])->sum('money_for_account');
+
+        $theFinalBalance = $accountData->start_balance + $moneyForAccountTransaction;
+
+        $accountData->update([
+            'current_balance' => $theFinalBalance,
+        ]);
+
+        $supplier = Suppliers::where(['account_number' => $data->account_number, 'com_code' => $comCode])->first();
+        $supplier->update([
+            'current_balance' => $theFinalBalance,
+        ]);
+    }
+
+    private function addBatche($data, $item, $autoSerial, $quantity, $unitPrice, $comCode)
+    {
+        if ($item->production_date != null && $item->end_date != null) {
+            $batcheExist = Batche::where(['item_code' => $item->item_code, 'end_date' => $item->end_date, 'production_date' => $item->production_date, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
+        } else {
+            $batcheExist = Batche::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
+        }
+        if ($batcheExist) {
+            $batcheExist->update([
+                'quantity' => $batcheExist->quantity + $quantity,
+                'total_cost' => $batcheExist->total_cost + ($item->delivered_quantity * $item->unit_price),
                 'updated_by' => auth()->user()->id,
             ]);
 
-            if ($flage) {
-                //movement in transaction table
-                if ($what_paid > 0) {
-                    $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $com_code])->first();
-                    if ($treasuries->last_isal_exchange == null) {
-                        $$treasuries->last_isal_exchange = 0;
-                    }
-                    TreasuriesTransaction::create([
-                        'treasuries_id' => $shift->treasuries_id,
-                        'bill_code' => $data->auto_serial,
-                        'is_approved' => 1,
-                        'shift_id' => $shift->id,
-                        'com_code' => $com_code,
-                        'money' => $what_paid * (-100),
-                        'isal_number' => $treasuries->last_isal_exchange + 1,
-                        'date' => date('Y-m-d'),
-                        'byan' => 'فاتوره مشتريات',
-                        'move_type' => 1,
-                        'account_number' => $data->account_number,
-                        'money_for_account' => $what_paid * (100),
-                        'added_by' => auth()->user()->id,
-                    ]);
-
-                    $treasuries->update([
-                        'last_isal_exchange' => $treasuries->last_isal_exchange + 1,
-                    ]);
-
-                    $account_data = Accounts::where(['account_number' => $data->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
-
-                    //$money_for_account_supplier = SupplierOrders::where(['account_number'=>$data->account_number,'com_code'=>$com_code])->sum('money_for_account');
-
-                    $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $data->account_number, 'com_code' => $com_code])->sum('money_for_account');
-
-                    $the_final_balance = $account_data->start_balance + $money_for_account_transaction;
-
-                    $account_data->update([
-                        'current_balance' => $the_final_balance,
-                    ]);
-
-                    $supplier = Suppliers::where(['account_number' => $data->account_number, 'com_code' => $com_code])->first();
-                    $supplier->update([
-                        'current_balance' => $the_final_balance,
-                    ]);
-                }
-                //movement in stores
-                $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $auto_serial, 'com_code' => $com_code])->get();
-                foreach ($items as $item) {
-                    $item_card = ItemCard::where(['com_code' => $com_code, 'item_code' => $item->item_code])->first();
-                    $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item->item_code])->sum('quantity');
-
-                    if ($item->isparentunit == 1) {
-                        $quantity = $item->delivered_quantity;
-                        $unit_price = $item->unit_price;
-                    } else {
-
-                        $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
-                        $unit_price = $item_card->retail_unit_to_parent * $item->unit_price;
-                    }
-
-                    if ($item->production_date != null && $item->end_date != null) {
-                        $batche_exist = Batche::where(['item_code' => $item->item_code, 'end_date' => $item->end_date, 'production_date' => $item->production_date, 'store_id' => $data->store_id, 'com_code' => $com_code, 'unit_price' => $unit_price])->first();
-                    } else {
-                        $batche_exist = Batche::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $com_code, 'unit_price' => $unit_price])->first();
-                    }
-                    if ($batche_exist) {
-                        $batche_exist->update([
-                            'quantity' => $batche_exist->quantity + $quantity,
-                            'total_cost' => $batche_exist->total_cost + ($item->delivered_quantity * $item->unit_price),
-                            'updated_by' => auth()->user()->id,
-                        ]);
-                    } else {
-                        $batche['auto_serial'] = $auto_serial;
-                        $batche['store_id'] = $data->store_id;
-                        $batche['item_code'] = $item->item_code;
-                        $batche['unit_id'] = $item->unit_id;
-                        $batche['unit_price'] = $unit_price;
-                        $batche['quantity'] = $quantity;
-                        $batche['total_cost'] = $item->total_price;
-                        $batche['production_date'] = $item->production_date;
-                        $batche['end_date'] = $item->end_date;
-                        $batche['com_code'] = auth()->user()->com_code;
-                        $batche['added_by'] = auth()->user()->id;
-                        $batch = Batche::create($batche);
-                    }
-
-                    $item->update([
-                        'batch_id' => $batch->id,
-                    ]);
-
-                    //movement in item table
-                    $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item->item_code])->sum('quantity');
-                    $item_movement['date'] = date('Y-m-d');
-                    $item_movement['com_code'] = auth()->user()->com_code;
-                    $item_movement['movement_type'] = 1;
-                    $item_movement['added_by'] = auth()->user()->id;
-                    $item_movement['quantity_after_movement'] = $quantity_after_movement;
-                    $item_movement['quantity_before_movement'] = $quantity_before_movement;
-                    $item_movement['item_code'] = $item->item_code;
-                    $item_movement['table_code'] = $auto_serial;
-                    $item_movement['table_details_code'] = $item->id;
-                    $item_movement['byan'] = " مشتريات من مورد "  . "" . $supplier_name;
-                    ItemMovement::create($item_movement);
-
-
-                    if ($item_card->has_fixed_price == 0) {
-
-                        //update the new price of item and update the quantity
-
-                        $current_quantity = $item_card->quantity;
-
-                        if ($item->isparentunit == 1) {
-                            $quantity = $item->delivered_quantity;
-
-                            $unit_price = $item->unit_price;
-                            $retail_unit_price = $item->unit_price /  $item_card->retail_unit_to_parent;
-                        } else {
-                            $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
-
-                            $unit_price = $item_card->retail_unit_to_parent * $item->unit_price;
-                            $retail_unit_price = $item->unit_price;
-                        }
-
-                        $item_card->update([
-                            'quantity' => $current_quantity + $quantity,
-                            'all_retail_quantity' => ($current_quantity + $quantity) * $item_card->retail_unit_to_parent,
-                            'retail_cost_price' => $retail_unit_price,
-                            'cost_price' => $unit_price,
-                        ]);
-                    } else {
-
-                        // update the quantity
-
-                        $current_quantity = $item_card->quantity;
-
-                        if ($item->isparentunit == 1) {
-                            $quantity = $item->delivered_quantity;
-                        } else {
-                            $quantity = $item->delivered_quantity / $item_card->retail_unit_to_parent;
-                        }
-
-                        $item_card->update([
-                            'quantity' => $current_quantity + $quantity,
-                            'all_retail_quantity' => ($current_quantity + $quantity) * $item_card->retail_unit_to_parent,
-                        ]);
-                    }
-                }
-            }
-
-
-            return response()->json([
-                'status' => true,
-                'message' => 'تم اعتماد الفاتورة بنجاح',
-                'redirect' => route('supplier_orders.index'),
-            ]);
+            $batch = $batcheExist;
+        } else {
+            $batche['auto_serial'] = $autoSerial;
+            $batche['store_id'] = $data->store_id;
+            $batche['item_code'] = $item->item_code;
+            $batche['unit_id'] = $item->unit_id;
+            $batche['unit_price'] = $unitPrice;
+            $batche['quantity'] = $quantity;
+            $batche['total_cost'] = $item->total_price;
+            $batche['production_date'] = $item->production_date;
+            $batche['end_date'] = $item->end_date;
+            $batche['com_code'] = auth()->user()->com_code;
+            $batche['added_by'] = auth()->user()->id;
+            $batch = Batche::create($batche);
         }
+
+        $item->update([
+            'batch_id' => $batch->id,
+        ]);
+    }
+
+
+    private function addItemMovment($item, $autoSerial, $quantityBeforeMovement, $supplierName, $comCode)
+    {
+        //movement in item table
+        $quantity_after_movement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
+        $itemMovement['date'] = date('Y-m-d');
+        $itemMovement['com_code'] = $comCode;
+        $itemMovement['movement_type'] = 1;
+        $itemMovement['added_by'] = auth()->user()->id;
+        $itemMovement['quantity_after_movement'] = $quantity_after_movement;
+        $itemMovement['quantity_before_movement'] = $quantityBeforeMovement;
+        $itemMovement['item_code'] = $item->item_code;
+        $itemMovement['table_code'] = $autoSerial;
+        $itemMovement['table_details_code'] = $item->id;
+        $itemMovement['byan'] = " مشتريات من مورد "  . "" . $supplierName;
+        ItemMovement::create($itemMovement);
+    }
+
+
+    private function updateItemData($itemCard, $item)
+    {
+
+        // update the quantity first
+
+        $currentQuantity = $itemCard->quantity;
+
+        if ($item->isparentunit == 1) {
+            $quantity = $item->delivered_quantity;
+        } else {
+            $quantity = $item->delivered_quantity / $itemCard->retail_unit_to_parent;
+        }
+
+        $itemCard->update([
+            'quantity' => $currentQuantity + $quantity,
+            'all_retail_quantity' => ($currentQuantity + $quantity) * $itemCard->retail_unit_to_parent,
+        ]);
+
+        //update the new price of item if that item does not have fixed price
+
+        if ($itemCard->has_fixed_price != 0) {
+            return;
+        }
+
+        if ($item->isparentunit == 1) {
+
+            $unitPrice = $item->unit_price;
+            $retailUnitPrice = $item->unit_price /  $itemCard->retail_unit_to_parent;
+        } else {
+
+            $unitPrice = $itemCard->retail_unit_to_parent * $item->unit_price;
+            $retailUnitPrice = $item->unit_price;
+        }
+
+        $itemCard->update([
+            'retail_cost_price' => $retailUnitPrice,
+            'cost_price' => $unitPrice,
+        ]);
     }
 }

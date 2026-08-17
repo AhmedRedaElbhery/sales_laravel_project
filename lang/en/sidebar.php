@@ -24,6 +24,8 @@ return [
 
     'inventory_transactions' => 'Inventory Transactions',
     'purchase_invoices'      => 'Purchase Invoices',
+    'general_return_orders' => 'General Return Orders',
+
 
     'sales'                 => 'Sales',
     'sales_invoices'        => 'Sales Invoices',

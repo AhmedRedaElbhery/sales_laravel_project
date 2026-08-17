@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    {{ __('suppliersOrders.purchases') }}
+   {{ __('generalReturnOrders.title') }}
 @endsection
 
 @section('css')
@@ -10,17 +10,17 @@
 @endsection
 
 @section('contentheader')
-    {{ __('suppliersOrders.inventory_transactions') }}
+   {{ __('generalReturnOrders.inventory_transactions') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('supplier_orders.index') }}">
-        {{ __('suppliersOrders.purchase_invoice') }}
+    <a href="{{ route('general_return_orders.index') }}">
+       {{ __('generalReturnOrders.supplier_invoices') }}
     </a>
 @endsection
 
 @section('contentheaderactive')
-    {{ __('suppliersOrders.add') }}
+   {{ __('generalReturnOrders.add') }}
 @endsection
 
 @section('content')
@@ -30,7 +30,7 @@
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">
-                        {{ __('suppliersOrders.add_new_invoice') }}
+                       {{ __('generalReturnOrders.add_new_invoice') }}
                     </h3>
                 </div>
 
@@ -41,19 +41,15 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('supplier_orders.store') }}" method="POST">
+                    <form action="{{ route('general_return_orders.store') }}" method="POST">
                         @csrf
-
-                        <a href="{{ route('suppliers.create') }}" class="btn btn-primary text-white mb-2">
-                            {{ __('suppliersOrders.add_new_supplier') }}
-                        </a>
 
                         <div class="form-group">
                             <label>{{ __('suppliersOrders.supplier_name') }}</label><br>
 
                             <select name="supplier_code" class="form-control select2">
                                 <option value="" selected disabled>
-                                    {{ __('suppliersOrders.select_name') }}
+                                   {{ __('generalReturnOrders.select_name') }}
                                 </option>
 
                                 @foreach ($suppliers as $supplier)
@@ -74,15 +70,15 @@
 
                             <select name="pill_type" class="form-control">
                                 <option value="" selected disabled>
-                                    {{ __('suppliersOrders.select_type') }}
+                                   {{ __('generalReturnOrders.select_type') }}
                                 </option>
 
                                 <option value="0" @selected(old('pill_type') === '0')>
-                                    {{ __('suppliersOrders.cash') }}
+                                   {{ __('generalReturnOrders.cash') }}
                                 </option>
 
                                 <option value="1" @selected(old('pill_type') === '1')>
-                                    {{ __('suppliersOrders.credit') }}
+                                   {{ __('generalReturnOrders.credit') }}
                                 </option>
                             </select>
 
@@ -92,21 +88,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>{{ __('suppliersOrders.supplier_invoice_number') }}</label><br>
-
-                            <input name="doc_number" class="form-control" type="text">
-
-                            @error('doc_number')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
                             <label>{{ __('suppliersOrders.store') }}</label>
 
                             <select id="store" name="store" class="form-control select2">
                                 <option value="" selected disabled>
-                                    {{ __('suppliersOrders.select_store') }}
+                                   {{ __('generalReturnOrders.select_store') }}
                                 </option>
 
                                 @if (isset($stores))
@@ -151,11 +137,11 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary m-2">
-                            {{ __('suppliersOrders.save') }}
+                           {{ __('generalReturnOrders.save') }}
                         </button>
 
-                        <a href="{{ route('supplier_orders.index') }}" class="btn btn-secondary">
-                            {{ __('suppliersOrders.back') }}
+                        <a href="{{ route('general_return_orders.index') }}" class="btn btn-secondary">
+                           {{ __('generalReturnOrders.back') }}
                         </a>
 
                     </form>
