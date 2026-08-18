@@ -23,7 +23,6 @@ use App\Http\Controllers\Admin\SalesBillsController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
 use App\Http\Controllers\Admin\SupplierOrdersController;
 use App\Http\Controllers\Admin\SuppliersController;
-use App\Http\Controllers\DelegateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -159,8 +158,18 @@ Route::group([
 
 
     //general return orders
-    Route::resource('general_return_orders', GeneralReturnOrdersController::class);
 
+    Route::get('general_return_orders/get_batches', [GeneralReturnOrdersController::class, 'getBatches'])->name('general_return_orders.get_batches');
+
+
+
+    Route::resource('general_return_orders', GeneralReturnOrdersController::class);
+    Route::post('general_return_orders/getUnits', [GeneralReturnOrdersController::class, 'getUnits'])->name('general_return_orders.getUnits');
+    Route::post('general_return_orders/addunits', [GeneralReturnOrdersController::class, 'addUnits'])->name('general_return_orders.addunits');
+    Route::delete('general_return_orders/destroy_details/{id}', [GeneralReturnOrdersController::class, 'destroyDetails'])->name('general_return_orders.destroy_details');
+    Route::post('/general_return_orders/edititem', [GeneralReturnOrdersController::class, 'editItem'])->name('general_return_orders.edititem');
+    Route::post('general_return_orders/update_item', [GeneralReturnOrdersController::class, 'updateItem'])->name('general_return_orders.update_item');
+    Route::post('general_return_orders/model_approve', [GeneralReturnOrdersController::class, 'modelApprove'])->name('general_return_orders.model_approve');
 
 });
 

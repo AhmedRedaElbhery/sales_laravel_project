@@ -50,4 +50,44 @@ return [
 
 
 
+    'edit_supplier_invoice' => 'edit supplier invoice',
+    'edit' => 'edit',
+    'auto_invoice_code' => 'auto invoice code',
+    'invoice_data' => 'invoice data',
+    'total_before_discount' => 'total before discount',
+    'invoice_discount_type' => 'invoice discount type',
+    'percentage_discount' => 'percentage discount',
+    'manual_discount' => 'manual discount',
+    'discount_value' => 'discount value',
+    'no_discount' => 'no discount',
+    'taxes' => 'taxes',
+    'no_tax' => 'no tax',
+    'tax_percentage' => 'tax percentage',
+    'total_after_discount' => 'total after discount',
+    'added_at' => 'added at',
+    'updated_at' => 'updated at',
+    'added_by' => 'added by',
+
+    'approve' => 'approve',
+    'add_item_to_invoice' => 'add item to invoice',
+
+    'add_items' => 'add items',
+    'item_data' => 'item data',
+    'select_item' => 'select item',
+    'add_items_button' => 'add items button',
+    'close' => 'close',
+    'production_date' => 'production date',
+    'expiry_date' => 'expiry date',
+    'invoice_items' => 'invoice items',
+    'serial' => 'serial',
+    'item_name' => 'item name',
+    'item_unit' => 'item unit',
+    'unit_price' => 'unit price',
+    'quantity' => 'quantity',
+    'total' => 'total',
+    'update_item' => 'update item',
+    'return_quantity' => 'return quantity'
+
+
+
 ];

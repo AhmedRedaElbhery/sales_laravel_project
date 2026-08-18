@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\BillType;
+use App\Enums\OrderType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApproveBillRequest;
 use App\Http\Requests\SupplierOrderRequest;
@@ -30,7 +32,7 @@ class SupplierOrdersController extends Controller
     public function index()
     {
         $comCode = auth()->user()->com_code;
-        $data = SupplierOrders::where(['com_code' => $comCode,'order_type'=>1])->orderby('id', 'DESC')->paginate(11);
+        $data = SupplierOrders::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value])->orderby('id', 'DESC')->paginate(11);
 
         foreach ($data as $item) {
             $item['store_name'] = Store::where('id', $item['store_id'])->value('name');
@@ -62,26 +64,31 @@ class SupplierOrdersController extends Controller
     public function store(SupplierOrderRequest $request)
     {
         $comCode = auth()->user()->com_code;
-        $serial = SupplierOrders::max('auto_serial');
+        $serial = SupplierOrders::where(['order_type'=>1])->max('auto_serial');
 
-
-        $data['auto_serial'] = $serial == null ? 1 : $serial + 1;
 
         $accountNumber = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $comCode])->value('account_number');
 
-        $data['order_date'] = $request->order_date;
-        $data['store_id'] = $request->store;
-        $data['pill_type'] = $request->pill_type;
-        $data['notes'] = $request->notes;
-        $data['doc_number'] = $request->doc_number;
-        $data['supplier_code'] = $request->supplier_code;
+        if($accountNumber == null)
+        {
+            return redirect()->back();
+        }
 
-        $data['added_by'] = auth()->user()->id;
-        $data['com_code'] = $comCode;
-        $data['account_number'] = $accountNumber;
-        $data['order_type'] = 1;
+        $orderData = [
+            'auto_serial' => $serial == null ? 1 : $serial + 1,
+            'order_date' => $request->order_date,
+            'store_id' => $request->store,
+            'pill_type' => $request->pill_type,
+            'notes' => $request->notes,
+            'doc_number' => $request->doc_number,
+            'supplier_code' => $request->supplier_code,
+            'added_by' => auth()->user()->id,
+            'com_code' => $comCode,
+            'account_number' => $accountNumber,
+            'order_type' => OrderType::PurchaseInvoice->value,
+        ];
 
-        SupplierOrders::create($data);
+        SupplierOrders::create($orderData);
         return redirect()->route('supplier_orders.index');
     }
 
@@ -189,7 +196,7 @@ class SupplierOrdersController extends Controller
     public function destroy($id)
     {
         $data = SupplierOrders::find($id);
-        $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $data->auto_serial, 'com_code' => $data->com_code, 'order_type' => 1])->get();
+        $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $data->auto_serial, 'com_code' => $data->com_code, 'order_type' => OrderType::PurchaseInvoice->value])->get();
         foreach ($items as $item) {
             SupplierOrdersDetails::destroy($item->id);
         }
@@ -241,24 +248,26 @@ class SupplierOrdersController extends Controller
         }
 
         $comCode = auth()->user()->com_code;
-        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => 1])->first();
+        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value])->first();
 
         if (!$parentData || $parentData->is_approved == 1) {
             return;
         }
 
-        $data['supplier_auto_serial'] = $request->autoserialparent;
-        $data['order_type'] = 1;
-        $data['item_code'] = $request->item_card;
-        $data['delivered_quantity'] = $request->quantity;
-        $data['unit_price'] = $request->price * 100;
-        $data['total_price'] = $request->total_price * 100;
-        $data['com_code'] = $comCode;
-        $data['order_date'] = $parentData->order_date;
-        $data['isparentunit'] = $request->isparent;
-        $data['unit_id'] = $request->unit;
-        $data['item_card_type'] = $request->type;
-        $data['added_by'] = auth()->user()->id;
+        $data = [
+            'supplier_auto_serial' => $request->autoserialparent,
+            'order_type' => OrderType::PurchaseInvoice->value,
+            'item_code' => $request->item_card,
+            'delivered_quantity' => $request->quantity,
+            'unit_price' => $request->price * 100,
+            'total_price' => $request->total_price * 100,
+            'com_code' => $comCode,
+            'order_date' => $parentData->order_date,
+            'isparentunit' => $request->isparent,
+            'unit_id' => $request->unit,
+            'item_card_type' => $request->type,
+            'added_by' => auth()->user()->id,
+        ];
 
         if ($request->type == 2) {
             $data['production_date'] = $request->production_date;
@@ -267,8 +276,8 @@ class SupplierOrdersController extends Controller
 
         SupplierOrdersDetails::create($data);
 
-        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
-        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $comCode])->update([
+        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => OrderType::PurchaseInvoice->value, 'com_code' => $comCode])->update([
             'updated_by' => auth()->user()->id,
             'total_before_discount' => $total,
             'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
@@ -283,7 +292,7 @@ class SupplierOrdersController extends Controller
             return;
         }
         $comCode = auth()->user()->com_code;
-        $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => 1])->value('is_approved');
+        $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value])->value('is_approved');
 
         if ($isapproved == 1) {
             return;
@@ -308,7 +317,7 @@ class SupplierOrdersController extends Controller
         }
 
         $comCode = auth()->user()->com_code;
-        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => 1])->first();
+        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value])->first();
         if ($parentData->is_approved == 1) {
             return;
         }
@@ -322,8 +331,8 @@ class SupplierOrdersController extends Controller
             'end_date'           => $request->end_date,
         ]);
 
-        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => 1, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
-        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => 1, 'com_code' => $comCode])->update([
+        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => OrderType::PurchaseInvoice->value, 'com_code' => $comCode])->update([
             'updated_by' => auth()->user()->id,
             'total_before_discount' => $total,
             'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
@@ -390,8 +399,7 @@ class SupplierOrdersController extends Controller
         ]);
 
 
-        if(!$flage)
-        {
+        if (!$flage) {
             return;
         }
 
@@ -447,22 +455,20 @@ class SupplierOrdersController extends Controller
             ]);
         }
 
-        if ($data->pill_type == 0) {
-            if ($whatPaid < $totalValue) {
-                return response()->json([
-                    'status' => false,
-                    'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
-                ]);
-            }
-        } else {
+        if ($data->pill_type == BillType::Cash->value && $whatPaid < $totalValue) {
 
-            if ($whatPaid == $totalValue) {
-                return response()->json([
-                    'status' => false,
-                    'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
+            return response()->json([
+                'status' => false,
+                'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
+            ]);
+        }
 
-                ]);
-            }
+        if ($data->pill_type == BillType::Credit->value && $whatPaid == $totalValue) {
+            return response()->json([
+                'status' => false,
+                'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
+
+            ]);
         }
     }
 
@@ -544,11 +550,13 @@ class SupplierOrdersController extends Controller
 
     private function addBatche($data, $item, $autoSerial, $quantity, $unitPrice, $comCode)
     {
+
+        $batcheExist = Batche::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
+
         if ($item->production_date != null && $item->end_date != null) {
             $batcheExist = Batche::where(['item_code' => $item->item_code, 'end_date' => $item->end_date, 'production_date' => $item->production_date, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
-        } else {
-            $batcheExist = Batche::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
         }
+
         if ($batcheExist) {
             $batcheExist->update([
                 'quantity' => $batcheExist->quantity + $quantity,
@@ -556,21 +564,24 @@ class SupplierOrdersController extends Controller
                 'updated_by' => auth()->user()->id,
             ]);
 
-            $batch = $batcheExist;
-        } else {
-            $batche['auto_serial'] = $autoSerial;
-            $batche['store_id'] = $data->store_id;
-            $batche['item_code'] = $item->item_code;
-            $batche['unit_id'] = $item->unit_id;
-            $batche['unit_price'] = $unitPrice;
-            $batche['quantity'] = $quantity;
-            $batche['total_cost'] = $item->total_price;
-            $batche['production_date'] = $item->production_date;
-            $batche['end_date'] = $item->end_date;
-            $batche['com_code'] = auth()->user()->com_code;
-            $batche['added_by'] = auth()->user()->id;
-            $batch = Batche::create($batche);
+            return;
         }
+
+        $batch = [
+            'auto_serial' => $autoSerial,
+            'store_id' => $data->store_id,
+            'item_code' => $item->item_code,
+            'unit_id' => $item->unit_id,
+            'unit_price' => $unitPrice,
+            'quantity' => $quantity,
+            'total_cost' => $item->total_price,
+            'production_date' => $item->production_date,
+            'end_date' => $item->end_date,
+            'com_code' => auth()->user()->com_code,
+            'added_by' => auth()->user()->id,
+        ];
+
+        $batch = Batche::create($batch);
 
         $item->update([
             'batch_id' => $batch->id,
@@ -582,17 +593,20 @@ class SupplierOrdersController extends Controller
     {
         //movement in item table
         $quantity_after_movement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
-        $itemMovement['date'] = date('Y-m-d');
-        $itemMovement['com_code'] = $comCode;
-        $itemMovement['movement_type'] = 1;
-        $itemMovement['added_by'] = auth()->user()->id;
-        $itemMovement['quantity_after_movement'] = $quantity_after_movement;
-        $itemMovement['quantity_before_movement'] = $quantityBeforeMovement;
-        $itemMovement['item_code'] = $item->item_code;
-        $itemMovement['table_code'] = $autoSerial;
-        $itemMovement['table_details_code'] = $item->id;
-        $itemMovement['byan'] = " مشتريات من مورد "  . "" . $supplierName;
-        ItemMovement::create($itemMovement);
+        $itemMovementData = [
+            'date' => date('Y-m-d'),
+            'com_code' => $comCode,
+            'movement_type' => 1,
+            'added_by' => auth()->user()->id,
+            'quantity_after_movement' => $quantity_after_movement,
+            'quantity_before_movement' => $quantityBeforeMovement,
+            'item_code' => $item->item_code,
+            'table_code' => $autoSerial,
+            'table_details_code' => $item->id,
+            'byan' => 'مشتريات من مورد ' . $supplierName,
+        ];
+
+        ItemMovement::create($itemMovementData);
     }
 
 

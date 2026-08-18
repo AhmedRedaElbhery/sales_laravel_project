@@ -50,11 +50,12 @@ return [
     'save' => 'حفظ',
 
 
-    /*
-    // Show Page
-    'invoice_data' => 'بيانات فاتورة المشتريات',
+
+
+    'edit_supplier_invoice' => 'تعديل فاتوره المرتجعات',
+    'edit' => 'تعديل',
     'auto_invoice_code' => 'كود الفاتورة الآلي',
-    'supplier_invoice_code' => 'كود الفاتورة لدى المورد',
+    'invoice_data' => 'تعديل مرتجعات المشتريات',
     'total_before_discount' => 'إجمالي الفاتورة قبل الخصم',
     'invoice_discount_type' => 'نوع الخصم على الفاتورة',
     'percentage_discount' => 'خصم نسبة',
@@ -68,22 +69,10 @@ return [
     'added_at' => 'تاريخ الإضافة',
     'updated_at' => 'تاريخ آخر تحديث',
     'added_by' => 'بواسطة',
-    'edit' => 'تعديل',
+
     'approve' => 'اعتماد',
     'add_item_to_invoice' => 'إضافة صنف للفاتورة',
 
-    // Items Table
-    'invoice_items' => 'الأصناف المضافة لهذه الفاتورة',
-    'serial' => 'التسلسل',
-    'item_name' => 'اسم الصنف',
-    'item_unit' => 'وحدة الصنف',
-    'unit_price' => 'سعر وحدة الصنف',
-    'quantity' => 'الكمية',
-    'total' => 'الإجمالي',
-    'production_date' => 'تاريخ الإنتاج',
-    'expiry_date' => 'تاريخ انتهاء الصلاحية',
-
-    // Add Item Modal
     'add_items' => 'إضافة أصناف للفاتورة',
     'item_data' => 'بيانات الأصناف',
     'select_item' => 'اختر اسم الصنف',
@@ -92,9 +81,24 @@ return [
     'grand_total' => 'الإجمالي',
     'add_items_button' => 'إضافة الأصناف للفاتورة',
     'close' => 'إغلاق',
+    'production_date' => 'تاريخ الإنتاج',
+    'expiry_date' => 'تاريخ انتهاء الصلاحية',
+    'invoice_items' => 'الأصناف المضافة لهذه الفاتورة',
+    'serial' => 'التسلسل',
+    'item_name' => 'اسم الصنف',
+    'item_unit' => 'وحدة الصنف',
+    'unit_price' => 'سعر وحدة الصنف',
+    'quantity' => 'الكمية',
+    'total' => 'الإجمالي',
+    'update_item' => 'تحديث الصنف',
+    'return_quantity' => 'الكميه المرتجعه'
+
+
+/*
+
 
     // Edit Item
-    'update_item' => 'تحديث الصنف',
+
 
     // Approve Modal
     'approve_invoice' => 'اعتماد الفاتورة',
@@ -121,13 +125,9 @@ return [
     'enter_tax_percent' => 'ادخل نسبه الضريبه',
     'enter_discount_percent' => 'ادخل نسبه الخصم',
     'available_treasury_balance' => 'الرصيد المتاح بالخزنه',
-    'edit_supplier_invoice' => 'تعديل فاتوره المورد',
+
     'supplier_invoice_number' => 'رقم فاتوره المورد',
 
-    'add_new_supplier' => 'اضافه مورد جديد',
-
-
 */
-
 
 ];

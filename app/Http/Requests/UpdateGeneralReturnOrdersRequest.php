@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SupplierOrderRequest extends FormRequest
+class UpdateGeneralReturnOrdersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,6 @@ class SupplierOrderRequest extends FormRequest
         return [
             'supplier_code' => 'required',
             'pill_type' => 'required',
-            'store' => 'required',
             'order_date' => 'required',
         ];
     }
@@ -35,7 +34,6 @@ class SupplierOrderRequest extends FormRequest
         return [
             'supplier_code.required' => 'اختر حساب المورد',
             'pill_type.required' => 'اختر نوع الفاتوره',
-            'store.required' => 'اختر المخزن',
             'order_date.required' => 'اختر التاريخ',
         ];
     }
