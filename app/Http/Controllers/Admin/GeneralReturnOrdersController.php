@@ -10,6 +10,7 @@ use App\Models\Admin;
 use App\Models\AdminShifts;
 use App\Models\Batche;
 use App\Models\ItemCard;
+use App\Models\ItemMovement;
 use App\Models\Store;
 use App\Models\SupplierOrders;
 use App\Models\SupplierOrdersDetails;
@@ -235,71 +236,242 @@ class GeneralReturnOrdersController extends Controller
         return view('admin.general_return_orders.getBatches', compact('batches_data'));
     }
 
-    // public function addUnits(Request $request)
-    // {
-    //     if (!$request->ajax()) {
-    //         return;
-    //     }
+    public function addUnits(Request $request)
+    {
+        if (!$request->ajax()) {
+            return;
+        }
 
-    //     $comCode = auth()->user()->com_code;
-    //     $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value])->first();
+        $comCode = auth()->user()->com_code;
+        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value])->first();
 
-    //     if (!$parentData || $parentData->is_approved == 1) {
-    //         return;
-    //     }
+        if (!$parentData || $parentData->is_approved == 1) {
+            return;
+        }
 
-    //     $data = [
-    //         'supplier_auto_serial' => $request->autoserialparent,
-    //         'order_type' => OrderType::PurchaseReturnInvoice->value,
-    //         'item_code' => $request->item_card,
-    //         'delivered_quantity' => $request->quantity,
-    //         'unit_price' => $request->price * 100,
-    //         'total_price' => $request->total_price * 100,
-    //         'com_code' => $comCode,
-    //         'order_date' => $parentData->order_date,
-    //         'isparentunit' => $request->isparent,
-    //         'unit_id' => $request->unit,
-    //         'item_card_type' => $request->type,
-    //         'added_by' => auth()->user()->id,
-    //     ];
+        $quantity_before_movement = Batche::where(['com_code' => $comCode, 'item_code' => $request->item_card])->sum('quantity');
 
-    //     if ($request->type == 2) {
-    //         $data['production_date'] = $request->production_date;
-    //         $data['end_date'] = $request->end_date;
-    //     }
+        $batche = $this->updateBatche($request);
 
-    //     SupplierOrdersDetails::create($data);
+        $data = [
+            'supplier_auto_serial' => $request->autoserialparent,
+            'order_type' => OrderType::PurchaseReturnInvoice->value,
+            'item_code' => $request->item_card,
+            'delivered_quantity' => $request->return_quantity,
+            'unit_price' => $batche->unit_price,
+            'total_price' => ($batche->unit_price * $request->return_quantity),
+            'com_code' => $comCode,
+            'order_date' => $parentData->order_date,
+            'unit_id' => $request->unit,
+            'added_by' => auth()->user()->id,
+            'batch_id' => $request->batche,
+        ];
 
-    //     $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
-    //     SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => OrderType::PurchaseReturnInvoice->value, 'com_code' => $comCode])->update([
-    //         'updated_by' => auth()->user()->id,
-    //         'total_before_discount' => $total,
-    //         'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
-    //     ]);
+        SupplierOrdersDetails::create($data);
 
-    //     echo json_encode('done');
-    // }
+        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => OrderType::PurchaseReturnInvoice->value, 'com_code' => $comCode])->update([
+            'updated_by' => auth()->user()->id,
+            'total_before_discount' => $total,
+            'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
+        ]);
 
-    // public function editItem(Request $request)
-    // {
-    //     if (!$request->ajax()) {
-    //         return;
-    //     }
-    //     $comCode = auth()->user()->com_code;
-    //     $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value])->value('is_approved');
+        //update item card
 
-    //     if ($isapproved == 1) {
-    //         return;
-    //     }
+        $item = $this->updateItemCardData($request);
 
-    //     $itemData = SupplierOrdersDetails::find($request->id);
-    //     $itemCardData = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $itemData->item_code, 'com_code' => $comCode])->first();
-    //     $itemCards = ItemCard::where(['active' => 1, 'com_code' => $comCode])->get();
 
-    //     $itemCardData->parent_unit_name = Unit::where('id', $itemCardData->parent_unit_id)->value('name');
-    //     if ($itemCardData->has_retail_unit == 1) {
-    //         $itemCardData->retail_unit_name = Unit::where('id', $itemCardData->retail_unit_id)->value('name');
-    //     }
-    //     return view('admin.supplier_orders.edititem', compact('isapproved', 'itemCardData', 'itemData', 'itemCards'));
-    // }
+        //item movment
+
+        $this->addItemMovment($item, $request, $quantity_before_movement);
+
+
+        echo json_encode('done');
+    }
+
+    public function editItem(Request $request)
+    {
+
+        if (!$request->ajax()) {
+            return;
+        }
+        $comCode = auth()->user()->com_code;
+        $isapproved = SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value])->value('is_approved');
+
+        if ($isapproved == 1) {
+            return;
+        }
+
+        $itemData = SupplierOrdersDetails::find($request->id);
+        $itemCardData = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $itemData->item_code, 'com_code' => $comCode])->first();
+        $itemCards = ItemCard::where(['active' => 1, 'com_code' => $comCode])->get();
+        $batch = Batche::find($itemData->batch_id);
+
+        $itemCardData->parent_unit_name = Unit::where('id', $itemCardData->parent_unit_id)->value('name');
+        if ($itemCardData->has_retail_unit == 1) {
+            $itemCardData->retail_unit_name = Unit::where('id', $itemCardData->retail_unit_id)->value('name');
+        }
+        return view('admin.general_return_orders.edititem', compact('isapproved', 'itemCardData', 'itemData', 'itemCards', 'batch'));
+    }
+
+    public function updateItem(Request $request)
+    {
+        if (!$request->ajax()) {
+            return;
+        }
+
+        $comCode = auth()->user()->com_code;
+        $parentData = SupplierOrders::select('is_approved', 'order_date', 'tax_value', 'discount_value')->where(['auto_serial' => $request->autoserialparent, 'com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value])->first();
+        if ($parentData->is_approved == 1) {
+            return;
+        }
+
+        $oldDetails = SupplierOrdersDetails::find($request->id);
+
+        $batchData = new Request([
+            'batche' => $oldDetails->batch_id,
+            'oldQuantity' => $oldDetails->delivered_quantity,
+            'return_quantity' => $request->return_quantity,
+        ]);
+
+
+        SupplierOrdersDetails::where('id', $request->id)->update([
+            'delivered_quantity' => $request->return_quantity,
+            'total_price' => $request->return_quantity * $oldDetails->unit_price,
+        ]);
+
+        $total = SupplierOrdersDetails::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value, 'supplier_auto_serial' => $request->autoserialparent])->sum('total_price');
+        SupplierOrders::where(['auto_serial' => $request->autoserialparent, 'order_type' => OrderType::PurchaseReturnInvoice->value, 'com_code' => $comCode])->update([
+            'updated_by' => auth()->user()->id,
+            'total_before_discount' => $total,
+            'total_cost' => $total - $parentData->discount_value + $parentData->tax_value,
+        ]);
+
+
+
+        $batch = $this->updateBatche($batchData);
+
+        $item = $this->updateItemCardData($request, $oldDetails->delivered_quantity);
+
+        echo json_encode('done');
+    }
+
+
+    private function updateBatche($request)
+    {
+
+        $batche = Batche::find($request->batche);
+
+        if (($batche->quantity + $request->oldQuantity) < $request->return_quantity) {
+            return;
+        }
+
+        $new_quantity = ($batche->quantity + $request->oldQuantity) - $request->return_quantity;
+        $new_total = $batche->unit_price * $new_quantity;
+
+        $batche->update([
+            'quantity' => $new_quantity,
+            'total_cost' => $new_total,
+            'updated_by' => auth()->user()->id,
+        ]);
+
+        return $batche;
+    }
+
+    private function updateItemCardData($request, $oldQuantity = 0)
+    {
+        $item = ItemCard::select('id', 'item_code', 'quantity', 'retail_unit_to_parent', 'all_retail_quantity')->where(['item_code' => $request->item_card])->first();
+
+        $newQuantity = 0;
+        $retailNewQuantity = 0;
+
+        if ($request->isparent == 1) {
+            $newQuantity = ($item->quantity + $oldQuantity) - $request->return_quantity;
+            $retailNewQuantity = $newQuantity * $item->retail_unit_to_parent;
+        }
+
+        if ($request->isparent == '0') {
+            $retailNewQuantity = ($item->all_retail_quantity + $oldQuantity) - $request->return_quantity;
+            $newQuantity = $retailNewQuantity / $item->retail_unit_to_parent;
+        }
+
+        $item->update([
+            'quantity' => $newQuantity,
+            'all_retail_quantity' => $retailNewQuantity,
+        ]);
+        return $item;
+    }
+
+    private function addItemMovment($item, $request, $quantity_before_movement)
+    {
+        $comCode = auth()->user()->com_code;
+        $quantity_after_movement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
+
+        $item_movment = [
+            'item_code' => $request->item_card,
+            'movement_type' => 3,
+            'table_code' =>  $request->autoserialparent,
+            'table_details_code' => $request->item_card,
+            'quantity_before_movement' => $quantity_before_movement,
+            'quantity_after_movement' => $quantity_after_movement,
+
+            'added_by' => auth()->user()->id,
+            'com_code' => auth()->user()->com_code,
+            'date' => now(),
+            'byan' => "حركه نظير مرتجعات عام",
+        ];
+
+        ItemMovement::create($item_movment);
+    }
+
+    public function destroyDetails($id)
+    {
+
+        $data = SupplierOrdersDetails::find($id);
+
+        $batch = Batche::find($data->batch_id);
+
+        $batch->update([
+            'quantity' => $batch->quantity + $data->delivered_quantity,
+        ]);
+
+        $isparent = Unit::where(['id' => $data->unit_id])->value('is_master');
+
+        $item_card = ItemCard::where(['item_code' => $data->item_code, 'com_code' => auth()->user()->com_code])->first();
+
+
+        $newQuantity = 0;
+        $retailNewQuantity = 0;
+
+
+
+        if ($isparent == 1) {
+            $newQuantity = $item_card->quantity + $data->delivered_quantity;
+            $retailNewQuantity = $item_card->retail_unit_to_parent * $newQuantity;
+        }
+
+        if ($isparent == '0') {
+            $retailNewQuantity = $item_card->all_retail_quantity + $data->delivered_quantity;
+            $newQuantity = $retailNewQuantity / $item_card->retail_unit_to_parent;
+        }
+
+        $item_card->update([
+            'quantity' => $newQuantity,
+            'all_retail_quantity' =>  $retailNewQuantity,
+        ]);
+
+        $flage = SupplierOrdersDetails::destroy($id);
+        if ($flage) {
+
+            $total = SupplierOrders::select('discount_value', 'tax_value', 'total_before_discount')->where(['auto_serial' => $data->supplier_auto_serial, 'order_type' => $data->order_type, 'com_code' => $data->com_code])->first();
+
+
+            SupplierOrders::where(['auto_serial' => $data->supplier_auto_serial, 'order_type' => $data->order_type, 'com_code' => $data->com_code])->update([
+                'total_before_discount' => ($total->total_before_discount - $data->total_price),
+                'total_cost' => ($total->total_before_discount - $data->total_price) - $total->discount_value + $total->tax_value,
+            ]);
+        }
+
+        return redirect()->back();
+    }
 }

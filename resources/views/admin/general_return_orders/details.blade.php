@@ -232,8 +232,7 @@
                                     <th>{{ __('generalReturnOrders.unit_price') }}</th>
                                     <th>{{ __('generalReturnOrders.quantity') }}</th>
                                     <th>{{ __('generalReturnOrders.total') }}</th>
-                                    <th>{{ __('generalReturnOrders.production_date') }}</th>
-                                    <th>{{ __('generalReturnOrders.expiry_date') }}</th>
+
 
                                     @if ($data['is_approved'] == 0)
                                         <th></th>
@@ -251,8 +250,7 @@
                                         <td>{{ $bill_item->unit_price / 100 }}</td>
                                         <td>{{ $bill_item->delivered_quantity * 1 }}</td>
                                         <td>{{ $bill_item->total_price / 100 }}</td>
-                                        <td>{{ $bill_item->production_date }}</td>
-                                        <td>{{ $bill_item->end_date }}</td>
+
 
                                         @if ($data['is_approved'] == 0)
                                             <td>
@@ -380,8 +378,7 @@
         </div>
 
 
-
-        {{-- <div class="modal fade" id="general_edit_item_model">
+         <div class="modal fade" id="general_edit_item_model">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content bg-info">
                     <div class="modal-header">
@@ -414,7 +411,8 @@
         </div>
 
 
-        <div class="modal fade" id="general_load_model_approve">
+
+        {{-- <div class="modal fade" id="general_load_model_approve">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content bg-info">
 
@@ -537,7 +535,7 @@
 
                 </div>
             </div>
-        </div> --}}
+        </div>  --}}
 
 
 

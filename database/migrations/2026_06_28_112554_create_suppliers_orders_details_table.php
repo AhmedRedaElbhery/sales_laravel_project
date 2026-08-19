@@ -19,7 +19,7 @@ return new class extends Migration
             $table->tinyInteger('order_type');
             $table->integer('com_code');
             $table->decimal('delivered_quantity', 10, 2);
-            $table->boolean('isparentunit');
+            $table->boolean('isparentunit')->nullable();;
             $table->integer('unit_id');
             $table->integer('unit_price');
             $table->integer('total_price');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->integer('added_by');
             $table->integer('updated_by')->nullable();
             $table->integer('item_code');
-            $table->tinyInteger('item_card_type');
+            $table->tinyInteger('item_card_type')->nullable();;
             $table->integer('batch_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';

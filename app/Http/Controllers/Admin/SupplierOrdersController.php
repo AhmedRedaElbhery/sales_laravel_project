@@ -617,9 +617,9 @@ class SupplierOrdersController extends Controller
 
         $currentQuantity = $itemCard->quantity;
 
-        if ($item->isparentunit == 1) {
-            $quantity = $item->delivered_quantity;
-        } else {
+
+        $quantity = $item->delivered_quantity;
+        if ($item->isparentunit != 1) {
             $quantity = $item->delivered_quantity / $itemCard->retail_unit_to_parent;
         }
 
@@ -634,14 +634,14 @@ class SupplierOrdersController extends Controller
             return;
         }
 
-        if ($item->isparentunit == 1) {
-
-            $unitPrice = $item->unit_price;
+        $unitPrice = $item->unit_price;
             $retailUnitPrice = $item->unit_price /  $itemCard->retail_unit_to_parent;
-        } else {
+
+        if ($item->isparentunit != 1) {
 
             $unitPrice = $itemCard->retail_unit_to_parent * $item->unit_price;
             $retailUnitPrice = $item->unit_price;
+
         }
 
         $itemCard->update([
