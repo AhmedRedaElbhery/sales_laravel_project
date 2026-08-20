@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('batches', function (Blueprint $table) {
+        Schema::create('batchs', function (Blueprint $table) {
             $table->id();
             $table->integer('auto_serial');
             $table->integer('store_id');

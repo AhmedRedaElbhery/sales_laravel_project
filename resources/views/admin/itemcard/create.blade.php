@@ -5,11 +5,11 @@
 @endsection
 
 @section('contentheader')
-{{ __('items.items') }}
+{{ __('items.title') }}
 @endsection
 
 @section('contentheaderlink')
-    <a href="{{ route('itemcard.index') }}"> {{ __('items.items') }} </a>
+    <a href="{{ route('itemcard.index') }}"> {{ __('items.title') }} </a>
 @endsection
 
 @section('contentheaderactive')

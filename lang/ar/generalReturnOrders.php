@@ -91,43 +91,24 @@ return [
     'quantity' => 'الكمية',
     'total' => 'الإجمالي',
     'update_item' => 'تحديث الصنف',
-    'return_quantity' => 'الكميه المرتجعه'
+    'return_quantity' => 'الكميه المرتجعه',
 
 
-/*
-
-
-    // Edit Item
-
-
-    // Approve Modal
     'approve_invoice' => 'اعتماد الفاتورة',
-    'total_before_tax_discount' => 'الإجمالي بالفاتورة قبل الخصم والضريبة',
-    'enter_tax_percentage' => 'أدخل نسبة الضريبة على الفاتورة',
+    'invoice_total_before_discount_tax' => 'الإجمالي بالفاتورة قبل الخصم والضريبة',
+    'enter_tax_percent' => 'أدخل نسبة الضريبة على الفاتورة',
     'tax_value' => 'قيمة الضريبة',
-    'enter_discount_percentage' => 'أدخل نسبة الخصم على الفاتورة',
+    'enter_discount_percent' => 'أدخل نسبة الخصم على الفاتورة',
     'final_total' => 'الإجمالي النهائي',
     'current_treasury' => 'الخزنة الحالية',
-    'available_balance' => 'الرصيد المتاح بالخزنة',
-    'paid_amount' => 'المبلغ المدفوع',
-    'remaining_amount' => 'المبلغ المتبقي',
+    'available_treasury_balance' => 'الرصيد المتاح بالخزنة',
     'approve_invoice_button' => 'اعتماد الفاتورة',
     'morning' => 'صباحاً',
     'evening' => 'مساءً',
 
 
+    'recevied_amount' => 'المبلغ المستلم',
+    'remain_amount' => 'المبلغ المتبقى',
 
-    'item_units' => 'وحدات الصنف',
-    'main_unit' => 'الوحده الرئيسيه',
-    'retail_unit' => 'وحده التجزئه',
-    'select_unit' => 'اختر الوحده',
-    'invoice_total_before_discount_tax' => 'الاجمالى قبل الضريبه والخصم',
-    'enter_tax_percent' => 'ادخل نسبه الضريبه',
-    'enter_discount_percent' => 'ادخل نسبه الخصم',
-    'available_treasury_balance' => 'الرصيد المتاح بالخزنه',
-
-    'supplier_invoice_number' => 'رقم فاتوره المورد',
-
-*/
 
 ];

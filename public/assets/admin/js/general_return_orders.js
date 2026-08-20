@@ -55,10 +55,10 @@ $(document).ready(function () {
 
         if (item_code != "") {
             var token_search = $("#token_search").val();
-            var ajax_get_batches = $("#ajax_get_batches").val();
+            var ajax_get_batchs = $("#ajax_get_batchs").val();
 
             $.ajax({
-                url: ajax_get_batches,
+                url: ajax_get_batchs,
                 type: "GET",
                 dataType: "html",
                 cache: false,
@@ -71,18 +71,18 @@ $(document).ready(function () {
                 },
 
                 success: function (data) {
-                    $("#batches_div").html(data);
-                    $(".batches").show();
+                    $("#batchs_div").html(data);
+                    $(".batchs").show();
                 },
 
                 error: function (xhr) {
-                    $("#batches_div").html("");
-                    $(".batches").hide();
+                    $("#batchs_div").html("");
+                    $(".batchs").hide();
                 },
             });
         } else {
-            $("#batches_div").html("");
-            $(".batches").hide();
+            $("#batchs_div").html("");
+            $(".batchs").hide();
         }
     });
 
@@ -101,8 +101,8 @@ $(document).ready(function () {
             return false;
         }
 
-        var batche = $("#quantity_with_date option:selected").val();
-        if (batche == "" || batche <= "0") {
+        var batch = $("#quantity_with_date option:selected").val();
+        if (batch == "" || batch <= "0") {
             alert("من فضلك اختر الباتش المراد الاسترجاع منه");
             $("#quantity_with_date").focus();
             return false;
@@ -134,7 +134,7 @@ $(document).ready(function () {
                 _token: token_search,
                 item_card: item_card,
                 unit: unit,
-                batche: batche,
+                batch: batch,
                 return_quantity: return_quantity,
                 isparent: isparent,
             },
@@ -223,149 +223,129 @@ $(document).ready(function () {
         });
     });
 
+    $(document).on("input", "#general_tax_percent", function () {
+        $("#general_discount_percent").val("");
+        $("#general_discount_value").val("");
+        var what_received = $("#general_what_received").val("");
+        var tax_percent = $("#general_tax_percent").val();
 
-    // $(document).on("click", "#approve_bill", function () {
-    //     var tax_percent = $("#tax_percent").val();
+        if (tax_percent > 100 || tax_percent < 0) {
+            alert(" خطا بنسبه الضريبه ادخل نسبه صحيحه");
+            $("#general_tax_percent").val("");
+            $("#general_tax_value").val("");
+            return false;
+        }
 
-    //     if (tax_percent == null || tax_percent == "") {
-    //         alert("من فضلك ادخل نسبه الضريبه");
-    //         $("#tax_percent").focus();
-    //         return false;
-    //     }
+        var total = $("#general_total").val();
 
-    //     var discount_percent = $("#discount_percent").val();
+        value = (total * tax_percent) / 100;
 
-    //     if (discount_percent == null || discount_percent == "") {
-    //         alert("من فضلك ادخل نسبه الخصم");
-    //         $("#discount_percent").focus();
-    //         return false;
-    //     }
+        $("#general_tax_value").val(value);
 
-    //     let what_paid = parseFloat($("#what_paid").val()) || 0;
-    //     let treasuries_balance =
-    //         parseFloat($("#treasuries_balance").val()) || 0;
+        var total_value = parseFloat(total) + parseFloat(value);
 
-    //     if (what_paid > treasuries_balance) {
-    //         alert("الرصيد الحالى لا يسمح");
-    //         return false;
-    //     }
+        $("#general_total_value").val(total_value);
 
-    //     let what_paid_input = $("#what_paid").val();
+    });
 
-    //     if (what_paid == null || what_paid === "") {
-    //         alert("ادخل الرصيد المدفوع");
-    //         $("#what_paid").focus();
-    //         return false;
-    //     }
+    $(document).on("input", "#general_discount_percent", function () {
+        var discount_percent = $("#general_discount_percent").val();
+        $("#general_what_received").val("");
+        if (discount_percent > 100 || discount_percent < 0) {
+            alert(" خطا بنسبه الخصم ادخل نسبه صحيحه");
+            $("#general_discount_percent").val("");
+            $("#general_discount_value").val("");
+            return false;
+        }
 
-    //     var autoserialparent = $("#autoserialparent").val();
-    //     var what_remain = $("#what_remain").val();
-    //     var tax_value = $("#tax_value").val();
-    //     var discount_value = $("#discount_value").val();
-    //     var total_value = $("#total_value").val();
-    //     var treasuries_id = $("#treasuries_id").val();
-    //     var token_search = $("#token_search").val();
-    //     var model_approve_route = $("#model_approve_route").val();
+        var total = parseFloat($("#general_total").val());
+        var tax_value = parseFloat($("#general_tax_value").val() || 0);
 
-    //     $.ajax({
-    //         url: model_approve_route,
-    //         type: "POST",
-    //         dataType: "json",
-    //         cache: false,
+        value = ((total + tax_value) * discount_percent) / 100;
 
-    //         data: {
-    //             autoserialparent: autoserialparent,
-    //             _token: token_search,
+        $("#general_discount_value").val(value);
 
-    //             tax_percent: tax_percent,
-    //             tax_value: tax_value,
+        var total_value = total + tax_value - value;
+        $("#general_total_value").val(total_value);
 
-    //             discount_percent: discount_percent,
-    //             discount_value: discount_value,
+    });
 
-    //             what_paid: what_paid,
-    //             what_remain: what_remain,
+    $(document).on("input", "#general_what_received", function () {
+        var total = $("#general_total_value").val();
 
-    //             treasuries_id: treasuries_id,
-    //             total_value: total_value,
-    //             treasuries_balance: treasuries_balance,
-    //         },
+        var what_received = $("#general_what_received").val();
 
-    //         success: function (data) {
-    //             alert(data.message);
-    //             window.location.href = data.redirect;
-    //         },
+        $("#general_what_remain").val(total - what_received);
+    });
 
-    //         error: function (xhr) {
-    //             alert("حدث خطا ما");
-    //         },
+    $(document).on("click", "#general_approve_bill", function () {
+
+        var tax_percent = $("#general_tax_percent").val();
+
+        if (tax_percent == null || tax_percent == "") {
+            alert("من فضلك ادخل نسبه الضريبه");
+            $("#general_tax_percent").focus();
+            return false;
+        }
+
+        var discount_percent = $("#general_discount_percent").val();
+
+        if (discount_percent == null || discount_percent == "") {
+            alert("من فضلك ادخل نسبه الخصم");
+            $("#general_discount_percent").focus();
+            return false;
+        }
+
+        let what_received = $("#general_what_received").val();
+
+        if (what_received == null || what_received === "") {
+            alert("ادخل الرصيد المستلم");
+            $("#general_what_received").focus();
+            return false;
+        }
+
+        var autoserialparent = $("#autoserialparent").val();
+        var what_remain = $("#general_what_remain").val();
+        var tax_value = $("#general_tax_value").val();
+        var discount_value = $("#general_discount_value").val();
+        var total_value = $("#general_total_value").val();
+        var treasuries_id = $("#general_treasuries_id").val();
+        var token_search = $("#token_search").val();
+        var model_approve_route = $("#model_approve_route").val();
+
+        $.ajax({
+            url: model_approve_route,
+            type: "POST",
+            dataType: "json",
+            cache: false,
+
+            data: {
+                autoserialparent: autoserialparent,
+                _token: token_search,
+
+                tax_percent: tax_percent,
+                tax_value: tax_value,
+
+                discount_percent: discount_percent,
+                discount_value: discount_value,
+
+                what_received: what_received,
+                what_remain: what_remain,
+
+                treasuries_id: treasuries_id,
+                total_value: total_value,
+            },
+
+            success: function (data) {
+                alert(data.message);
+                window.location.href = data.redirect;
+            },
+
+            error: function (xhr) {
+                alert("حدث خطا ما");
+            },
 
 
-    //     });
-    // });
-
-    // $(document).on("input", "#tax_percent", function () {
-    //     $("#discount_percent").val("");
-    //     $("#discount_value").val("");
-    //     var tax_percent = $("#tax_percent").val();
-    //     if (tax_percent > 100 || tax_percent < 0) {
-    //         alert(" خطا بنسبه الضريبه ادخل نسبه صحيحه");
-    //         $("#tax_percent").val("");
-    //         $("#tax_value").val("");
-    //         return false;
-    //     }
-
-    //     var total = $("#total").val();
-
-    //     value = ((total / 100) * tax_percent) / 100;
-
-    //     $("#tax_value").val(value);
-    //     var total_value = parseFloat(total) / 100 + parseFloat(value);
-
-    //     $("#total_value").val(total_value);
-
-    //     var what_paid = $("#what_paid").val();
-    //     if (what_paid != null && what_paid != "") {
-    //         console.log(total_value);
-    //         $("#what_remain").val(total_value - what_paid);
-    //     }
-    // });
-
-    // $(document).on("input", "#discount_percent", function () {
-    //     var discount_percent = $("#discount_percent").val();
-    //     if (discount_percent > 100 || discount_percent < 0) {
-    //         alert(" خطا بنسبه الخصم ادخل نسبه صحيحه");
-    //         $("#discount_percent").val("");
-    //         $("#discount_value").val("");
-    //         return false;
-    //     }
-
-    //     var total = parseFloat($("#total").val());
-    //     var tax_value = parseFloat($("#tax_value").val() || 0);
-
-    //     value = ((total / 100 + tax_value) * discount_percent) / 100;
-
-    //     $("#discount_value").val(value);
-
-    //     var total_value = total / 100 + tax_value - value;
-    //     $("#total_value").val(total_value);
-
-    //     var what_paid = $("#what_paid").val();
-    //     if (what_paid != null && what_paid != "") {
-    //         console.log(total_value);
-    //         $("#what_remain").val(total_value - what_paid);
-    //     }
-    // });
-
-    // $(document).on("input", "#what_paid", function () {
-    //     var total = $("#total_value").val();
-
-    //     if (total == null || total == "") {
-    //         var total = $("#total").val();
-    //         var total = total / 100;
-    //     }
-    //     var what_paid = $("#what_paid").val();
-
-    //     $("#what_remain").val(total - what_paid);
-    // });
+        });
+    });
 });

@@ -192,7 +192,7 @@
                                         </a>
 
                                         <button type="button" class="btn btn-success m-2" data-toggle="modal"
-                                            data-target="#load_model_approve">
+                                            data-target="#general_load_model_approve">
                                             {{ __('generalReturnOrders.approve') }}
                                         </button>
                                     @endif
@@ -306,7 +306,7 @@
                     <input type="hidden" id="ajax_addunits" value="{{ route('general_return_orders.addunits') }}">
                     <input type="hidden" id="ajax_edititem" value="{{ route('general_return_orders.edititem') }}">
                     <input type="hidden" id="ajax_updateitem" value="{{ route('general_return_orders.update_item') }}">
-                    <input type="hidden" id="ajax_get_batches" value="{{ route('general_return_orders.get_batches') }}">
+                    <input type="hidden" id="ajax_get_batchs" value="{{ route('general_return_orders.get_batchs') }}">
                     <input type="hidden" id="store_id" value="{{ $data->store_id}}">
 
                     <div class="modal-body" id="model_body" style="background-color: white !important; color: black;">
@@ -342,7 +342,7 @@
 
                             </div>
 
-                            <div class="col-4 batches" style="display: none" id="batches_div">
+                            <div class="col-4 batchs" style="display: none" id="batchs_div">
 
                             </div>
 
@@ -412,7 +412,7 @@
 
 
 
-        {{-- <div class="modal fade" id="general_load_model_approve">
+        <div class="modal fade" id="general_load_model_approve">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content bg-info">
 
@@ -435,7 +435,7 @@
 
                             <div class="form-group col-md-12">
                                 <label>{{ __('generalReturnOrders.invoice_total_before_discount_tax') }}</label>
-                                <input class="form-control" readonly id="total"
+                                <input class="form-control" readonly id="general_total"
                                     value="{{ $data['total_before_discount'] / 100 }}">
 
                                 @error('total_value')
@@ -445,7 +445,7 @@
 
                             <div class="form-group col-md-6">
                                 <label>{{ __('generalReturnOrders.enter_tax_percent') }}</label>
-                                <input type="number" name="tax_percent" id="tax_percent" class="form-control">
+                                <input type="number" name="tax_percent" id="general_tax_percent" class="form-control">
 
                                 @error('tax_percent')
                                     <span class="text-danger">{{ $message }}</span>
@@ -454,12 +454,12 @@
 
                             <div class="form-group col-md-6">
                                 <label>{{ __('generalReturnOrders.tax_value') }}</label>
-                                <input type="number" readonly name="tax_value" id="tax_value" class="form-control">
+                                <input type="number" readonly name="tax_value" id="general_tax_value" class="form-control">
                             </div>
 
                             <div class="form-group col-md-6">
                                 <label>{{ __('generalReturnOrders.enter_discount_percent') }}</label>
-                                <input type="number" name="discount_percent" id="discount_percent"
+                                <input type="number" name="discount_percent" id="general_discount_percent"
                                     class="form-control">
 
                                 @error('discount_percent')
@@ -469,13 +469,13 @@
 
                             <div class="form-group col-md-6">
                                 <label>{{ __('generalReturnOrders.discount_value') }}</label>
-                                <input type="number" readonly name="discount_value" id="discount_value"
+                                <input type="number" readonly name="discount_value" id="general_discount_value"
                                     class="form-control">
                             </div>
 
                             <div class="form-group col-md-12">
                                 <label>{{ __('generalReturnOrders.final_total') }}</label>
-                                <input type="number" readonly name="total_value" id="total_value" class="form-control">
+                                <input type="number" readonly name="total_value" id="general_total_value" class="form-control">
 
                                 @error('total_value')
                                     <span class="text-danger">{{ $message }}</span>
@@ -484,7 +484,7 @@
 
                             <div class="form-group col-md-12">
                                 <label>{{ __('generalReturnOrders.current_treasury') }}</label>
-                                <select class="form-control" id="treasuries_id" disabled>
+                                <select class="form-control" id="general_treasuries_id" disabled>
                                     <option value="{{ $shift->treasuries_id }}" selected>
                                         {{ $shift->treasuries_name }}
                                     </option>
@@ -493,22 +493,18 @@
 
                             <div class="form-group col-md-12">
                                 <label>{{ __('generalReturnOrders.available_treasury_balance') }}</label>
-                                <input class="form-control" readonly id="treasuries_balance"
+                                <input class="form-control" readonly id="general_treasuries_balance"
                                     value="{{ $shift->treasuries_balance / 100 }}">
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>{{ __('generalReturnOrders.paid_amount') }}</label>
-                                <input class="form-control" id="what_paid" name="what_paid">
-
-                                @error('what_paid')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                                <label>{{ __('generalReturnOrders.recevied_amount') }}</label>
+                                <input class="form-control" id="general_what_received" name="what_received">
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>{{ __('generalReturnOrders.remaining_amount') }}</label>
-                                <input readonly class="form-control" id="what_remain" name="what_remain">
+                                <label>{{ __('generalReturnOrders.remain_amount') }}</label>
+                                <input readonly class="form-control" id="general_what_remain" name="what_remain">
 
                                 @error('what_remain')
                                     <span class="text-danger">{{ $message }}</span>
@@ -517,7 +513,7 @@
 
                             <div class="col-12">
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-info" id="approve_bill">
+                                    <button type="button" class="btn btn-info" id="general_approve_bill">
                                         {{ __('generalReturnOrders.approve_invoice') }}
                                     </button>
                                 </div>
@@ -535,7 +531,7 @@
 
                 </div>
             </div>
-        </div>  --}}
+        </div>
 
 
 

@@ -49,10 +49,10 @@ $(document).ready(function () {
     }
 
     $(document).on("change", "#unit_id_add", function () {
-        get_quantity_batches();
+        get_quantity_batchs();
     });
 
-    function get_quantity_batches() {
+    function get_quantity_batchs() {
         var item_code = $("#item_code").val();
         var unit_id = $("#unit_id_add").val();
         let item_type = $("#item_code option:selected").data("type");
@@ -60,9 +60,9 @@ $(document).ready(function () {
 
         if (item_code != "" && store_id != "") {
             var token_search = $("#token_search").val();
-            var ajax_get_batches = $("#sales_item_get_batches_url").val();
+            var ajax_get_batchs = $("#sales_item_get_batchs_url").val();
             $.ajax({
-                url: ajax_get_batches,
+                url: ajax_get_batchs,
                 type: "GET",
                 dataType: "html",
                 cache: false,
@@ -76,18 +76,18 @@ $(document).ready(function () {
                 },
 
                 success: function (data) {
-                    $("#batches_div").html(data);
-                    $(".batches").show();
+                    $("#batchs_div").html(data);
+                    $(".batchs").show();
                 },
 
                 error: function (xhr) {
-                    $("#batches_div").html("");
-                    $(".batches").hide();
+                    $("#batchs_div").html("");
+                    $(".batchs").hide();
                 },
             });
         } else {
-            $("#batches_div").html("");
-            $(".batches").hide();
+            $("#batchs_div").html("");
+            $(".batchs").hide();
         }
     }
 
@@ -340,7 +340,7 @@ $(document).ready(function () {
     });
 
     $(document).on("input", "#quantity", function () {
-        get_quantity_batches();
+        get_quantity_batchs();
     });
 
     $(document).on("click", "#save_edit_item", function () {

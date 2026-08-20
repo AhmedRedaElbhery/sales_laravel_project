@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\BillType;
+use App\Enums\MoveType;
 use App\Enums\OrderType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApproveBillRequest;
@@ -10,7 +11,7 @@ use App\Http\Requests\SupplierOrderRequest;
 use App\Models\Accounts;
 use App\Models\Admin;
 use App\Models\AdminShifts;
-use App\Models\Batche;
+use App\Models\Batch;
 use App\Models\ItemCard;
 use App\Models\ItemMovement;
 use App\Models\Store;
@@ -362,10 +363,10 @@ class SupplierOrdersController extends Controller
 
         $totalValue = $request->total_value;
 
-        $data = SupplierOrders::where(['auto_serial' => $autoSerial, 'com_code' => $comCode])->first();
+        $data = SupplierOrders::where(['auto_serial' => $autoSerial,'order_type'=>OrderType::PurchaseInvoice->value, 'com_code' => $comCode])->first();
         $supplierName = Suppliers::where(['account_number' => $data->account_number])->value('name');
 
-        if ($data->is_approved == 1) {
+        if ($data->is_approved) {
             return response()->json([
                 'status' => false,
                 'message' => 'هذه الفاتورة معتمدة من قبل',
@@ -412,7 +413,7 @@ class SupplierOrdersController extends Controller
         $items = SupplierOrdersDetails::where(['supplier_auto_serial' => $autoSerial, 'com_code' => $comCode])->get();
         foreach ($items as $item) {
             $itemCard = ItemCard::where(['com_code' => $comCode, 'item_code' => $item->item_code])->first();
-            $quantityBeforeMovement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
+            $quantityBeforeMovement = Batch::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
 
             //convert the coming unit to be a parent unit to store all item using parent units
             if ($item->isparentunit == 1) {
@@ -426,7 +427,7 @@ class SupplierOrdersController extends Controller
 
 
             //movment in batche table
-            $this->addBatche($data, $item, $autoSerial, $quantity, $unitPrice, $comCode);
+            $this->addBatch($data, $item, $autoSerial, $quantity, $unitPrice, $comCode);
 
             //add the movment in itemMovment table
             $this->addItemMovment($item, $autoSerial, $quantityBeforeMovement, $supplierName, $comCode);
@@ -445,7 +446,7 @@ class SupplierOrdersController extends Controller
 
     private function checkOnBill($autoSerial, $data, $whatPaid, $totalValue, $comCode)
     {
-        $exist = SupplierOrdersDetails::where(['supplier_auto_serial' => $autoSerial, 'com_code' => $comCode])->exists();
+        $exist = SupplierOrdersDetails::where(['supplier_auto_serial' => $autoSerial,'order_type'=>OrderType::PurchaseInvoice->value, 'com_code' => $comCode])->exists();
 
         if (!$exist) {
             return response()->json([
@@ -505,9 +506,8 @@ class SupplierOrdersController extends Controller
 
         //get the treasury
         $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $comCode])->first();
-        if ($treasuries->last_isal_exchange == null) {
-            $treasuries->last_isal_exchange = 0;
-        }
+
+        $treasuries->last_isal_exchange = $treasuries->last_isal_exchange ?? 0;
 
         //add the transaction on table transactions
         TreasuriesTransaction::create([
@@ -520,7 +520,7 @@ class SupplierOrdersController extends Controller
             'isal_number' => $treasuries->last_isal_exchange + 1,
             'date' => date('Y-m-d'),
             'byan' => 'فاتوره مشتريات',
-            'move_type' => 1,
+            'move_type' => MoveType::MoneyForBuy->value,
             'account_number' => $data->account_number,
             'money_for_account' => $whatPaid * (100),
             'added_by' => auth()->user()->id,
@@ -548,13 +548,13 @@ class SupplierOrdersController extends Controller
         ]);
     }
 
-    private function addBatche($data, $item, $autoSerial, $quantity, $unitPrice, $comCode)
+    private function addBatch($data, $item, $autoSerial, $quantity, $unitPrice, $comCode)
     {
 
-        $batcheExist = Batche::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
+        $batcheExist = Batch::where(['item_code' => $item->item_code, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
 
         if ($item->production_date != null && $item->end_date != null) {
-            $batcheExist = Batche::where(['item_code' => $item->item_code, 'end_date' => $item->end_date, 'production_date' => $item->production_date, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
+            $batcheExist = Batch::where(['item_code' => $item->item_code, 'end_date' => $item->end_date, 'production_date' => $item->production_date, 'store_id' => $data->store_id, 'com_code' => $comCode, 'unit_price' => $unitPrice])->first();
         }
 
         if ($batcheExist) {
@@ -581,7 +581,7 @@ class SupplierOrdersController extends Controller
             'added_by' => auth()->user()->id,
         ];
 
-        $batch = Batche::create($batch);
+        $batch = Batch::create($batch);
 
         $item->update([
             'batch_id' => $batch->id,
@@ -592,7 +592,7 @@ class SupplierOrdersController extends Controller
     private function addItemMovment($item, $autoSerial, $quantityBeforeMovement, $supplierName, $comCode)
     {
         //movement in item table
-        $quantity_after_movement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
+        $quantity_after_movement = Batch::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
         $itemMovementData = [
             'date' => date('Y-m-d'),
             'com_code' => $comCode,
@@ -630,14 +630,14 @@ class SupplierOrdersController extends Controller
 
         //update the new price of item if that item does not have fixed price
 
-        if ($itemCard->has_fixed_price != 0) {
+        if ($itemCard->has_fixed_price) {
             return;
         }
 
         $unitPrice = $item->unit_price;
             $retailUnitPrice = $item->unit_price /  $itemCard->retail_unit_to_parent;
 
-        if ($item->isparentunit != 1) {
+        if (!$item->isparentunit) {
 
             $unitPrice = $itemCard->retail_unit_to_parent * $item->unit_price;
             $retailUnitPrice = $item->unit_price;

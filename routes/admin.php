@@ -136,13 +136,13 @@ Route::group([
     //sales bills
 
     Route::get('sales_item/mirrorGetUnits', [SalesBillsController::class, 'mirrorGetUnits'])->name('sales_item.mirrorgetUnits');
-    Route::get('sales_item/mirror_get_batches', [SalesBillsController::class, 'mirror_get_batches'])->name('sales_item.mirror_get_batches');
+    Route::get('sales_item/mirror_get_batchs', [SalesBillsController::class, 'mirror_get_batchs'])->name('sales_item.mirror_get_batchs');
 
     //////////////////////////////////////////////////////////////////////////////////
 
     Route::resource('sales_bills', SalesBillsController::class);
     Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
-    Route::get('sales_item/get_batches', [SalesBillsController::class, 'get_batches'])->name('sales_item.get_batches');
+    Route::get('sales_item/get_batchs', [SalesBillsController::class, 'get_batchs'])->name('sales_item.get_batchs');
     Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->name('sales_item.get_price');
     Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
     Route::get('sales_bills/print/{auto_serial}', [SalesBillsController::class, 'print'])->name('sales_bills.print');
@@ -159,7 +159,7 @@ Route::group([
 
     //general return orders
 
-    Route::get('general_return_orders/get_batches', [GeneralReturnOrdersController::class, 'getBatches'])->name('general_return_orders.get_batches');
+    Route::get('general_return_orders/get_batchs', [GeneralReturnOrdersController::class, 'getbatchs'])->name('general_return_orders.get_batchs');
 
 
 

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\MoveType;
 use App\Events\BillCreated;
 use App\Http\Controllers\Controller;
 use App\Models\Accounts;
 use App\Models\Admin;
 use App\Models\AdminPanalSettings;
 use App\Models\AdminShifts;
-use App\Models\Batche;
+use App\Models\Batch;
 use App\Models\Customer;
 use App\Models\Delegate;
 use App\Models\ItemCard;
@@ -159,11 +160,11 @@ class SalesBillsController extends Controller
 
 
             if ($item_type == 2) {
-                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
+                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
             } else {
-                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
+                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
             }
-            return view('admin.sales_bills.mirrorGetBatches', compact('batches_data'));
+            return view('admin.sales_bills.mirrorGetBatchs', compact('batches_data'));
         }
     }
 
@@ -229,11 +230,11 @@ class SalesBillsController extends Controller
 
 
             if ($item_type == 2) {
-                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
+                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
             } else {
-                $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
+                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
             }
-            return view('admin.sales_bills.getBatches', compact('batches_data'));
+            return view('admin.sales_bills.getBatchs', compact('batches_data'));
         }
     }
 
@@ -380,7 +381,7 @@ class SalesBillsController extends Controller
         if ($request->ajax()) {
             $com_code = auth()->user()->com_code;
 
-            $batche_data = Batche::where(['id' => $request->quantity_with_date])->first();
+            $batche_data = Batch::where(['id' => $request->quantity_with_date])->first();
             $sale_bill_data = SalesBills::where(['auto_serial' => $request->auto_serial])->first();
             $is_approved = $sale_bill_data->is_approved;
             $item_type = ItemCard::where(['item_code' => $request->item_code])->value('item_type');
@@ -391,7 +392,7 @@ class SalesBillsController extends Controller
 
                     if ($batche_data->quantity >= $request->quantity) {
 
-                        $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
+                        $quantity_before_movement = Batch::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
 
 
                         $bill_details['customer_code'] = $request->customer_code;
@@ -423,7 +424,7 @@ class SalesBillsController extends Controller
 
 
                         //movement in item table
-                        $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
+                        $quantity_after_movement = Batch::where(['com_code' => $com_code, 'item_code' => $request->item_code])->sum('quantity');
                         $customer_name = Customer::where(['com_code' => $com_code, 'customer_code' => $request->customer_code])->value('name');
                         $item_movement['date'] = date('Y-m-d');
                         $item_movement['com_code'] = auth()->user()->com_code;
@@ -499,8 +500,8 @@ class SalesBillsController extends Controller
 
 
             $item_data = SalesBillsDetails::select('item_code', 'quantity', 'batch_id')->where(['id' => $request->record_id])->first();
-            $batche_data = Batche::where(['id' => $item_data->batch_id])->first();
-            $quantity_before_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
+            $batche_data = Batch::where(['id' => $item_data->batch_id])->first();
+            $quantity_before_movement = Batch::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
 
             $batche_data->update([
                 'quantity' => $batche_data->quantity + $item_data->quantity,
@@ -508,7 +509,7 @@ class SalesBillsController extends Controller
             ]);
 
             //movement in item table
-            $quantity_after_movement = Batche::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
+            $quantity_after_movement = Batch::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
             $customer_name = Customer::where(['com_code' => $com_code, 'customer_code' => $request->customer_code])->value('name');
             $item_movement['date'] = date('Y-m-d');
             $item_movement['com_code'] = auth()->user()->com_code;
@@ -559,7 +560,7 @@ class SalesBillsController extends Controller
 
             foreach ($items as $item) {
 
-                $batche_data = Batche::where(['id' => $item->batch_id])->first();
+                $batche_data = Batch::where(['id' => $item->batch_id])->first();
 
                 $batche_data->update([
                     'quantity' => $batche_data->quantity + $item->quantity,
@@ -640,7 +641,7 @@ class SalesBillsController extends Controller
                     'isal_number' => $treasuries->last_isal_collect + 1,
                     'date' => date('Y-m-d'),
                     'byan' => 'فاتوره مبيعات',
-                    'move_type' => 5,
+                    'move_type' => MoveType::MoneyForSale->value,
                     'account_number' => $customer_account->account_number,
                     'from_account' => $request->customer_code,
                     'money_for_account' => $request->what_paid * (-100),

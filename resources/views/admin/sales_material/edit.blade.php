@@ -71,7 +71,7 @@
                         </button>
 
                         <a href="{{ route('admin.sales_material.index') }}" class="btn btn-secondary">
-                            {{ __('salesCategories.cancle') }}
+                            {{ __('salesCategories.cancel') }}
                         </a>
 
                     </form>

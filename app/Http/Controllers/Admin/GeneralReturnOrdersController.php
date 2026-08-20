@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\BillType;
+use App\Enums\MoveType;
 use App\Enums\OrderType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeneralReturnOrdersRequest;
 use App\Http\Requests\UpdateGeneralReturnOrdersRequest;
+use App\Models\Accounts;
 use App\Models\Admin;
 use App\Models\AdminShifts;
-use App\Models\Batche;
+use App\Models\Batch;
 use App\Models\ItemCard;
 use App\Models\ItemMovement;
 use App\Models\Store;
@@ -141,7 +144,7 @@ class GeneralReturnOrdersController extends Controller
 
         if ($data['is_approved'] != 1) {
 
-            $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $comCode, 'active' => 1])->get();
+            $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $comCode, 'active' => 1])->paginate(10);
         }
 
         return view('admin.general_return_orders.details', compact('data', 'details', 'items', 'shift'));
@@ -220,7 +223,7 @@ class GeneralReturnOrdersController extends Controller
         return view('admin.general_return_orders.getUnits', compact('data'));
     }
 
-    public function getBatches(Request $request)
+    public function getBatchs(Request $request)
     {
         if (!$request->ajax()) {
             return;
@@ -231,9 +234,9 @@ class GeneralReturnOrdersController extends Controller
         $unit_id = $request->unit_id;
         $store_id = $request->store_id;
 
-        $batches_data = Batche::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
+        $batchs_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
 
-        return view('admin.general_return_orders.getBatches', compact('batches_data'));
+        return view('admin.general_return_orders.getbatchs', compact('batchs_data'));
     }
 
     public function addUnits(Request $request)
@@ -249,22 +252,22 @@ class GeneralReturnOrdersController extends Controller
             return;
         }
 
-        $quantity_before_movement = Batche::where(['com_code' => $comCode, 'item_code' => $request->item_card])->sum('quantity');
+        $quantity_before_movement = Batch::where(['com_code' => $comCode, 'item_code' => $request->item_card])->sum('quantity');
 
-        $batche = $this->updateBatche($request);
+        $batch = $this->updateBatch($request);
 
         $data = [
             'supplier_auto_serial' => $request->autoserialparent,
             'order_type' => OrderType::PurchaseReturnInvoice->value,
             'item_code' => $request->item_card,
             'delivered_quantity' => $request->return_quantity,
-            'unit_price' => $batche->unit_price,
-            'total_price' => ($batche->unit_price * $request->return_quantity),
+            'unit_price' => $batch->unit_price,
+            'total_price' => ($batch->unit_price * $request->return_quantity),
             'com_code' => $comCode,
             'order_date' => $parentData->order_date,
             'unit_id' => $request->unit,
             'added_by' => auth()->user()->id,
-            'batch_id' => $request->batche,
+            'batch_id' => $request->batch,
         ];
 
         SupplierOrdersDetails::create($data);
@@ -305,7 +308,7 @@ class GeneralReturnOrdersController extends Controller
         $itemData = SupplierOrdersDetails::find($request->id);
         $itemCardData = ItemCard::select('has_retail_unit', 'retail_unit_id', 'parent_unit_id')->where(['item_code' => $itemData->item_code, 'com_code' => $comCode])->first();
         $itemCards = ItemCard::where(['active' => 1, 'com_code' => $comCode])->get();
-        $batch = Batche::find($itemData->batch_id);
+        $batch = Batch::find($itemData->batch_id);
 
         $itemCardData->parent_unit_name = Unit::where('id', $itemCardData->parent_unit_id)->value('name');
         if ($itemCardData->has_retail_unit == 1) {
@@ -329,7 +332,7 @@ class GeneralReturnOrdersController extends Controller
         $oldDetails = SupplierOrdersDetails::find($request->id);
 
         $batchData = new Request([
-            'batche' => $oldDetails->batch_id,
+            'batch' => $oldDetails->batch_id,
             'oldQuantity' => $oldDetails->delivered_quantity,
             'return_quantity' => $request->return_quantity,
         ]);
@@ -349,7 +352,7 @@ class GeneralReturnOrdersController extends Controller
 
 
 
-        $batch = $this->updateBatche($batchData);
+        $batch = $this->updateBatch($batchData);
 
         $item = $this->updateItemCardData($request, $oldDetails->delivered_quantity);
 
@@ -357,25 +360,24 @@ class GeneralReturnOrdersController extends Controller
     }
 
 
-    private function updateBatche($request)
+    private function updateBatch($request)
     {
+        $batch = Batch::find($request->batch);
 
-        $batche = Batche::find($request->batche);
-
-        if (($batche->quantity + $request->oldQuantity) < $request->return_quantity) {
+        if (($batch->quantity + $request->oldQuantity) < $request->return_quantity) {
             return;
         }
 
-        $new_quantity = ($batche->quantity + $request->oldQuantity) - $request->return_quantity;
-        $new_total = $batche->unit_price * $new_quantity;
+        $new_quantity = ($batch->quantity + $request->oldQuantity) - $request->return_quantity;
+        $new_total = $batch->unit_price * $new_quantity;
 
-        $batche->update([
+        $batch->update([
             'quantity' => $new_quantity,
             'total_cost' => $new_total,
             'updated_by' => auth()->user()->id,
         ]);
 
-        return $batche;
+        return $batch;
     }
 
     private function updateItemCardData($request, $oldQuantity = 0)
@@ -405,7 +407,7 @@ class GeneralReturnOrdersController extends Controller
     private function addItemMovment($item, $request, $quantity_before_movement)
     {
         $comCode = auth()->user()->com_code;
-        $quantity_after_movement = Batche::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
+        $quantity_after_movement = Batch::where(['com_code' => $comCode, 'item_code' => $item->item_code])->sum('quantity');
 
         $item_movment = [
             'item_code' => $request->item_card,
@@ -429,7 +431,7 @@ class GeneralReturnOrdersController extends Controller
 
         $data = SupplierOrdersDetails::find($id);
 
-        $batch = Batche::find($data->batch_id);
+        $batch = Batch::find($data->batch_id);
 
         $batch->update([
             'quantity' => $batch->quantity + $data->delivered_quantity,
@@ -474,4 +476,171 @@ class GeneralReturnOrdersController extends Controller
 
         return redirect()->back();
     }
+
+
+    public function modelApprove(Request $request)
+    {
+        if (!$request->ajax()) {
+            return;
+        }
+
+        $comCode = auth()->user()->com_code;
+        $autoSerial = $request->autoserialparent;
+        $taxPercent = $request->tax_percent;
+        $taxValue = $request->tax_value;
+        $discount_percent = $request->discount_percent;
+        $discount_value = $request->discount_value;
+
+        $whatReceived = $request->what_received;
+        $whatRemain = $request->what_remain;
+
+        $totalValue = $request->total_value;
+
+        $data = SupplierOrders::where(['auto_serial' => $autoSerial , 'order_type'=>OrderType::PurchaseReturnInvoice->value , 'com_code' => $comCode])->first();
+
+        if ($data->is_approved) {
+            return response()->json([
+                'status' => false,
+                'message' => 'هذه الفاتورة معتمدة من قبل',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        $allGood = $this->checkOnBill($autoSerial, $data, $whatReceived, $totalValue, $comCode);
+
+        if ($allGood instanceof \Illuminate\Http\JsonResponse) {
+            return $allGood;
+        }
+
+        $shift = $this->checkOnShift($data, $comCode);
+
+        if ($shift instanceof \Illuminate\Http\JsonResponse) {
+            return $shift;
+        }
+
+        $flage = $data->update([
+            'is_approved' => 1,
+            'discount_percent' => $discount_percent,
+            'discount_value' => $discount_value * 100,
+            'tax_percent' => $taxPercent,
+            'tax_value' => $taxValue * 100,
+            'total_cost' => $totalValue * 100,
+            'what_paid' => $whatReceived * 100,
+            'what_remain' => $whatRemain * 100,
+            'money_for_account' => $whatReceived * -100,
+            'updated_by' => auth()->user()->id,
+        ]);
+
+
+        if (!$flage) {
+            return;
+        }
+
+        //money movement
+        if ($whatReceived > 0) {
+            $this->moneyTransaction($data, $whatReceived, $shift, $comCode);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم اعتماد الفاتورة بنجاح',
+            'redirect' => route('general_return_orders.index'),
+        ]);
+    }
+
+    private function checkOnBill($autoSerial, $data, $whatReceived, $totalValue, $comCode)
+    {
+        $exist = SupplierOrdersDetails::where(['supplier_auto_serial' => $autoSerial,'order_type'=>OrderType::PurchaseReturnInvoice->value, 'com_code' => $comCode])->exists();
+
+        if (!$exist) {
+            return response()->json([
+                'status' => false,
+                'message' => 'لا يمكن اعتماد هذه الفاتوره لانها لاتحتوى على اصناف ',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        if ($data->pill_type == BillType::Cash->value && $whatReceived < $totalValue) {
+
+            return response()->json([
+                'status' => false,
+                'message' => ' الفاتوره كاش ولا يمكن ان يكون المبلغ المدفوع افل من الاجمالى',
+            ]);
+        }
+
+        if ($data->pill_type == BillType::Credit->value && $whatReceived == $totalValue) {
+            return response()->json([
+                'status' => false,
+                'message' => ' الفاتوره اجل ولا يمكن ان يكون المبلغ المدفوع كاملا',
+
+            ]);
+        }
+    }
+
+    private function checkOnShift($data, $comCode)
+    {
+        $shift = AdminShifts::where(['com_code' => $comCode, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($shift == null) {
+            return response()->json([
+                'status' => false,
+                'message' => ' لا يوجد شفت مفتوح',
+                'redirect' => route('supplier_orders.show', $data->id),
+            ]);
+        }
+
+        $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
+        $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+
+        return $shift;
+    }
+
+    private function moneyTransaction($data, $whatReceived, $shift, $comCode)
+    {
+
+        //get the treasury
+        $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $comCode])->first();
+
+        $treasuries->last_isal_collect = $treasuries->last_isal_collect ?? 0;
+
+        //add the transaction on table transactions
+        TreasuriesTransaction::create([
+            'treasuries_id' => $shift->treasuries_id,
+            'bill_code' => $data->auto_serial,
+            'is_approved' => 1,
+            'shift_id' => $shift->id,
+            'com_code' => $comCode,
+            'money' => $whatReceived * (100),
+            'isal_number' => $treasuries->last_isal_collect + 1,
+            'date' => date('Y-m-d'),
+            'byan' => 'فاتوره مرتجع مشتريات عام',
+            'move_type' => MoveType::MoneyCollection->value,
+            'account_number' => $data->account_number,
+            'money_for_account' => $whatReceived * (-100),
+            'added_by' => auth()->user()->id,
+        ]);
+
+        //update the last isal in treasury
+        $treasuries->update([
+            'last_isal_collect' => $treasuries->last_isal_collect + 1,
+        ]);
+
+        //add the money in accounts and supplier tables
+        $accountData = Accounts::where(['account_number' => $data->account_number, 'com_code' => $comCode, 'is_parent' => 0])->first();
+
+        $moneyForAccountTransaction = TreasuriesTransaction::where(['account_number' => $data->account_number, 'com_code' => $comCode])->sum('money_for_account');
+
+        $theFinalBalance = $accountData->start_balance + $moneyForAccountTransaction;
+
+        $accountData->update([
+            'current_balance' => $theFinalBalance,
+        ]);
+
+        $supplier = Suppliers::where(['account_number' => $data->account_number, 'com_code' => $comCode])->first();
+        $supplier->update([
+            'current_balance' => $theFinalBalance,
+        ]);
+    }
+
+
+
 }

@@ -173,8 +173,8 @@
 
                 <input type="hidden" id="token_search" value="{{ csrf_token() }}">
                 {{-- <input type="hidden" id="mirror_sales_item_getUnits_url" value="{{ route('sales_item.mirrorgetUnits') }}"> --}}
-                <input type="hidden" id="mirror_sales_item_get_batches_url"
-                    value="{{ route('sales_item.mirror_get_batches') }}">
+                <input type="hidden" id="mirror_sales_item_get_batchs_url"
+                    value="{{ route('sales_item.mirror_get_batchs') }}">
                 <input type="hidden" id="sales_item_getprice_url" value="{{ route('sales_item.get_price') }}">
 
                 <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
@@ -216,7 +216,7 @@
 
                         <div class="col-4 related_to_itemcard" style="display: none" id="mirror_unitsDiv"></div>
 
-                        <div class="col-4 batches" style="display: none" id="mirror_batches_div"></div>
+                        <div class="col-4 batchs" style="display: none" id="mirror_batchs_div"></div>
 
                         <div class="form-group col-md-4">
                             <label>{{ __('salesBills.sale_type') }}</label>
@@ -366,7 +366,7 @@
                 <input type="hidden" id="token_search" value="{{ csrf_token() }}">
                 <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
                 <input type="hidden" id="sales_item_getUnits_url" value="{{ route('sales_item.getUnits') }}">
-                <input type="hidden" id="sales_item_get_batches_url" value="{{ route('sales_item.get_batches') }}">
+                <input type="hidden" id="sales_item_get_batchs_url" value="{{ route('sales_item.get_batchs') }}">
                 <input type="hidden" id="sales_item_getprice_url" value="{{ route('sales_item.get_price') }}">
                 <input type="hidden" id="sales_item_getitems_url" value="{{ route('sales_item.get_add_items') }}">
 

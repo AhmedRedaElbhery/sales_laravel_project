@@ -50,11 +50,11 @@ $(document).ready(function () {
 
         if (item_code != "" && store_id != "") {
             var token_search = $("#token_search").val();
-            var ajax_get_batches = $(
-                "#mirror_sales_item_get_batches_url"
+            var ajax_get_batchs = $(
+                "#mirror_sales_item_get_batchs_url"
             ).val();
             $.ajax({
-                url: ajax_get_batches,
+                url: ajax_get_batchs,
                 type: "GET",
                 dataType: "html",
                 cache: false,
@@ -68,18 +68,18 @@ $(document).ready(function () {
                 },
 
                 success: function (data) {
-                    $("#mirror_batches_div").html(data);
-                    $("#mirror_batches_div").show();
+                    $("#mirror_batchs_div").html(data);
+                    $("#mirror_batchs_div").show();
                 },
 
                 error: function (xhr) {
-                    $("#mirror_batches_div").html("");
-                    $("#mirror_batches_div").hide();
+                    $("#mirror_batchs_div").html("");
+                    $("#mirror_batchs_div").hide();
                 },
             });
         } else {
-            $("#mirror_batches_div").html("");
-            $("#mirror_batches_div").hide();
+            $("#mirror_batchs_div").html("");
+            $("#mirror_batchs_div").hide();
         }
     });
 

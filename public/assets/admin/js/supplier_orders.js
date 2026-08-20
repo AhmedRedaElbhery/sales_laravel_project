@@ -48,41 +48,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on("change", "#unit_id_add", function () {
 
-        var item_code = $("#item_code").val();
-        var unit_id = $("#unit_id_add").val();
-
-        if (item_code != "") {
-            var token_search = $("#token_search").val();
-            var ajax_get_batches = $("#general_return_item_get_batches_url").val();
-            $.ajax({
-                url: ajax_get_batches,
-                type: "GET",
-                dataType: "html",
-                cache: false,
-
-                data: {
-                    item_code: item_code,
-                    unit_id: unit_id,
-                    _token: token_search,
-                },
-
-                success: function (data) {
-                    $("#batches_div").html(data);
-                    $(".batches").show();
-                },
-
-                error: function (xhr) {
-                    $("#batches_div").html("");
-                    $(".batches").hide();
-                },
-            });
-        } else {
-            $("#batches_div").html("");
-            $(".batches").hide();
-        }
-    });
 
     $(document).on("click", "#addtobill", function () {
         var item_card = $("#item_card_add").val();

@@ -86,8 +86,25 @@ return [
     'quantity' => 'quantity',
     'total' => 'total',
     'update_item' => 'update item',
-    'return_quantity' => 'return quantity'
+    'return_quantity' => 'return quantity',
 
+
+
+    'approve_invoice' => 'approve invoice',
+    'invoice_total_before_discount_tax' => 'invoice total before discount and tax',
+    'enter_tax_percent' => 'enter tax percent',
+    'tax_value' => 'tax value',
+    'enter_discount_percent' => 'enter discount percent',
+    'final_total' => 'final total',
+    'current_treasury' => 'current treasury',
+    'available_treasury_balance' => 'available treasury balance',
+    'approve_invoice_button' => 'approve',
+    'morning' => 'morning',
+    'evening' => 'evening',
+
+
+    'recevied_amount' => 'recevied amount',
+    'remain_amount' => 'remain amount',
 
 
 ];

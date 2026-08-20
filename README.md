@@ -1,64 +1,199 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sales Management System
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web-based Sales Management System built with **PHP, Laravel, and MySQL**.
 
-## About Laravel
+The system is designed to manage the main operations of a sales and inventory business, including customers, suppliers, products, invoices, returns, accounts, treasuries, and inventory movements.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The project was developed with a focus on clean backend architecture, business logic organization, database relationships, validation, and maintainable Laravel code.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## About The Project
 
-## Learning Laravel
+The Sales Management System provides a centralized platform for managing daily business operations.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+It handles different parts of the business such as:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   Customer management
+-   Supplier management
+-   Product and item management
+-   Sales invoices
+-   Purchase invoices
+-   Sales returns
+-   Purchase returns
+-   Inventory and stock movements
+-   Customer accounts
+-   Supplier accounts
+-   Treasury management
+-   Treasury branches
+-   Delegate management
+-   Account balances
+-   Invoice printing
+-   User management
+-   Arabic and RTL interface
 
-## Laravel Sponsors
+The system also contains business rules for handling balances, transactions, inventory quantities, invoice approval, and related accounting operations.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+---
 
-### Premium Partners
+## Main Features
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### Customers
 
-## Contributing
+The system provides customer management functionality including:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+-   Create customers
+-   Edit customer information
+-   Activate and deactivate customers
+-   Manage customer opening balances
+-   Manage customer accounts
+-   Track current balances
+-   Associate customers with accounting records
 
-## Code of Conduct
+### Suppliers
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Supplier management includes:
 
-## Security Vulnerabilities
+-   Create suppliers
+-   Edit suppliers
+-   Activate and deactivate suppliers
+-   Manage supplier opening balances
+-   Manage supplier accounts
+-   Track supplier balances
+-   Associate suppliers with accounting records
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Inventory Management
 
-## License
+The system manages products and inventory through:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   Item management
+-   Item quantities
+-   Main and retail units
+-   Unit conversions
+-   Stock movements
+-   Purchase inventory operations
+-   Sales inventory operations
+-   Return operations
+-   Batch-related inventory operations
+
+The system supports different units for products and handles conversions between Main and retail units.
+
+### Sales Invoices
+
+Sales operations include:
+
+-   Creating sales invoices
+-   Adding invoice items
+-   Calculating quantities and prices
+-   Applying discounts
+-   Managing invoice totals
+-   Updating inventory
+-   Updating customer accounts
+-   Processing invoice approval
+-   Printing invoices
+
+### Purchase Invoices
+
+Purchase operations include:
+
+-   Creating purchase invoices
+-   Adding purchased items
+-   Managing supplier information
+-   Updating inventory
+-   Managing purchase prices
+-   Updating supplier accounts
+-   Processing invoice approval
+
+### Returns
+
+The system supports return operations for both sales and purchases.
+
+Returns can affect:
+
+-   Inventory quantities
+-   Customer accounts
+-   Supplier accounts
+-   Invoice information
+-   Stock movements
+
+### Treasury Management
+
+Treasury functionality includes:
+
+-   Creating treasuries
+-   Master treasury management
+-   Treasury activation
+-   Treasury branches
+-   Treasury delivery relationships
+-   Treasury transactions
+
+The system prevents multiple master treasuries from being created for the same company.
+
+### Accounting
+
+The system includes accounting-related functionality for:
+
+-   Customer accounts
+-   Supplier accounts
+-   Treasury accounts
+-   Opening balances
+-   Current balances
+-   Debit and credit balances
+-   Master account relationships
+-   Account types
+
+---
+
+## Architecture
+
+The project follows the Laravel MVC architecture and uses Laravel features to separate application responsibilities.
+
+### Models
+
+Eloquent models are used to communicate with the database and represent the application's main entities.
+
+Examples include:
+
+-   Customers
+-   Suppliers
+-   Items
+-   Accounts
+-   Treasuries
+-   Invoices
+-   Invoice details
+-   Inventory movements
+
+### Controllers
+
+Controllers handle HTTP requests and coordinate the application flow.
+
+Business logic is gradually being separated from controllers into dedicated services where appropriate.
+
+### Form Requests
+
+Laravel Form Request classes are used for validation.
+
+This keeps validation rules separated from controller logic and helps keep controllers cleaner.
+
+### Services
+
+Service classes are used to move reusable or complex business logic away from controllers.
+
+This helps keep controllers smaller and easier to maintain.
+
+### Enums
+
+PHP Enums are used for fixed business values instead of using unexplained numeric values throughout the application.
+
+Examples include:
+
+-   Account types
+-   Balance statuses
+-   Order types
+-   Bill types
+
+For example:
+
+```php
+AccountTypes::Customer->value
+```

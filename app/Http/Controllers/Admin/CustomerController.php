@@ -10,6 +10,8 @@ use App\Models\AccountType;
 use App\Models\Admin;
 use App\Models\AdminPanalSettings;
 use App\Models\Customer;
+use App\Enums\AccountTypes;
+use App\Enums\BalanceStatus;
 
 class CustomerController extends Controller
 {
@@ -21,19 +23,16 @@ class CustomerController extends Controller
     public function index()
     {
         $com_code = auth()->user()->com_code;
-        $data = Customer::where(['com_code'=>$com_code])->orderby('id', 'DESC')->paginate(5);
+        $data = Customer::where(['com_code' => $com_code])->orderby('id', 'DESC')->paginate(5);
 
-        if (!empty($data)) {
+        foreach ($data as $item) {
 
-            foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
 
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
 
-                $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
-
-                if ($item->updated_by > 0 && $item->updated_by != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+            if ($item->updated_by > 0 && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
         return view('admin.customers.index', compact('data'));
@@ -65,44 +64,29 @@ class CustomerController extends Controller
             return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
         }
 
-        if ($customer_code == null) {
-            $data['customer_code'] = 1;
-        } else {
-            $data['customer_code'] = $customer_code + 1;
+        $data['customer_code'] = ($customer_code ?? 0) + 1;
+        $data['account_number'] = ($account_number ?? 0) + 1;
+        $data['address'] = $request->address;
+
+        $data['start_balance'] = BalanceStatus::Balanced->value;
+
+        if (($request->start_balance_status == BalanceStatus::Debtor->value || $request->start_balance_status == BalanceStatus::Creditor->value) && $request->start_balance == 0) {
+            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
         }
 
-        if ($account_number == null) {
-            $data['account_number'] = 1;
-        } else {
-            $data['account_number'] = $account_number + 1;
+        if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
+            $data['start_balance'] = $request->start_balance * (100);
+        }
+        if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance < 0) {
+            $data['start_balance'] = $request->start_balance * (-100);
         }
 
-
-        if (isset($request->address)) {
-            $data['address'] = $request->address;
+        if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance < 0) {
+            $data['start_balance'] = $request->start_balance * (100);
         }
-
-        if ($request->start_balance_status == 1) {
-            if ($request->start_balance > 0) {
-                $data['start_balance'] = $request->start_balance * (100);
-            } elseif ($request->start_balance == 0) {
-                return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-            } else {
-                $data['start_balance'] = $request->start_balance * (-100);
-            }
-        } elseif ($request->start_balance_status == 2) {
-            if ($request->start_balance < 0) {
-                $data['start_balance'] = $request->start_balance * (100);
-            } elseif ($request->start_balance == 0) {
-                return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-            } else {
-                $data['start_balance'] = $request->start_balance * (-100);
-            }
-        } elseif ($request->start_balance_status == 3) {
-            $data['start_balance'] = 0;
+        if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance > 0) {
+            $data['start_balance'] = $request->start_balance * (-100);
         }
-
-
 
         $data['name'] = $request->name;
         $data['com_code'] = auth()->user()->com_code;
@@ -110,30 +94,20 @@ class CustomerController extends Controller
         $data['date'] = date('Y-m-d');
         $data['notes'] = $request->notes;
         $data['active'] = $request->active;
-        $data['current_balance'] = 0;
         $data['start_balance_status'] = $request->start_balance_status;
         $data['current_balance'] = $data['start_balance'];
 
 
-        $flage = Customer::create($data);
+        Customer::create($data);
 
 
-        if ($flage) {
+        $data['is_archived'] = !$request->active;
 
-            if($request->active == 1)
-            {
-                $data['is_archived'] = 0;
-            }
-            else{
-                $data['is_archived'] = 1;
-            }
-
-            $data['account_type'] = 3;
-            $data['is_parent'] = 0;
-            $data['other_table_fk'] =  $data['customer_code'];
-            $data['parent_account_number'] = AdminPanalSettings::select('customer_parent_account_number')->where('com_code', $data['com_code'])->value('customer_parent_account_number');
-            Accounts::create($data);
-        }
+        $data['account_type'] = AccountTypes::Customer->value;
+        $data['is_parent'] = 0;
+        $data['other_table_fk'] =  $data['customer_code'];
+        $data['parent_account_number'] = AdminPanalSettings::where('com_code', $data['com_code'])->value('customer_parent_account_number');
+        Accounts::create($data);
 
         return redirect()->route('customers.index');
     }
@@ -181,26 +155,17 @@ class CustomerController extends Controller
         $data['notes'] = $request->notes;
         $data['active'] = $request->active;
 
-        $flage = $data->save();
+        $data->save();
 
-        if ($flage) {
+        $is_archived = !$request->active;
 
-            if($request->active == 0)
-            {
-                $is_archived = 1;
-            }
-            else{
-                $is_archived = 0;
-            }
-
-            Accounts::where(['other_table_fk'=> $data->customer_code ,'account_number'=>$data['account_number'] ,'com_code'=>$data['com_code']])
-                ->update([
-                    'name' => $request->name,
-                    'is_archived' =>  $is_archived,
-                    'notes' => $request->notes,
-                    'updated_by' => auth()->user()->id,
-                ]);
-        }
+        Accounts::where(['other_table_fk' => $data->customer_code, 'account_number' => $data['account_number'], 'com_code' => $data['com_code']])
+            ->update([
+                'name' => $request->name,
+                'is_archived' =>  $is_archived,
+                'notes' => $request->notes,
+                'updated_by' => auth()->user()->id,
+            ]);
 
         return redirect()->route('customers.index');
     }
@@ -213,8 +178,8 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $code = Customer::select('customer_code','account_number','com_code')->where(['id' => $id])->first();
-        $id_account = Accounts::select('id')->where(['other_table_fk'=>$code['customer_code'] , 'account_type'=>3,'account_number'=>$code['account_number'], 'com_code'=>$code['com_code'] ])->value('id');
+        $code = Customer::select('customer_code', 'account_number', 'com_code')->where(['id' => $id])->first();
+        $id_account = Accounts::where(['other_table_fk' => $code['customer_code'], 'account_type' => AccountTypes::Customer->value, 'account_number' => $code['account_number'], 'com_code' => $code['com_code']])->value('id');
         Customer::destroy($id);
         Accounts::destroy($id_account);
         return redirect()->route('customers.index');
