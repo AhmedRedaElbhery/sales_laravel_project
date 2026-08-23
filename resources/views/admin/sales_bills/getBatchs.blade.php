@@ -8,7 +8,7 @@
             {{ __('salesBills.choose_suitable') }}
         </option>
 
-        @foreach ($batch_data as $data)
+        @foreach ($batchs_data as $data)
 
             <option value="{{ $data->id }}">
 

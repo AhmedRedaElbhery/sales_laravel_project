@@ -24,10 +24,10 @@ return new class extends Migration
             $table->integer('added_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->integer('com_code');
-            $table->bigInteger('customer_parent_account_number');
-            $table->bigInteger('supplier_parent_account_number');
-            $table->bigInteger('delegate_parent_account_number');
-            $table->bigInteger('employess_parent_account_number');
+            $table->bigInteger('customer_parent_account_number')->nullable();
+            $table->bigInteger('supplier_parent_account_number')->nullable();
+            $table->bigInteger('delegate_parent_account_number')->nullable();
+            $table->bigInteger('employess_parent_account_number')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
         });

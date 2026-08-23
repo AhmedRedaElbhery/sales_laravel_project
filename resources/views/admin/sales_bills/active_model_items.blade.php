@@ -158,7 +158,7 @@
 
                     <div class="col-4 related_itemcard" style="display: none" id="unitsDiv"></div>
 
-                    <div class="col-4 batches" style="display: none" id="batches_div"></div>
+                    <div class="col-4 batchs" style="display: none" id="batchs_div"></div>
 
                     <div class="form-group col-md-4">
                         <label>{{ __('salesBills.sale_type') }}</label>

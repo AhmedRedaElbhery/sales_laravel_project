@@ -37,16 +37,16 @@
                             <form action="{{ route('unit.filter') }}" method="POST">
                                 @csrf
                                 <select name="type" class="form-control" onchange="this.form.submit()">
-                                    @if (!isset($type))
+                                    @if (!isset($parentOrNo))
                                         <option value="all">{{ __('units.show_all') }}</option>
                                         <option value="1">{{ __('units.master_units') }}</option>
                                         <option value="0">{{ __('units.sub_units') }}</option>
                                     @else
-                                        @if ($type == 0)
+                                        @if ($parentOrNo == 0)
                                             <option value="all" >{{ __('units.show_all') }}</option>
                                             <option value="1">{{ __('units.master_units') }}</option>
                                             <option value="0" selected>{{ __('units.sub_units') }}</option>
-                                        @elseif($type == 1)
+                                        @elseif($parentOrNo == 1)
                                             <option value="all">{{ __('units.show_all') }}</option>
                                             <option value="1" selected>{{ __('units.master_units') }}</option>
                                             <option value="0">{{ __('units.sub_units') }}</option>

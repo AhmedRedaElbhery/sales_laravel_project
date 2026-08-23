@@ -132,40 +132,42 @@ class SalesBillsController extends Controller
 
     public function mirrorgetUnits(Request $request)
     {
-        if ($request->ajax()) {
-            $com_code = auth()->user()->com_code;
-            $item_code = $request->item_code;
+        if (!$request->ajax()) {
+            return;
+        }
+        $com_code = auth()->user()->com_code;
+        $item_code = $request->item_code;
 
-            $data = ItemCard::where(['item_code' => $item_code, 'com_code' => $com_code])->first();
-            if ($data['has_retail_unit'] == 1) {
-                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
-                $data['retail_unit_name'] = Unit::where(['id' => $data['retail_unit_id']])->value('name');
-            } else {
-                $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
-            }
+        $data = ItemCard::where(['item_code' => $item_code, 'com_code' => $com_code])->first();
+        if ($data['has_retail_unit'] == 1) {
+            $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
+            $data['retail_unit_name'] = Unit::where(['id' => $data['retail_unit_id']])->value('name');
+        } else {
+            $data['parent_unit_name'] = Unit::where(['id' => $data['parent_unit_id']])->value('name');
         }
         return view('admin.sales_bills.mirrorGetUnits', compact('data'));
     }
 
-    public function mirror_get_batches(Request $request)
+    public function mirror_get_batchs(Request $request)
     {
-        if ($request->ajax()) {
+        if (!$request->ajax()) {
 
-
-            $com_code = auth()->user()->com_code;
-            $item_code = $request->item_code;
-            $item_type = $request->item_type;
-            $unit_id = $request->unit_id;
-            $store_id = $request->store_id;
-
-
-            if ($item_type == 2) {
-                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
-            } else {
-                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
-            }
-            return view('admin.sales_bills.mirrorGetBatchs', compact('batches_data'));
+            return;
         }
+
+        $com_code = auth()->user()->com_code;
+        $item_code = $request->item_code;
+        $item_type = $request->item_type;
+        $unit_id = $request->unit_id;
+        $store_id = $request->store_id;
+
+
+        if ($item_type == 2) {
+            $batchs_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
+        } else {
+            $batchs_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
+        }
+        return view('admin.sales_bills.mirrorGetBatchs', compact('batchs_data'));
     }
 
     public function get_add_items(Request $request)
@@ -217,25 +219,24 @@ class SalesBillsController extends Controller
         return view('admin.sales_bills.getUnits', compact('data'));
     }
 
-    public function get_batches(Request $request)
+    public function get_batchs(Request $request)
     {
-        if ($request->ajax()) {
-
-
-            $com_code = auth()->user()->com_code;
-            $item_code = $request->item_code;
-            $item_type = $request->item_type;
-            $unit_id = $request->unit_id;
-            $store_id = $request->store_id;
-
-
-            if ($item_type == 2) {
-                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
-            } else {
-                $batches_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
-            }
-            return view('admin.sales_bills.getBatchs', compact('batches_data'));
+        if (!$request->ajax()) {
+            return;
         }
+        $com_code = auth()->user()->com_code;
+        $item_code = $request->item_code;
+        $item_type = $request->item_type;
+        $unit_id = $request->unit_id;
+        $store_id = $request->store_id;
+
+
+        if ($item_type == 2) {
+            $batchs_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->orderby('production_date', 'ASC')->get();
+        } else {
+            $batchs_data = Batch::where(['item_code' => $item_code, 'unit_id' => $unit_id, 'store_id' => $store_id, 'com_code' => $com_code])->get();
+        }
+        return view('admin.sales_bills.getBatchs', compact('batchs_data'));
     }
 
     public function get_price(Request $request)

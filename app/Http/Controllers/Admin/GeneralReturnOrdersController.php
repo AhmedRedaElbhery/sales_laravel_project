@@ -34,6 +34,7 @@ class GeneralReturnOrdersController extends Controller
     {
         $comCode = auth()->user()->com_code;
         $data = SupplierOrders::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseReturnInvoice->value])->orderby('id', 'DESC')->paginate(11);
+        $exist = AdminShifts::where(['com_code' => $comCode, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
 
         foreach ($data as $item) {
             $item['store_name'] = Store::where('id', $item['store_id'])->value('name');
@@ -44,7 +45,7 @@ class GeneralReturnOrdersController extends Controller
             }
         }
 
-        return view('admin.general_return_orders.index', compact('data'));
+        return view('admin.general_return_orders.index', compact('data','exist'));
     }
 
     /**

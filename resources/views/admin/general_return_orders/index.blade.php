@@ -33,6 +33,7 @@
                     </a>
                 </div>
 
+                @if($exist)
                 <div class="card-body">
 
                     @if (isset($data) && count($data) > 0)
@@ -116,6 +117,12 @@
                     @endif
 
                 </div>
+                @else
+                <div class="alert alert-danger">
+                    {{ __('suppliersOrders.no_shift') }}
+                </div>
+
+                @endif
 
             </div>
         </div>

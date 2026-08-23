@@ -59,7 +59,6 @@
                             <label> {{ __('delegates.commission_type') }}</label>
                             <select name="commission_type" class="form-control">
                                 <option value="" selected disabled>{{ __('delegates.choose_commission_type') }} </option>
-                                <option value="0" @selected(old('commission_type') === '0')> {{ __('delegates.conistant_money') }} </option>
                                 <option value="1" @selected(old('commission_type') == 1)> {{ __('delegates.percant') }}
                                 </option>
                             </select>
@@ -70,7 +69,7 @@
 
                         <div class="form-group col-sm-6">
                             <label> {{ __('delegates.percent_Wholesale_commission') }} </label>
-                            <input class="form-control" name="percent_Wholesale_commission" value="">
+                            <input type="number" class="form-control" name="percent_Wholesale_commission" value="">
                             @error('percent_Wholesale_commission')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -82,7 +81,7 @@
                     <div class="row mb-2">
                         <div class="form-group col-sm-6">
                             <label> {{ __('delegates.percent_half_wholesale_commission') }}  </label>
-                            <input class="form-control" name="percent_half_wholesale_commission" value="">
+                            <input type="number" class="form-control" name="percent_half_wholesale_commission" value="">
                             @error('percent_half_wholesale_commission')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -90,7 +89,7 @@
 
                         <div class="form-group col-sm-6">
                             <label> {{ __('delegates.percent_retail_commission') }}  </label>
-                            <input class="form-control" name="percent_retail_commission" value="">
+                            <input type="number" class="form-control" name="percent_retail_commission" value="">
                             @error('percent_retail_commission')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -103,7 +102,7 @@
 
                         <div class="form-group col-sm-6">
                             <label>{{ __('delegates.percant_for_collect') }}  </label>
-                            <input class="form-control" name="percent_collect_commission" value="">
+                            <input type="number" class="form-control" name="percent_collect_commission" value="">
                             @error('percent_collect_commission')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

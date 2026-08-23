@@ -21,19 +21,15 @@ class AdminShiftsController extends Controller
     {
         $com_code = auth()->user()->com_code;
 
-        $data = AdminShifts::where(['com_code'=>$com_code])->orderby('id', 'DESC')->paginate(5);
-
-        if (!empty($data)) {
-            foreach ($data as $item) {
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                $item['treasuries_name'] = Treasuries::where(['id' => $item->treasuries_id])->value('name');
-                $item['admin_name'] = Admin::where(['id' => $item->admin_id])->value('name');
-                $item['name'] = Treasuries::where(['id'=>$item->treasuries_id])->value('name');
-            }
+        $data = AdminShifts::where(['com_code' => $com_code])->orderby('id', 'DESC')->paginate(5);
+        foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            $item['treasuries_name'] = Treasuries::where(['id' => $item->treasuries_id])->value('name');
+            $item['admin_name'] = Admin::where(['id' => $item->admin_id])->value('name');
+            $item['name'] = Treasuries::where(['id' => $item->treasuries_id])->value('name');
         }
 
         return view('admin.admin_shifts.index', ['data' => $data]);
-
     }
 
 
@@ -45,18 +41,11 @@ class AdminShiftsController extends Controller
     public function create()
     {
         $com_code = auth()->user()->com_code;
-        $treasuries = AdminTreasuries::select('treasuries_id')->where(['com_code' => $com_code, 'active' => 1,'admin_id'=>auth()->user()->id])->get();
-        foreach($treasuries as $item)
-        {
-            $item['name'] = Treasuries::where(['id'=>$item->treasuries_id])->value('name');
-            $exists = AdminShifts::where(['treasuries_id'=>$item->treasuries_id , 'com_code'=>$com_code, 'is_finished'=>0])->whereNull('end_shift')->exists();
-            if($exists)
-            {
-                $item->status = false;
-            }
-            else{
-                $item->status = true;
-            }
+        $treasuries = AdminTreasuries::select('treasuries_id')->where(['com_code' => $com_code, 'active' => 1, 'admin_id' => auth()->user()->id])->get();
+        foreach ($treasuries as $item) {
+            $item['name'] = Treasuries::where(['id' => $item->treasuries_id])->value('name');
+            $exists = AdminShifts::where(['treasuries_id' => $item->treasuries_id, 'com_code' => $com_code, 'is_finished' => 0])->whereNull('end_shift')->exists();
+            $item->status = !$exists;
         }
         return view('admin.admin_shifts.create', compact('treasuries'));
     }
@@ -70,11 +59,10 @@ class AdminShiftsController extends Controller
     public function store(AdminShiftsRequest $request)
     {
         $com_code = auth()->user()->com_code;
-        $exists = AdminShifts::where(['admin_id'=>auth()->user()->id ,'com_code'=>$com_code])->whereNull('end_shift')->exists();
+        $exists = AdminShifts::where(['admin_id' => auth()->user()->id, 'com_code' => $com_code])->whereNull('end_shift')->exists();
 
-        if($exists)
-        {
-            return redirect()->route('admin_shifts.index')->with('error','يوجد شفت مفتوح بالفعل');
+        if ($exists) {
+            return redirect()->route('admin_shifts.index')->with('error', 'يوجد شفت مفتوح بالفعل');
         }
 
         $data['admin_id'] = auth()->user()->id;

@@ -124,6 +124,6 @@ return [
     'select_name' => 'select supplier name',
     'credit' => 'credit',
     'date' => 'date',
-
+    'no_shift' => 'there is no shift opens so we can show the data',
 
 ];

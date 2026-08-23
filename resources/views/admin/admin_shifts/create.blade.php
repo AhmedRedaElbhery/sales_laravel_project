@@ -35,7 +35,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-
+                    @if($treasuries > 0)
                     <form action="{{ route('admin_shifts.store') }}" method="POST">
                         @csrf
 
@@ -70,6 +70,8 @@
                         </a>
 
                     </form>
+                    @else
+                    @endif
 
                 </div>
 

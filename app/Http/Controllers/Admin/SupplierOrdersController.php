@@ -34,6 +34,7 @@ class SupplierOrdersController extends Controller
     {
         $comCode = auth()->user()->com_code;
         $data = SupplierOrders::where(['com_code' => $comCode, 'order_type' => OrderType::PurchaseInvoice->value])->orderby('id', 'DESC')->paginate(11);
+        $exist = AdminShifts::where(['com_code' => $comCode, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
 
         foreach ($data as $item) {
             $item['store_name'] = Store::where('id', $item['store_id'])->value('name');
@@ -44,12 +45,13 @@ class SupplierOrdersController extends Controller
             }
         }
 
-        return view('admin.supplier_orders.index', compact('data'));
+        return view('admin.supplier_orders.index', compact('data','exist'));
     }
 
 
     public function create()
     {
+
         $comCode = auth()->user()->com_code;
         $suppliers = Suppliers::select('name', 'supplier_code')->where(['com_code' => $comCode])->get();
         $stores = Store::select('name', 'id')->where(['com_code' => $comCode, 'active' => 1])->get();

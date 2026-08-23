@@ -92,9 +92,6 @@ class SuppliersController extends Controller
         if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance < 0) {
             $data['start_balance'] = $request->start_balance * (100);
         }
-        if ( $request->start_balance == 0) {
-            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-        }
         if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance > 0) {
             $data['start_balance'] = $request->start_balance * (-100);
         }

@@ -12,6 +12,9 @@ use App\Models\Customer;
 use App\Models\Delegate;
 use App\Models\Suppliers;
 use Illuminate\Http\Request;
+use App\Enums;
+use App\Enums\AccountTypes;
+use App\Enums\BalanceStatus;
 
 class AccountsController extends Controller
 {
@@ -24,27 +27,23 @@ class AccountsController extends Controller
     {
         $data = Accounts::orderby('id', 'DESC')->paginate(10);
 
-        if (!empty($data)) {
+        foreach ($data as $item) {
 
-            foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
 
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            $item['parent_name'] = Accounts::where(['id' => $item->parent_account_number])->value('name');
 
-                $item['parent_name'] = Accounts::where(['id' => $item->parent_account_number])->value('name');
+            $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
 
-                $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
+            if ($item->updated_by > 0 && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
+            }
 
-                if ($item->updated_by > 0 && $item->updated_by != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
-
-                if ($item->parent_account_number != null && $item->parent_account_number > 0) {
-                    $item['parent_account_name'] = Accounts::where(['account_number' => $item->parent_account_number])->value('name');
-                } else {
-                    $item['parent_account_name'] = "لا يوجد";
-                }
+            if ($item->parent_account_number != null && $item->parent_account_number > 0) {
+                $item['parent_account_name'] = Accounts::where(['account_number' => $item->parent_account_number])->value('name');
             }
         }
+
         return view('admin.accounts.index', compact('data'));
     }
 
@@ -78,77 +77,49 @@ class AccountsController extends Controller
             return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
         }
 
-        if ($account_number == null) {
-            $data['account_number'] = 1;
-        } else {
-            $data['account_number'] = $account_number + 1;
+        $data['account_number'] = ($account_number ?? 0) + 1;
+
+        $customer_data['customer_code'] = $customer_code ? $customer_code + 1 : 1;
+
+        $data['is_parent'] = $request->parent_account_number == 0 ? 1 : 0;
+
+        $data['start_balance'] = 0;
+
+        if (($request->start_balance_status == BalanceStatus::Creditor->value || $request->start_balance_status == BalanceStatus::Debtor->value) && $request->start_balance == 0) {
+            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
         }
 
-        if ($customer_code == null) {
-            $customer_data['customer_code'] = 1;
-        } else {
-            $customer_data['customer_code'] = $customer_code + 1;
+        if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
+            $data['start_balance'] = $request->start_balance * (100);
         }
 
-        if ($request->parent_account_number == 0) {
-            $data['is_parent'] = 1;
-        } else {
-            $data['is_parent'] = 0;
+        if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance < 0) {
+            $data['start_balance'] = $request->start_balance * (-100);
         }
 
-        if ($request->start_balance_status == 1) {
-            if ($request->start_balance > 0) {
-                $data['start_balance'] = $request->start_balance * (100);
-            } elseif ($request->start_balance == 0) {
-                return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-            } else {
-                $data['start_balance'] = $request->start_balance * (-100);
-            }
-        } elseif ($request->start_balance_status == 2) {
-            if ($request->start_balance < 0) {
-                $data['start_balance'] = $request->start_balance * (100);
-            } elseif ($request->start_balance == 0) {
-                return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-            } else {
-                $data['start_balance'] = $request->start_balance * (-100);
-            }
-        } elseif ($request->start_balance_status == 3) {
-            $data['start_balance'] = 0;
+        if ($request->start_balance_status ==  BalanceStatus::Debtor->value && $request->start_balance < 0) {
+            $data['start_balance'] = $request->start_balance * (100);
+        }
+        if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance > 0) {
+            $data['start_balance'] = $request->start_balance * (-100);
         }
 
 
+        $data = [
+            'name' => $request->name,
+            'parent_account_number' => $request->parent_account_number,
+            'account_type' => $request->account_type,
+            'com_code' => auth()->user()->com_code,
+            'added_by' => auth()->id(),
+            'date' => date('Y-m-d'),
+            'notes' => $request->notes,
+            'is_archived' => $request->is_archived,
+            'start_balance_status' => $request->start_balance_status,
+            'other_table_fk' => $customer_data['customer_code'],
+            'current_balance' => $data['start_balance'],
+        ];
 
-        $data['name'] = $request->name;
-        $data['parent_account_number'] = $request->parent_account_number;
-        $data['account_type'] = $request->account_type;
-        $data['com_code'] = auth()->user()->com_code;
-        $data['added_by'] = auth()->user()->id;
-        $data['date'] = date('Y-m-d');
-        $data['notes'] = $request->notes;
-        $data['is_archived'] = $request->is_archived;
-        $data['start_balance_status'] = $request->start_balance_status;
-        $data['other_table_fk'] = $customer_data['customer_code'];
-        $data['current_balance'] = $data['start_balance'];
-
-        //dd($request->parent_account_id);
-        $flage = Accounts::create($data);
-        if ($flage) {
-
-            if ($request->account_type == 3 && $request->parent_account_number != 0) {
-
-                $customer_data['name'] = $request->name;
-                $customer_data['com_code'] = auth()->user()->com_code;
-                $customer_data['added_by'] = auth()->user()->id;
-                $customer_data['date'] = date('Y-m-d');
-                $customer_data['notes'] = $request->notes;
-                $customer_data['active'] = $request->is_archived;
-                $customer_data['current_balance'] = 0;
-                $customer_data['start_balance'] = $data['start_balance'];
-                $customer_data['account_number'] = $data['account_number'];
-                $customer_data['start_balance_status'] = $request->start_balance_status;
-                Customer::create($customer_data);
-            }
-        }
+        Accounts::create($data);
 
         return redirect()->route('accounts.index');
     }
@@ -174,9 +145,9 @@ class AccountsController extends Controller
     {
         $data = Accounts::find($id);
         $com_code = auth()->user()->com_code;
-        $account_type = AccountType::select('name')->where(['id' =>$data['account_type']])->first();
-        $accounts =  Accounts::where(['parent_account_number' => 0, 'com_code' => $com_code])->get();
-        return view('admin.accounts.edit', compact('data', 'account_type', 'accounts'));
+        $account_type = AccountType::select('name')->where(['id' => $data['account_type']])->first();
+        $data->parentAccountName =  Accounts::where(['account_number' => $data->parent_account_number, 'com_code' => $com_code])->value('name');
+        return view('admin.accounts.edit', compact('data', 'account_type'));
     }
 
     /**
@@ -195,60 +166,48 @@ class AccountsController extends Controller
             return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
         }
 
-        if ($request->parent_account_number == 0) {
-            $data['is_parent'] = 1;
-        } else {
-            $data['is_parent'] = 0;
-        }
+        $data['is_parent'] = $request->parent_account_number == 0 ? 1 : 1;
 
         $data['name'] = $request->name;
         $data['parent_account_number'] = $request->parent_account_number;
         $data['updated_by'] = auth()->user()->id;
         $data['notes'] = $request->notes;
         $data['is_archived'] = $request->is_archived;
+        $data->save();
 
-        $flage = $data->save();
-        if ($flage) {
+        $active = !$request->is_archived;
 
-            if($request->is_archived == 1)
-            {
-                $active = 0;
-            }
-            else{
-                $active = 1;
-            }
-            if ($data['account_type'] == 3) {
+        if ($data['account_type'] == AccountTypes::Customer->value) {
 
-                $customer_data = Customer::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
+            $customer_data = Customer::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
 
-                $customer_data['name'] = $request->name;
-                $customer_data['updated_by'] = auth()->user()->id;
-                $customer_data['notes'] = $request->notes;
-                $customer_data['active'] = $active;
-                $customer_data->save();
-            }
+            $customer_data['name'] = $request->name;
+            $customer_data['updated_by'] = auth()->user()->id;
+            $customer_data['notes'] = $request->notes;
+            $customer_data['active'] = $active;
+            $customer_data->save();
+        }
 
-            if ($data['account_type'] == 2) {
+        if ($data['account_type'] == AccountTypes::Supplier->value) {
 
-                $supplier_data = Suppliers::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
+            $supplier_data = Suppliers::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
 
-                $supplier_data['name'] = $request->name;
-                $supplier_data['updated_by'] = auth()->user()->id;
-                $supplier_data['notes'] = $request->notes;
-                $supplier_data['active'] = $active;
-                $supplier_data->save();
-            }
+            $supplier_data['name'] = $request->name;
+            $supplier_data['updated_by'] = auth()->user()->id;
+            $supplier_data['notes'] = $request->notes;
+            $supplier_data['active'] = $active;
+            $supplier_data->save();
+        }
 
-            if ($data['account_type'] == 4) {
+        if ($data['account_type'] == AccountTypes::Delegate->value) {
 
-                $delegate_data = Delegate::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
+            $delegate_data = Delegate::where(['account_number' => $data['account_number'], 'com_code' => $data['com_code']])->first();
 
-                $delegate_data['name'] = $request->name;
-                $delegate_data['updated_by'] = auth()->user()->id;
-                $delegate_data['notes'] = $request->notes;
-                $delegate_data['active'] = $active;
-                $delegate_data->save();
-            }
+            $delegate_data['name'] = $request->name;
+            $delegate_data['updated_by'] = auth()->user()->id;
+            $delegate_data['notes'] = $request->notes;
+            $delegate_data['active'] = $active;
+            $delegate_data->save();
         }
 
         return redirect()->route('accounts.index');
@@ -264,7 +223,7 @@ class AccountsController extends Controller
     {
         $data = Accounts::find($id);
 
-        if ($data['account_type'] == 3) {
+        if ($data['account_type'] == AccountTypes::Customer->value) {
 
             $customer_id = Customer::select('id')->where([
                 'account_number' => $data['account_number'],
@@ -273,7 +232,7 @@ class AccountsController extends Controller
             ])->value('id');
             Customer::destroy($customer_id);
         }
-        if ($data['account_type'] == 2) {
+        if ($data['account_type'] == AccountTypes::Supplier->value) {
 
             $supplier_id = Suppliers::select('id')->where([
                 'account_number' => $data['account_number'],
@@ -283,7 +242,7 @@ class AccountsController extends Controller
             Suppliers::destroy($supplier_id);
         }
 
-        if ($data['account_type'] == 4) {
+        if ($data['account_type'] == AccountTypes::Delegate->value) {
 
             $delegate_id = Delegate::select('id')->where([
                 'account_number' => $data['account_number'],
@@ -300,12 +259,12 @@ class AccountsController extends Controller
     public function filter(Request $request)
     {
         $com_code = auth()->user()->com_code;
-        $type = $request->type;
+        $parentOrNo = $request->type;
 
-        if ($request->type == 1 || $request->type == 0) {
+        $data = Accounts::orderby('id', 'DESC')->paginate(5);
+
+        if ($parentOrNo == 1 || $parentOrNo == 0) {
             $data = Accounts::where(['is_parent' => $request->type, 'com_code' => $com_code])->paginate(5);
-        } else {
-            $data = Accounts::orderby('id', 'DESC')->paginate(5);
         }
         foreach ($data as $item) {
 
@@ -320,11 +279,9 @@ class AccountsController extends Controller
             }
 
             if ($item->parent_account_number != null && $item->parent_account_number > 0) {
-                $item['parent_account_name'] = Accounts::where(['id' => $item->parent_account_number])->value('name');
-            } else {
-                $item['parent_account_name'] = "لا يوجد";
+                $item['parent_account_name'] = Accounts::where(['account_number' => $item->parent_account_number])->value('name');
             }
         }
-        return view('admin.accounts.index', compact('data', 'type'));
+        return view('admin.accounts.index', compact('data', 'parentOrNo'));
     }
 }

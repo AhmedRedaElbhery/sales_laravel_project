@@ -32,6 +32,7 @@
                         {{ __('suppliersOrders.add_new_invoice') }}
                     </a>
                 </div>
+                @if ($exist)
 
                 <div class="card-body">
 
@@ -92,8 +93,7 @@
 
                                                 @if ($item->is_approved == 0)
                                                     <form action="{{ route('supplier_orders.destroy', $item->id) }}"
-                                                        method="POST"
-                                                        class="d-inline"
+                                                        method="POST" class="d-inline"
                                                         onsubmit="return confirm('{{ __('suppliersOrders.confirm_delete') }}')">
                                                         @csrf
                                                         @method('DELETE')
@@ -122,6 +122,12 @@
                     @endif
 
                 </div>
+                @else
+                <div class="alert alert-danger">
+                    {{ __('suppliersOrders.no_shift') }}
+                </div>
+
+                @endif
 
             </div>
         </div>

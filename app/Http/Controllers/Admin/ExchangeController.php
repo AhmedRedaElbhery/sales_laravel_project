@@ -28,14 +28,13 @@ class ExchangeController extends Controller
 
         $data = TreasuriesTransaction::where(['com_code' => $com_code])->where('money_for_account', '>', 0)->orderby('id', 'DESC')->paginate(5);
 
-        if (!empty($data)) {
-            foreach ($data as $item) {
-                $item->treasuries_name = Treasuries::where(['id' => $item->treasuries_id])->value('name');
-                $item->admin_name = Admin::where(['com_code' => $com_code, 'id' => auth()->user()->id])->value('name');
-                $item->move_type_name = MoveType::where(['id' => $item->move_type])->value('name');
-            }
+        foreach ($data as $item) {
+            $item->treasuries_name = Treasuries::where(['id' => $item->treasuries_id])->value('name');
+            $item->admin_name = Admin::where(['com_code' => $com_code, 'id' => auth()->user()->id])->value('name');
+            $item->move_type_name = MoveType::where(['id' => $item->move_type])->value('name');
         }
 
+        $treasuries_balance =0;
         $exist = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
         if ($exist != null) {
             $exist->treasuries_name = Treasuries::where(['id' => $exist->treasuries_id])->value('name');
@@ -81,56 +80,60 @@ class ExchangeController extends Controller
 
 
         $shift_id = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'treasuries_id' => $request->treasuries_id, 'is_finished' => 0])->whereNull('end_shift')->value('id');
-        if ($shift_id != null) {
-            $data['treasuries_id'] = $request->treasuries_id;
-            $data['isal_number'] = $isal_number + 1;
-            $data['move_type'] = $request->move_type;
-            $data['account_number'] = $request->account_number;
-            $data['money_for_account'] = $request->money * (100);
-            $data['money'] = $request->money * -100;
-            $data['byan'] = $request->byan;
-            $data['added_by'] = auth()->user()->id;
-            $data['date'] = $request->date;
-            $data['com_code'] = $com_code;
-            $data['shift_id'] = $shift_id;
-
-            Treasuries::where([
-                'id' => $request->treasuries_id,
-                'com_code' => $com_code,
-            ])->update([
-                'last_isal_exchange' => $data['isal_number'],
-            ]);
-
-            TreasuriesTransaction::create($data);
-
-            $account_data = Accounts::where(['account_number' => $request->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
-
-            $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $request->account_number, 'com_code' => $com_code])->sum('money_for_account');
-
-            $the_final_balance = $account_data->start_balance + $money_for_account_transaction;
-
-            $account_data->update([
-                'current_balance' => $the_final_balance,
-            ]);
-
-            if ($account_data->account_type == 3) {
-                $customer_data = Customer::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
-                $customer_data->update([
-                    'current_balance' => $the_final_balance,
-                ]);
-            }
-
-            if ($account_data->account_type == 2) {
-                $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
-                $supplier->update([
-                    'current_balance' => $the_final_balance,
-                ]);
-            }
-
-            return redirect()->route('exchange_transaction.index');
+        if ($shift_id == null) {
+            return redirect()->back()->with(['error' => 'حدث خطا ما']);
         }
 
-        return redirect()->back()->with(['error' => 'حدث خطا ما']);
+        $data = [
+            'treasuries_id' => $request->treasuries_id,
+            'isal_number' => $isal_number + 1,
+            'move_type' => $request->move_type,
+            'account_number' => $request->account_number,
+            'money_for_account' => $request->money * 100,
+            'money' => $request->money * -100,
+            'byan' => $request->byan,
+            'added_by' => auth()->id(),
+            'date' => $request->date,
+            'com_code' => $com_code,
+            'shift_id' => $shift_id,
+        ];
+
+        TreasuriesTransaction::create($data);
+
+        Treasuries::where([
+            'id' => $request->treasuries_id,
+            'com_code' => $com_code,
+        ])->update([
+            'last_isal_exchange' => $data['isal_number'],
+        ]);
+
+
+
+        $account_data = Accounts::where(['account_number' => $request->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
+
+        $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $request->account_number, 'com_code' => $com_code])->sum('money_for_account');
+
+        $the_final_balance = $account_data->start_balance + $money_for_account_transaction;
+
+        $account_data->update([
+            'current_balance' => $the_final_balance,
+        ]);
+
+        if ($account_data->account_type == 3) {
+            $customer_data = Customer::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+            $customer_data->update([
+                'current_balance' => $the_final_balance,
+            ]);
+        }
+
+        if ($account_data->account_type == 2) {
+            $supplier = Suppliers::where(['account_number' => $request->account_number, 'com_code' => $com_code])->first();
+            $supplier->update([
+                'current_balance' => $the_final_balance,
+            ]);
+        }
+
+        return redirect()->route('exchange_transaction.index');
     }
 
     /**

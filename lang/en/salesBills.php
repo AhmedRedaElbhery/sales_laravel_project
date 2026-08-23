@@ -137,5 +137,6 @@ return [
 'with_date' => 'With Date',
 
 'item_units' => 'Item Units',
+'no_shift' => 'there is no shift opens so we can show the data',
 
 ];

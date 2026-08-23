@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\unitsRequest;
+use App\Http\Requests\UnitsRequest;
 use App\Http\Requests\UpdateUnitRequest;
 use App\Models\Admin;
 use App\Models\unit;
@@ -20,12 +20,10 @@ class UnitController extends Controller
     {
         $data = unit::orderby('id', 'DESC')->paginate(5);
 
-        if (!empty($data)) {
-            foreach ($data as $item) {
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                if ($item->updated_at && $item->updated_at  != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+        foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            if ($item->updated_at && $item->updated_at  != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
         return view('admin.units.index', compact('data'));
@@ -47,17 +45,20 @@ class UnitController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(unitsRequest $request)
+    public function store(UnitsRequest $request)
     {
         $com_code = auth()->user()->com_code;
         $exist = unit::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if (!$exist) {
-            $data['name'] = $request->name;
-            $data['active'] = $request->active;
-            $data['is_master'] = $request->is_master;
-            $data['added_by'] = auth()->user()->id;
-            $data['com_code'] = $com_code;
-            $data['date'] = date('Y-m-d');
+            $data = [
+                'name' => $request->name,
+                'active' => $request->active,
+                'is_master' => $request->is_master,
+                'added_by' => auth()->id(),
+                'com_code' => $com_code,
+                'date' => now()->toDateString(),
+            ];
+
             unit::create($data);
         }
         return redirect()->route('unit.index');
@@ -132,18 +133,15 @@ class UnitController extends Controller
     public function filter(Request $request)
     {
         $com_code = auth()->user()->com_code;
-        $type = $request->type;
+        $parentOrNo = $request->type;
 
-        if($request->type == 1 || $request->type == 0)
-        {
-            $data = unit::where(['is_master'=>$request->type , 'com_code'=>$com_code])->paginate(5);
-        }
-        else
-        {
-            $data = unit::orderby('id', 'DESC')->paginate(5);
+        $data = unit::orderby('id', 'DESC')->paginate(5);
 
+        if($parentOrNo == 1 || $parentOrNo == 0)
+        {
+            $data = unit::where(['is_master'=>$parentOrNo , 'com_code'=>$com_code])->paginate(5);
         }
-        return view('admin.units.index',compact('data','type'));
+        return view('admin.units.index',compact('data','parentOrNo'));
     }
 
 }

@@ -19,14 +19,12 @@ class AdminController extends Controller
     {
         $com_code = auth()->user()->com_code;
 
-        $data = Admin::where(['com_code'=>$com_code])->orderby('id', 'DESC')->paginate(5);
+        $data = Admin::where(['com_code' => $com_code])->orderby('id', 'DESC')->paginate(5);
 
-        if (!empty($data)) {
-            foreach ($data as $item) {
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                if ($item->updated_by > 0 && $item->updated_by != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+        foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            if ($item->updated_by > 0 && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
         return view('admin.admin_accounts.index', ['data' => $data]);
@@ -62,35 +60,31 @@ class AdminController extends Controller
     public function show($id)
     {
         $com_code = auth()->user()->com_code;
-        $data = Admin::where(['id'=>$id , 'com_code'=>$com_code])->first();
-        if (!empty($data))
-        {
-            $data['added_by_admin'] = Admin::where('id', $data['added_by'])->value('name');
+        $data = Admin::where(['id' => $id, 'com_code' => $com_code])->first();
 
-            if ($data['updated_by'] != null && $data['updated_by'] > 0) {
-                $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
-            }
-
-
-            $admin_treasuries = AdminTreasuries::where(['com_code'=>$com_code, 'admin_id'=>$id])->get();
-            $treasuries = Treasuries::where(['com_code'=>$com_code, 'active'=>1])->get();
-            if(!empty($admin_treasuries))
-            {
-                foreach($admin_treasuries as $item)
-                {
-                    $item->name = Treasuries::where(['id'=>$item->treasuries_id])->value('name');
-
-                    if ($item['updated_by'] != null && $item['updated_by'] > 0) {
-                        $item['updated_by_admin'] = Admin::where('id', $item['updated_by'])->value('name');
-                    }
-
-                }
-            }
-
-            return view('admin/admin_accounts.details',compact('data','admin_treasuries','treasuries'));
-
+        if (empty($data)) {
+            return redirect()->route('supplier_orders.index');
         }
-        return redirect()->route('supplier_orders.index');
+
+
+        $data['added_by_admin'] = Admin::where('id', $data['added_by'])->value('name');
+
+        if ($data['updated_by'] != null && $data['updated_by'] > 0) {
+            $data['updated_by_admin'] = Admin::where('id', $data['updated_by'])->value('name');
+        }
+
+
+        $admin_treasuries = AdminTreasuries::where(['com_code' => $com_code, 'admin_id' => $id])->get();
+        $treasuries = Treasuries::where(['com_code' => $com_code, 'active' => 1])->get();
+        foreach ($admin_treasuries as $item) {
+            $item->name = Treasuries::where(['id' => $item->treasuries_id])->value('name');
+
+            if ($item['updated_by'] != null && $item['updated_by'] > 0) {
+                $item['updated_by_admin'] = Admin::where('id', $item['updated_by'])->value('name');
+            }
+        }
+
+        return view('admin/admin_accounts.details', compact('data', 'admin_treasuries', 'treasuries'));
     }
 
     /**
@@ -129,38 +123,36 @@ class AdminController extends Controller
 
     public function add_treasuries(Request $request)
     {
-        if($request->ajax())
-        {
-            $admin_id = $request->admin_id;
-            $treasuries_id = $request->treasuries;
-
-            $exist = AdminTreasuries::where(['treasuries_id'=> $request->treasuries , 'admin_id'=>$request->admin_id , 'com_code'=>auth()->user()->com_code])->exists();
-            if(!empty($exist))
-            {
-                return redirect()->route('admin_accounts.show',$admin_id);
-            }
-
-            $data['admin_id'] = $admin_id;
-            $data['treasuries_id'] = $treasuries_id;
-            $data['com_code'] = auth()->user()->com_code;
-            $data['added_by'] = auth()->user()->id;
-            $data['date'] = date('Y-m-d');
-
-
-            AdminTreasuries::create($data);
-            return response()->json([
-                'status' => true,
-                'message' => 'Added successfully'
-            ]);
-
+        if (!$request->ajax()) {
+            return;
         }
+
+        $admin_id = $request->admin_id;
+        $treasuries_id = $request->treasuries;
+
+        $exist = AdminTreasuries::where(['treasuries_id' => $request->treasuries, 'admin_id' => $request->admin_id, 'com_code' => auth()->user()->com_code])->exists();
+        if (!empty($exist)) {
+            return redirect()->route('admin_accounts.show', $admin_id);
+        }
+
+        $data['admin_id'] = $admin_id;
+        $data['treasuries_id'] = $treasuries_id;
+        $data['com_code'] = auth()->user()->com_code;
+        $data['added_by'] = auth()->user()->id;
+        $data['date'] = date('Y-m-d');
+
+
+        AdminTreasuries::create($data);
+        return response()->json([
+            'status' => true,
+            'message' => 'Added successfully'
+        ]);
     }
+
 
     public function delete_treasuries($id)
     {
         AdminTreasuries::destroy($id);
         return redirect()->back();
     }
-
-
 }

@@ -105,6 +105,7 @@ return [
 
     'recevied_amount' => 'recevied amount',
     'remain_amount' => 'remain amount',
+    'no_shift' => 'there is no shift opens so we can show the data',
 
 
 ];

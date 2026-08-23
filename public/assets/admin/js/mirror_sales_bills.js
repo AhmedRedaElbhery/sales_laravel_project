@@ -1,12 +1,13 @@
 $(document).ready(function () {
     $(document).on("change", "#mirror_item_code", function () {
+
         var item_code = $("#mirror_item_code").val();
         let item_type = $("#mirror_item_code option:selected").data("type");
         let store_id = $("#mirror_store_id option:selected").val();
 
         if (store_id == null || store_id == "") {
             alert("اختر المخزن");
-            $("#item_code").val("").trigger("change.select2");
+            $("#mirror_item_code").val("").trigger("change.select2");
             return;
         }
 
@@ -53,6 +54,7 @@ $(document).ready(function () {
             var ajax_get_batchs = $(
                 "#mirror_sales_item_get_batchs_url"
             ).val();
+
             $.ajax({
                 url: ajax_get_batchs,
                 type: "GET",

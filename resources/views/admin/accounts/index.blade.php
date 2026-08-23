@@ -38,16 +38,16 @@
                             <form action="{{ route('accounts.filter') }}" method="POST">
                                 @csrf
                                 <select name="type" class="form-control" onchange="this.form.submit()">
-                                    @if (!isset($type))
+                                    @if (!isset($parentOrNo))
                                         <option value="all">{{ __('accounts.show_all') }} </option>
                                         <option value="1">{{ __('accounts.parent_accounts') }} </option>
                                         <option value="0">{{ __('accounts.child_accounts') }} </option>
                                     @else
-                                        @if ($type == 0)
+                                        @if ($parentOrNo == 0)
                                             <option value="all">{{ __('accounts.show_all') }} </option>
                                             <option value="1">{{ __('accounts.parent_accounts') }} </option>
                                             <option value="0" selected>{{ __('accounts.child_accounts') }} </option>
-                                        @elseif($type == 1)
+                                        @elseif($parentOrNo == 1)
                                             <option value="all">{{ __('accounts.show_all') }}</option>
                                             <option value="1" selected>{{ __('accounts.parent_accounts') }}</option>
                                             <option value="0">{{ __('accounts.child_accounts') }}</option>

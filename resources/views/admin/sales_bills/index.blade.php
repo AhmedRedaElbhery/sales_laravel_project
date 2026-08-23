@@ -27,6 +27,12 @@
                         {{ __('salesBills.sales_invoices_customers') }}
                     </h3>
 
+                </div>
+
+
+                <div class="card-body">
+
+                    @if($shift)
                     <button type="button" class="btn btn-primary edititem" data-toggle="modal" data-target="#modal_mirrorbill">
                         {{ __('salesBills.quotation_invoice') }}
                     </button>
@@ -35,9 +41,7 @@
                         data-target="#modal_activebill">
                         {{ __('salesBills.add_actual_invoice') }}
                     </button>
-                </div>
 
-                <div class="card-body">
 
                     @if (isset($data) && count($data) > 0)
                         <div id="ajax_responce_searchDiv">
@@ -152,6 +156,12 @@
                             </div>
                     @endif
 
+                    @else
+                    <div class="alert alert-danger">
+                        {{ __('salesBills.no_shift') }}
+                    </div>
+                    @endif
+
                 </div>
 
             </div>
@@ -172,7 +182,7 @@
 
 
                 <input type="hidden" id="token_search" value="{{ csrf_token() }}">
-                {{-- <input type="hidden" id="mirror_sales_item_getUnits_url" value="{{ route('sales_item.mirrorgetUnits') }}"> --}}
+                <input type="hidden" id="mirror_sales_item_getUnits_url" value="{{ route('sales_item.mirrorgetUnits') }}">
                 <input type="hidden" id="mirror_sales_item_get_batchs_url"
                     value="{{ route('sales_item.mirror_get_batchs') }}">
                 <input type="hidden" id="sales_item_getprice_url" value="{{ route('sales_item.get_price') }}">

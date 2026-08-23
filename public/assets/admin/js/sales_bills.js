@@ -77,17 +77,17 @@ $(document).ready(function () {
 
                 success: function (data) {
                     $("#batchs_div").html(data);
-                    $(".batchs").show();
+                    $("#batchs_div").show();
                 },
 
                 error: function (xhr) {
                     $("#batchs_div").html("");
-                    $(".batchs").hide();
+                    $("#batchs_div").hide();
                 },
             });
         } else {
             $("#batchs_div").html("");
-            $(".batchs").hide();
+            $("$batchs_div").hide();
         }
     }
 

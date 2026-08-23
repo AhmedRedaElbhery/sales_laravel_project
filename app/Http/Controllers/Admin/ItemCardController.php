@@ -24,25 +24,25 @@ class ItemCardController extends Controller
     {
         $categories = Category::select('id', 'name')->get();
         $data = ItemCard::orderby('id', 'DESC')->paginate(5);
-        if (!empty($data)) {
-            foreach ($data as $item) {
 
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+        foreach ($data as $item) {
 
-                $item['category_name'] = Category::where(['id' => $item->categories_id])->value('name');
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
 
-                $item['parent_name'] = ItemCard::where(['id' => $item->parent_id])->value('name');
+            $item['category_name'] = Category::where(['id' => $item->categories_id])->value('name');
 
-                $item['unit_name'] = Unit::where(['id' => $item->parent_unit_id])->value('name');
+            $item['parent_name'] = ItemCard::where(['id' => $item->parent_id])->value('name');
 
-                $item['retail_unit_name'] = Unit::where(['id' => $item->retail_unit_id])->value('name');
+            $item['unit_name'] = Unit::where(['id' => $item->parent_unit_id])->value('name');
+
+            $item['retail_unit_name'] = Unit::where(['id' => $item->retail_unit_id])->value('name');
 
 
-                if ($item->updated_by > 0 && $item->updated_by != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+            if ($item->updated_by > 0 && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
+
         return view('admin.itemcard.index', compact('data', 'categories'));
     }
 
@@ -71,23 +71,19 @@ class ItemCardController extends Controller
     {
         $com_code = auth()->user()->com_code;
 
-        $item_code = ItemCard::select('item_code')->where(['com_code' => $com_code])->orderby('id', 'DESC')->first();
-        // check for item code
-        if (!empty($item_code)) {
-            $data['item_code'] = $item_code->item_code + 1;
-        } else {
-            $data['item_code'] = 1;
-        }
+        $item_code = ItemCard::where('com_code', $com_code)->max('item_code');
 
         //check for barcode and if not exist will make it automaticlly
-        if (!empty($request->barcode)) {
-            $exists = ItemCard::where(['barcode' => $request->barcode, 'com_code' => $com_code])->exists();
-            if ($exists) {
-                return redirect()->back()->with('error', 'هذا الباركود موجود بالفعل')->withInput();
-            }
-            $data['barcode'] = $request->barcode;
-        } else {
-            $data['barcode'] = "item" . $data['item_code'];
+        $exists = ItemCard::where(['barcode' => $request->barcode, 'com_code' => $com_code])->exists();
+        if ($exists) {
+            return redirect()->back()->with('error', 'هذا الباركود موجود بالفعل')->withInput();
+        }
+
+        $barcode = $request->barcode;
+
+        if (empty($request->barcode)) {
+
+            $barcode = 'item' . $item_code + 1;
         }
 
         //check for name to make sure each company have only 1 and the item not doublicated
@@ -96,7 +92,7 @@ class ItemCardController extends Controller
             return redirect()->back()->with('error', 'هذا الصنف موجود بالفعل')->withInput();
         }
 
-
+        $photo = null;
         //check if there is photo
         if ($request->hasFile('photo')) {
 
@@ -109,41 +105,41 @@ class ItemCardController extends Controller
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('assets/admin/uploads'), $filename);
 
-            $data['photo'] = $filename;
+            $photo = $filename;
         }
 
         //for creation
-        $data['name'] = $request->name;
-        $data['item_type'] = $request->item_type;
-        $data['categories_id'] = $request->category_id;
-
-
-        $data['parent_id'] = $request->parent_id;
-        $data['parent_unit_id'] = $request->unit_parent_id;
-        $data['Wholesale_price'] = $request->Wholesale_price * 100;
-        $data['half_Wholesale_price'] = $request->half_Wholesale_price * 100;
-        $data['price'] = $request->price * 100;
-        $data['cost_price'] = $request->cost_price * 100;
-
-
-
-        $data['has_retail_unit'] = $request->has_retail_unit;
+        $data = [
+            'item_code' => ($item_code ?? 0) + 1,
+            'barcode' => $barcode,
+            'name' => $request->name,
+            'item_type' => $request->item_type,
+            'categories_id' => $request->category_id,
+            'parent_id' => $request->parent_id,
+            'parent_unit_id' => $request->unit_parent_id,
+            'Wholesale_price' => $request->Wholesale_price * 100,
+            'half_Wholesale_price' => $request->half_Wholesale_price * 100,
+            'price' => $request->price * 100,
+            'cost_price' => $request->cost_price * 100,
+            'has_fixed_price' => $request->has_fixed_price,
+            'active' => $request->active,
+            'added_by' => auth()->id(),
+            'date' => now()->toDateString(),
+            'has_retail_unit' => $request->has_retail_unit,
+            'com_code' => auth()->user()->com_code,
+            'photo' => $photo,
+        ];
 
         if ($request->has_retail_unit == 1) {
-            $data['retail_unit_id'] = $request->retail_units;
-            $data['retail_unit_to_parent'] = $request->retail_unit_to_parent;
-            $data['retail_Wholesale_price'] = $request->retail_Wholesale_price * 100;
-            $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price * 100;
-            $data['retail_price'] = $request->retail_price * 100;
-            $data['retail_cost_price'] = $request->retail_cost_price * 100;
+            $data += [
+                'retail_unit_id' => $request->retail_units,
+                'retail_unit_to_parent' => $request->retail_unit_to_parent,
+                'retail_Wholesale_price' => $request->retail_Wholesale_price * 100,
+                'retail_half_Wholesale_price' => $request->retail_half_Wholesale_price * 100,
+                'retail_price' => $request->retail_price * 100,
+                'retail_cost_price' => $request->retail_cost_price * 100,
+            ];
         }
-
-        $data['has_fixed_price'] = $request->has_fixed_price;
-        $data['active'] = $request->active;
-        $data['added_by'] = auth()->user()->id;
-        $data['date'] = date('Y-m-d');
-
-        $data['com_code'] = $com_code;
 
         ItemCard::create($data);
         return redirect()->route('itemcard.index');
@@ -165,11 +161,10 @@ class ItemCardController extends Controller
         $data['units'] = Unit::select('name')->where(['id' => $data->parent_unit_id])->first();
         $data['retail_units'] = Unit::select('id', 'name')->where(['id' => $data->retail_unit_id])->first();
         $data['items'] = ItemCard::select('id', 'name')->where(['id' => $data->id])->first();
-        $movments = ItemMovement::select('byan', 'date' , 'quantity_before_movement' ,'quantity_after_movement','movement_type')->where(['item_code' => $data->item_code, 'com_code' => $com_code])->orderby('id', 'DESC')->paginate(10);
+        $movments = ItemMovement::select('byan', 'date', 'quantity_before_movement', 'quantity_after_movement', 'movement_type')->where(['item_code' => $data->item_code, 'com_code' => $com_code])->orderby('id', 'DESC')->paginate(10);
 
-        foreach($movments as $movment)
-        {
-            $movment['movment_type_name'] = ItemMovementType::where(['id'=>$movment->movement_type])->value('name');
+        foreach ($movments as $movment) {
+            $movment['movment_type_name'] = ItemMovementType::where(['id' => $movment->movement_type])->value('name');
         }
 
         return view('admin.itemcard.show', compact('data', 'movments'));
@@ -208,16 +203,11 @@ class ItemCardController extends Controller
 
         $com_code = auth()->user()->com_code;
         //check for barcode and if not exist will make it automaticlly
-        if (!empty($request->barcode)) {
-            $exists = ItemCard::where(['barcode' => $request->barcode, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
-            if ($exists) {
-                return redirect()->back()->with('error', 'هذا الباركود موجود بالفعل')->withInput();
-            }
-            $data['barcode'] = $request->barcode;
-        } else {
-            $data['barcode'] = "item" . $request['item_code'];
-        }
 
+        $exists = ItemCard::where(['barcode' => $request->barcode, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
+        if ($exists) {
+            return redirect()->back()->with('error', 'هذا الباركود موجود بالفعل')->withInput();
+        }
 
         //check for name to make sure each company have only 1 and the item not doublicated
         $nameexists = ItemCard::where(['name' => $request->name, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
@@ -261,44 +251,36 @@ class ItemCardController extends Controller
         }
 
 
-        $data['name'] = $request->name;
+        $data->fill([
+            'barcode' => $request->barcode,
+            'name' => $request->name,
+            'Wholesale_price' => $request->Wholesale_price * 100,
+            'half_Wholesale_price' => $request->half_Wholesale_price * 100,
+            'price' => $request->price * 100,
+            'cost_price' => $request->cost_price * 100,
+            'has_fixed_price' => $request->has_fixed_price,
+            'active' => $request->active,
+            'updated_by' => auth()->id(),
+            'date' => now()->toDateString(),
+            'retail_unit_to_parent' => $request->retail_unit_to_parent,
+            'retail_Wholesale_price' => $request->retail_Wholesale_price * 100,
+            'retail_half_Wholesale_price' => $request->retail_half_Wholesale_price * 100,
+            'retail_price' => $request->retail_price * 100,
+            'retail_cost_price' => $request->retail_cost_price * 100,
+            'has_retail_unit' => $request->has_retail_unit,
+            'retail_unit_id' => $request->retail_units,
+        ]);
 
-        $data['Wholesale_price'] = $request->Wholesale_price * 100;
-        $data['half_Wholesale_price'] = $request->half_Wholesale_price * 100;
-        $data['price'] = $request->price * 100;
-        $data['cost_price'] = $request->cost_price * 100;
-
-
-        if ($data['has_retail_unit'] == 1) {
-            $data['retail_unit_to_parent'] = $request->retail_unit_to_parent;
-            $data['retail_Wholesale_price'] = $request->retail_Wholesale_price * 100;
-            $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price * 100;
-            $data['retail_price'] = $request->retail_price * 100;
-            $data['retail_cost_price'] = $request->retail_cost_price * 100;
-        } else {
-            if ($request->has_retail_unit == 0) {
-                $data['retail_unit_id'] = null;
-                $data['retail_unit_to_parent'] = null;
-                $data['retail_Wholesale_price'] = null;
-                $data['retail_half_Wholesale_price'] = null;
-                $data['retail_price'] = null;
-                $data['retail_cost_price'] = null;
-            } else {
-                $data['has_retail_unit'] = $request->has_retail_unit;
-                $data['retail_unit_id'] = $request->retail_units;
-                $data['retail_unit_to_parent'] = $request->retail_unit_to_parent;
-                $data['retail_Wholesale_price'] = $request->retail_Wholesale_price * 100;
-                $data['retail_half_Wholesale_price'] = $request->retail_half_Wholesale_price * 100;
-                $data['retail_price'] = $request->retail_price * 100;
-                $data['retail_cost_price'] = $request->retail_cost_price * 100;
-            }
+        if ($request->has_retail_unit == 0) {
+            $data->fill([
+                'retail_unit_id' => null,
+                'retail_unit_to_parent' => null,
+                'retail_Wholesale_price' => null,
+                'retail_half_Wholesale_price' => null,
+                'retail_price' => null,
+                'retail_cost_price' => null,
+            ]);
         }
-
-        $data['has_fixed_price'] = $request->has_fixed_price;
-        $data['active'] = $request->active;
-        $data['updated_by'] = auth()->user()->id;
-        $data['date'] = date('Y-m-d');
-
 
         $data->save();
         return redirect()->route('itemcard.index');

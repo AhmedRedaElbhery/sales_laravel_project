@@ -17,19 +17,14 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = Category::orderby('id','DESC')->paginate(5);
-        if(!empty($data))
-        {
-            foreach($data as $item)
-            {
-                $item['added_by_admin'] = Admin::where(['id'=>$item->added_by])->value('name');
-                if($item->updated_by && $item->updated_by != null )
-                {
-                    $item['updated_by_admin'] = Admin::where(['id'=>$item->updated_by])->value('name');
-                }
+        $data = Category::orderby('id', 'DESC')->paginate(5);
+        foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            if ($item->updated_by && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
-        return view('admin.category.index',compact('data'));
+        return view('admin.category.index', compact('data'));
     }
 
     /**
@@ -51,16 +46,17 @@ class CategoryController extends Controller
     public function store(CategoriesRequest $request)
     {
         $com_code = auth()->user()->com_code;
-        $exists = Category::where(['name'=>$request->name , 'com_code'=>$com_code])->exists();
-        if(!$exists)
-        {
-            $data['name'] = $request->name;
-            $data['active'] = $request->active;
-            $data['com_code'] = $com_code;
-            $data['date'] = date('Y-m-d');
-            $data['added_by'] = auth()->user()->id;
-            Category::create($data);
+        $exists = Category::where(['name' => $request->name, 'com_code' => $com_code])->exists();
+        if ($exists) {
+            return redirect()->route('category.index');
         }
+
+        $data['name'] = $request->name;
+        $data['active'] = $request->active;
+        $data['com_code'] = $com_code;
+        $data['date'] = date('Y-m-d');
+        $data['added_by'] = auth()->user()->id;
+        Category::create($data);
         return redirect()->route('category.index');
     }
 
@@ -84,9 +80,8 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $data = Category::find($id);
-        if(!empty($data))
-        {
-            return view('admin.category.edit',compact('data'));
+        if (!empty($data)) {
+            return view('admin.category.edit', compact('data'));
         }
         return redirect()->route('category.index');
     }
@@ -102,18 +97,19 @@ class CategoryController extends Controller
     {
         $data = Category::findOrFail($id);
         $com_code = auth()->user()->com_code;
-        $exists = Category::where(['name'=>$request->name , 'com_code'=>$com_code])->where('id', '!=', $id)->exists();
-        if(!$exists)
-        {
-            $data['name'] = $request->name;
-            $data['active'] = $request->active;
-            $data['updated_by'] = auth()->user()->id;
+        $exists = Category::where(['name' => $request->name, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
+        if ($exists) {
 
-            $data->save();
-
-            return redirect()->route('category.index');
+            return redirect()->back()->with('error', 'هذا الصنف موجود بالفعل')->withInput();
         }
-        return redirect()->back()->with('error','هذا الصنف موجود بالفعل')->withInput();
+
+        $data['name'] = $request->name;
+        $data['active'] = $request->active;
+        $data['updated_by'] = auth()->user()->id;
+
+        $data->save();
+
+        return redirect()->route('category.index');
     }
 
     /**

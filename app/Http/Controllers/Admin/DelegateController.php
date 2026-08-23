@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\BalanceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DelegateRequest;
 use App\Http\Requests\UpdateDelegateRequest;
@@ -24,19 +25,17 @@ class DelegateController extends Controller
         $com_code = auth()->user()->com_code;
         $data = Delegate::where(['com_code' => $com_code])->orderby('id', 'DESC')->paginate(5);
 
-        if (!empty($data)) {
+        foreach ($data as $item) {
 
-            foreach ($data as $item) {
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
 
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
 
-                $item['type'] = AccountType::where(['id' => $item->account_type])->value('name');
-
-                if ($item->updated_by > 0 && $item->updated_by != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+            if ($item->updated_by > 0 && $item->updated_by != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
+
         return view('admin.delegates.index', compact('data'));
     }
 
@@ -66,78 +65,61 @@ class DelegateController extends Controller
             return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
         }
 
-        if ($delegate_code == null) {
-            $data['delegate_code'] = 1;
-        } else {
-            $data['delegate_code'] = $delegate_code + 1;
+        $data['delegate_code'] = $delegate_code ? $delegate_code + 1 : 1;
+
+        $data['account_number'] = ($account_number ?? 0) + 1;
+
+
+        $data['address'] = $request->address;
+        $data['start_balance'] = 0;
+
+        if (($request->start_balance_status == 1 || $request->start_balance_status == 2) && $request->start_balance == 0) {
+            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
         }
 
-        if ($account_number == null) {
-            $data['account_number'] = 1;
-        } else {
-            $data['account_number'] = $account_number + 1;
+        if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
+            $data['start_balance'] = $request->start_balance * (100);
         }
 
-
-        if (isset($request->address)) {
-            $data['address'] = $request->address;
+        if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance < 0) {
+            $data['start_balance'] = $request->start_balance * (-100);
         }
 
-        if ($request->start_balance_status == 1) {
-            if ($request->start_balance > 0) {
-                $data['start_balance'] = $request->start_balance * (100);
-            } elseif ($request->start_balance == 0) {
-                return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-            } else {
-                $data['start_balance'] = $request->start_balance * (-100);
-            }
-        } elseif ($request->start_balance_status == 2) {
-            if ($request->start_balance < 0) {
-                $data['start_balance'] = $request->start_balance * (100);
-            } elseif ($request->start_balance == 0) {
-                return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
-            } else {
-                $data['start_balance'] = $request->start_balance * (-100);
-            }
-        } elseif ($request->start_balance_status == 3) {
-            $data['start_balance'] = 0;
+        if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance < 0) {
+            $data['start_balance'] = $request->start_balance * (100);
+        }
+        if ($request->start_balance_status == BalanceStatus::Debtor->value && $request->start_balance > 0) {
+            $data['start_balance'] = $request->start_balance * (-100);
         }
 
 
 
-        $data['name'] = $request->name;
-        $data['com_code'] = auth()->user()->com_code;
-        $data['added_by'] = auth()->user()->id;
-        $data['date'] = date('Y-m-d');
-        $data['notes'] = $request->notes;
-        $data['active'] = $request->active;
-        $data['current_balance'] = 0;
-        $data['start_balance_status'] = $request->start_balance_status;
-        $data['current_balance'] = $data['start_balance'];
-        $data['commission_type'] = $request->commission_type;
-        $data['percent_Wholesale_commission'] = $request->percent_Wholesale_commission;
-        $data['percent_half_wholesale_commission'] =$request->percent_half_wholesale_commission;
-        $data['percent_retail_commission'] = $request->percent_retail_commission;
-        $data['percent_collect_commission'] = $request->percent_collect_commission;
+        $data = [
+            'name' => $request->name,
+            'com_code' => auth()->user()->com_code,
+            'added_by' => auth()->id(),
+            'date' => now()->toDateString(),
+            'notes' => $request->notes,
+            'active' => $request->active,
+            'current_balance' => 0,
+            'start_balance_status' => $request->start_balance_status,
+            'commission_type' => $request->commission_type,
+            'percent_Wholesale_commission' => $request->percent_Wholesale_commission,
+            'percent_half_wholesale_commission' => $request->percent_half_wholesale_commission,
+            'percent_retail_commission' => $request->percent_retail_commission,
+            'percent_collect_commission' => $request->percent_collect_commission,
+        ];
+
+        Delegate::create($data);
+
+        $data['is_archived'] = !$request->active;
 
 
-        $flage = Delegate::create($data);
-
-
-        if ($flage) {
-
-            if ($request->active == 1) {
-                $data['is_archived'] = 0;
-            } else {
-                $data['is_archived'] = 1;
-            }
-
-            $data['account_type'] = 4;
-            $data['is_parent'] = 0;
-            $data['other_table_fk'] =  $data['delegate_code'];
-            $data['parent_account_number'] = AdminPanalSettings::select('delegate_parent_account_number')->where('com_code', $data['com_code'])->value('delegate_parent_account_number');
-            Accounts::create($data);
-        }
+        $data['account_type'] = 4;
+        $data['is_parent'] = 0;
+        $data['other_table_fk'] =  $data['delegate_code'];
+        $data['parent_account_number'] = AdminPanalSettings::select('delegate_parent_account_number')->where('com_code', $data['com_code'])->value('delegate_parent_account_number');
+        Accounts::create($data);
 
         return redirect()->route('delegate.index');
     }
@@ -181,36 +163,29 @@ class DelegateController extends Controller
             return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
         }
 
-        $data['commission_type'] = $request->commission_type;
-        $data['percent_Wholesale_commission'] = $request->percent_Wholesale_commission;
-        $data['percent_half_wholesale_commission'] =$request->percent_half_wholesale_commission;
-        $data['percent_retail_commission'] = $request->percent_retail_commission;
-        $data['percent_collect_commission'] = $request->percent_collect_commission;
-        $data['name'] = $request->name;
-        $data['address'] = $request->address;
-        $data['notes'] = $request->notes;
-        $data['active'] = $request->active;
+        $data->update([
+            'commission_type' => $request->commission_type,
+            'percent_Wholesale_commission' => $request->percent_Wholesale_commission,
+            'percent_half_wholesale_commission' => $request->percent_half_wholesale_commission,
+            'percent_retail_commission' => $request->percent_retail_commission,
+            'percent_collect_commission' => $request->percent_collect_commission,
+            'name' => $request->name,
+            'address' => $request->address,
+            'notes' => $request->notes,
+            'active' => $request->active,
+        ]);
 
-        $flage = $data->save();
 
-        if ($flage) {
+        $is_archived = !$request->active;
 
-            if($request->active == 0)
-            {
-                $is_archived = 1;
-            }
-            else{
-                $is_archived = 0;
-            }
+        Accounts::where(['other_table_fk' => $data->delegate_code, 'account_number' => $data['account_number'], 'com_code' => $data['com_code']])
+            ->update([
+                'name' => $request->name,
+                'is_archived' =>  $is_archived,
+                'notes' => $request->notes,
+                'updated_by' => auth()->user()->id,
+            ]);
 
-            Accounts::where(['other_table_fk'=> $data->delegate_code ,'account_number'=>$data['account_number'] ,'com_code'=>$data['com_code']])
-                ->update([
-                    'name' => $request->name,
-                    'is_archived' =>  $is_archived,
-                    'notes' => $request->notes,
-                    'updated_by' => auth()->user()->id,
-                ]);
-        }
 
         return redirect()->route('delegate.index');
     }
@@ -223,8 +198,8 @@ class DelegateController extends Controller
      */
     public function destroy($id)
     {
-        $code = Delegate::select('delegate_code','account_number','com_code')->where(['id' => $id])->first();
-        $id_account = Accounts::select('id')->where(['other_table_fk'=>$code['delegate_code'] , 'account_type'=>4,'account_number'=>$code['account_number'], 'com_code'=>$code['com_code'] ])->value('id');
+        $code = Delegate::select('delegate_code', 'account_number', 'com_code')->where(['id' => $id])->first();
+        $id_account = Accounts::select('id')->where(['other_table_fk' => $code['delegate_code'], 'account_type' => 4, 'account_number' => $code['account_number'], 'com_code' => $code['com_code']])->value('id');
         Delegate::destroy($id);
         Accounts::destroy($id_account);
         return redirect()->route('delegate.index');

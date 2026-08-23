@@ -68,22 +68,9 @@
                             <label>{{ __('accounts.who_is_parent_account') }}</label>
 
                             <select name="parent_account_number" class="form-control">
-                                <option value="" disabled>{{ __('accounts.select_parent_account') }}</option>
-
-                                <option value="0"
-                                    @selected(old('parent_account_number', $data->parent_account_number) == 0)>
-                                    {{ __('accounts.this_is_parent_account') }}
+                                <option value="{{ $data->parent_account_number }}" selected>
+                                    {{ $data->parentAccountName }}
                                 </option>
-
-                                @foreach ($accounts as $item)
-                                @if ($item->account_number != $data->account_number)
-                                <option value="{{ $item->account_number }}"
-                                    @selected(old('parent_account_number', $data->parent_account_number) == $item->account_number)>
-                                    {{ $item->name }}
-                                </option>
-                                @endif
-
-                                @endforeach
                             </select>
 
                             @error('parent_account_number')
