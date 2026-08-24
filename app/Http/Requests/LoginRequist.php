@@ -30,8 +30,8 @@ class LoginRequist extends FormRequest
     }
     public function messages(){
         return[
-            'username.required'=>'اسم المستخدم مطلوب',
-            'password.required'=>'كلمه المرور مطلوبه'
+            'username.required'=>__('validation.username_required'),
+            'password.required'=>__('validation.password_required'),
         ];
     }
 }

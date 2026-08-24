@@ -25,7 +25,12 @@ class StoresRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => [
+            'required',
+            Rule::unique('stores', 'name')
+                ->where('com_code', auth()->user()->com_code)
+                ->ignore($this->route('id')),
+        ],
             'address' => 'required',
             'phone' => [
                 'required',
@@ -38,12 +43,13 @@ class StoresRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'الاسم مطلوب',
-            'address.required' => 'العنوان مطلوب',
-            'phone.required' => 'رقم الهاتف مطلوب',
-            'phone.numeric' => 'ادخل رقم هاتف صحيح',
-            'phone.unique' => 'هذا الهاتف موجود بالفعل',
-            'active.required' => 'ادخل الحاله',
+            'name.required' =>__('validation.name_required'),
+            'name.unique' =>__('validation.name_unique'),
+            'address.required' => __('validation.address_required'),
+            'phone.required' =>__('validation.phone_required'),
+            'phone.numeric' => __('validation.phone_numeric'),
+            'phone.unique' =>__('validation.phone_unique'),
+            'active.required' =>__('validation.active_required'),
         ];
     }
 }

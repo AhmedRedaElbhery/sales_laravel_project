@@ -63,7 +63,7 @@ class AdminController extends Controller
         $data = Admin::where(['id' => $id, 'com_code' => $com_code])->first();
 
         if (empty($data)) {
-            return redirect()->route('supplier_orders.index');
+            return redirect()->route('supplier_orders.index')->with('error','no data found');
         }
 
 
@@ -84,7 +84,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin/admin_accounts.details', compact('data', 'admin_treasuries', 'treasuries'));
+        return view('admin/admin_accounts.details', compact('data', 'admin_treasuries', 'treasuries'))->with('success','added successfully');
     }
 
     /**
@@ -153,6 +153,6 @@ class AdminController extends Controller
     public function delete_treasuries($id)
     {
         AdminTreasuries::destroy($id);
-        return redirect()->back();
+        return redirect()->back()->with('success','deleted successfully');
     }
 }

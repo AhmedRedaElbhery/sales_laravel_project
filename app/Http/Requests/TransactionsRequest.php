@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class TransactionsRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the username_required is authorized to make this request.
      *
      * @return bool
      */
@@ -36,16 +36,16 @@ class TransactionsRequest extends FormRequest
     }
     public function messages(){
         return[
-            'account_number.required'=>'اختر الحساب',
-            'move_type.required'=>'اختر نوع الحركه',
-            'date.required'=> 'ادخل التاريخ',
-            'money.required'=> 'ادخل المبلغ',
-            'money.numeric'=> 'ادخل رقم المبلغ صحيح',
-            'money.gt'=> 'ادخل رقم المبلغ صحيح اكبر من 0',
-            'money.treasuries_balance'=> 'ادخل رقم المبلغ صحيح',
-            'treasuries_balance.required'=> 'ادخل المبلغ الخزنه',
-            'treasuries_id.required'=> 'ادخل الخزنه',
-            'byan.required'=> 'ادخل بيان لهذه العمليه',
+            'account_number.required'=>__('validation.account_number_required'),
+            'move_type.required'=>__('validation.move_type_required'),
+            'date.required'=> __('validation.date_required'),
+            'money.required'=> __('validation.money_required'),
+            'money.numeric'=> __('validation.money_numeric'),
+            'money.gt'=> __('validation.money_gt'),
+            'money.treasuries_balance'=> __('validation.money_treasuries_balance'),
+            'treasuries_balance.required'=> __('validation.treasuries_balance_required'),
+            'treasuries_id.required'=>__('validation.treasuries_id_required'),
+            'byan.required'=> __('validation.byan_required'),
         ];
     }
 }

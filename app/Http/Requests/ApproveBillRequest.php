@@ -31,16 +31,16 @@ class ApproveBillRequest extends FormRequest
     }
     public function messages(){
         return[
-            'tax_percent.required'=>'ادخل نسبه الضريبه ',
-            'discount_percent.required'=>'ادخل نسبه الخصم ',
-            'what_paid.required'=>'ادخل المبلغ المدفوع ',
+            'tax_percent.required'=>__('validation.tax_percent_required'),
+            'discount_percent.required'=>__('validation.discount_percent_required'),
+            'what_paid.required'=>__('validation.what_paid_required'),
 
-            'tax_percent.numeric'=>'ادخل رقم صحيح ',
-            'discount_percent.numeric'=>'ادخل رقم صحيح ',
-            'what_paid.numeric'=>'ادخل رقم صحيح ',
+            'tax_percent.numeric'=>__('validation.tax_percent_numeric'),
+            'discount_percent.numeric'=>__('validation.discount_percent_numeric'),
+            'what_paid.numeric'=>__('validation.what_paid_numeric'),
 
-            'tax_percent.between'=>'ادخل رقم صحيح ',
-            'discount_percent.between'=>'ادخل رقم صحيح ',
+            'tax_percent.between'=>__('validation.tax_percent_between'),
+            'discount_percent.between'=>__('validation.discount_percent_between'),
         ];
     }
 }

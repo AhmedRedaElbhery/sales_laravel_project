@@ -78,7 +78,7 @@ class CollectController extends Controller
         $shift_id = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'treasuries_id' => $request->treasuries_id, 'is_finished' => 0])->whereNull('end_shift')->value('id');
 
         if ($shift_id == null) {
-            return redirect()->back()->with(['error' => 'حدث خطا ما']);
+            return redirect()->back()->with(['error' => 'no open shift']);
         }
 
         $data = [
@@ -131,7 +131,7 @@ class CollectController extends Controller
         }
 
 
-        return redirect()->route('collect_transaction.index');
+        return redirect()->route('collect_transaction.index')->with('success','added successfully');
     }
 
     /**

@@ -74,7 +74,7 @@ class SupplierOrdersController extends Controller
 
         if($accountNumber == null)
         {
-            return redirect()->back();
+            return redirect()->back()->with('error','no data found');;
         }
 
         $orderData = [
@@ -92,7 +92,7 @@ class SupplierOrdersController extends Controller
         ];
 
         SupplierOrders::create($orderData);
-        return redirect()->route('supplier_orders.index');
+        return redirect()->route('supplier_orders.index')->with('success','added successfully');;
     }
 
     /**
@@ -107,7 +107,7 @@ class SupplierOrdersController extends Controller
         $data = SupplierOrders::find($id);
 
         if (empty($data)) {
-            return redirect()->route('supplier_orders.index');
+            return redirect()->route('supplier_orders.index')->with('error','no data found');;
         }
 
         $data['supplier_name'] = Suppliers::where('account_number', $data['account_number'])->value('name');
@@ -147,7 +147,7 @@ class SupplierOrdersController extends Controller
             $items = ItemCard::select('name', 'item_code', 'item_type')->where(['com_code' => $comCode, 'active' => 1])->get();
         }
 
-        return view('admin.supplier_orders.details', compact('data', 'details', 'items', 'shift'));
+        return view('admin.supplier_orders.details', compact('data', 'details', 'items', 'shift'))->with('success','added successfully');;
     }
 
     /**
@@ -187,7 +187,7 @@ class SupplierOrdersController extends Controller
             'account_number' => $accountNumber,
             'updated_by' => auth()->user()->id,
         ]);
-        return redirect()->route('supplier_orders.show', $id);
+        return redirect()->route('supplier_orders.show', $id)->with('success','updated successfully');;
     }
 
     /**
@@ -204,7 +204,7 @@ class SupplierOrdersController extends Controller
             SupplierOrdersDetails::destroy($item->id);
         }
         SupplierOrders::destroy($id);
-        return redirect()->route('supplier_orders.index');
+        return redirect()->route('supplier_orders.index')->with('success','deleted successfully');;
     }
 
     public function destroyDetails($id)
@@ -222,7 +222,7 @@ class SupplierOrdersController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success','deleted successfully');;
     }
 
     public function getUnits(Request $request)

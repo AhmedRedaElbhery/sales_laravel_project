@@ -20,6 +20,17 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                @if (session('success'))
+                    <div class="alert alert-success text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="card-header">
                     <h3 class="card-title"> {{ __('treasuries.add_new_branch') }}</h3>

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UnitsRequest extends FormRequest
 {
@@ -24,7 +25,12 @@ class UnitsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => [
+            'required',
+            Rule::unique('units', 'name')
+                ->where('com_code', auth()->user()->com_code)
+                ->ignore($this->route('id')),
+        ],
             'is_master' => 'required',
             'active' => 'required',
         ];
@@ -32,9 +38,10 @@ class UnitsRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'الاسم مطلوب',
-            'is_master.required' => 'الحاله مطلوب',
-            'active.required' => 'ادخل الحاله',
+            'name.required' => __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
+            'is_master.required' => __('validation.is_master_required'),
+            'active.required' => __('validation.active_required'),
         ];
     }
 }

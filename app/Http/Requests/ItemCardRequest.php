@@ -55,30 +55,30 @@ class ItemCardRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'الاسم مطلوب',
-            'item_type.required' => 'النوع مطلوب',
-            'category_id.required' => 'الفئه مطلوب',
+            'name.required' =>  __('validation.name_required'),
+            'item_type.required' =>  __('validation.item_type_required'),
+            'category_id.required' => __('validation.category_id_required'),
 
 
-            'unit_parent_id.required' => 'الوحده الاساسيه مطلوب',
-            'Wholesale_price.required_unless' => 'سعر الجمله الوحده الاساسيه مطلوب',
-            'half_Wholesale_price.required_unless' => 'سعر نص جمله الوحده الاساسيه مطلوب',
-            'price.required_unless' => 'سعر القطاعى للوحده الاساسيه مطلوب',
-            'cost_price.required_unless' => 'سعر شراء الوحده الاساسيه مطلوب',
+            'unit_parent_id.required' =>  __('validation.unit_parent_id_required'),
+            'Wholesale_price.required_unless' => __('validation.Wholesale_price_required_unless'),
+            'half_Wholesale_price.required_unless' =>  __('validation.half_Wholesale_price_required_unless'),
+            'price.required_unless' =>  __('validation.price_required_unless'),
+            'cost_price.required_unless' =>  __('validation.cost_price_required_unless'),
 
 
 
-            'has_retail_unit.required' => 'ادخل هل الصنف له وحدات تجزئه ام لا',
-            'retail_units.required_if' =>  'وحدات التجزئه للصنف مطلوبه',
-            'retail_unit_to_parent.required_if' => 'عدد وحدات التجزئه للصنف مطلوبه',
-            'retail_Wholesale_price.required_if' =>  'سعر الجمله لوحده التجزئه مطلوب',
-            'retail_half_Wholesale_price.required_if' => 'سعر النص الجمله لوحده التجزئه مطلوب',
-            'retail_price.required_if' =>  'سعر القطاعى لوحده التجزئه مطلوب',
-            'retail_cost_price.required_if' =>  'سعر شراء وحده التجزئه مطلوب',
+            'has_retail_unit.required' =>  __('validation.has_retail_unit_required'),
+            'retail_units.required_if' =>   __('validation.retail_units_required_if'),
+            'retail_unit_to_parent.required_if' =>  __('validation.retail_unit_to_parent_required_if'),
+            'retail_Wholesale_price.required_if' =>   __('validation.retail_Wholesale_price_required_if'),
+            'retail_half_Wholesale_price.required_if' =>  __('validation.retail_half_Wholesale_price_required_if'),
+            'retail_price.required_if' =>   __('validation.retail_price_required_if'),
+            'retail_cost_price.required_if' =>  __('validation.retail_cost_price_required_if'),
 
 
-            'has_fixed_price.required'=>'ادخل الحاله',
-            'active.required' => 'ادخل الحاله',
+            'has_fixed_price.required'=> __('validation.has_fixed_price_required'),
+            'active.required' => __('validation.active_required'),
         ];
     }
 }

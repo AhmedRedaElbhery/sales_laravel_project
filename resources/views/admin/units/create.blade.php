@@ -20,6 +20,17 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                @if (session('success'))
+                    <div class="alert alert-success text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">{{ __('units.add_new_unit') }}</h3>
@@ -50,7 +61,7 @@
                                 <option value="1">{{ __('units.master_unit') }}</option>
                                 <option value="0">{{ __('units.sub_unit') }}</option>
                             </select>
-                            @error('active')
+                            @error('is_master')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>

@@ -61,7 +61,7 @@ class UnitController extends Controller
 
             unit::create($data);
         }
-        return redirect()->route('unit.index');
+        return redirect()->route('unit.index')->with('success','added successfully');;
     }
 
     /**
@@ -88,7 +88,7 @@ class UnitController extends Controller
         {
             return view('admin.units.edit',compact('data'));
         }
-        return redirect()->route('unit.index');
+        return redirect()->route('unit.index')->with('error','no data found');;
     }
 
     /**
@@ -106,7 +106,7 @@ class UnitController extends Controller
 
         if($exist)
         {
-           return redirect()->back()->with('error', 'هذه الوحده موجوده بالفعل')
+           return redirect()->back()->with('error', 'this already exist')
            ->withInput();
         }
 
@@ -115,7 +115,7 @@ class UnitController extends Controller
             'active' => $request->active,
             'updated_by' => auth()->user()->id,
         ]);
-        return redirect()->route('unit.index');
+        return redirect()->route('unit.index')->with('success','update successfully');;
     }
 
     /**
@@ -127,7 +127,7 @@ class UnitController extends Controller
     public function destroy($id)
     {
         unit::destroy($id);
-        return redirect()->route('unit.index');
+        return redirect()->route('unit.index')->with('success','deleted successfully');;
     }
 
     public function filter(Request $request)

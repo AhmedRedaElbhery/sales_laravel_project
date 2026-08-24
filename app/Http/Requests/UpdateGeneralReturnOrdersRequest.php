@@ -32,9 +32,9 @@ class UpdateGeneralReturnOrdersRequest extends FormRequest
 
     public function messages(){
         return [
-            'supplier_code.required' => 'اختر حساب المورد',
-            'pill_type.required' => 'اختر نوع الفاتوره',
-            'order_date.required' => 'اختر التاريخ',
+            'supplier_code.required' => __('validation.name_required'),
+            'pill_type.required' =>__('validation.pill_type_required'),
+            'order_date.required' => __('validation.order_date_required'),
         ];
     }
 }

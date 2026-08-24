@@ -62,7 +62,7 @@ class AdminShiftsController extends Controller
         $exists = AdminShifts::where(['admin_id' => auth()->user()->id, 'com_code' => $com_code])->whereNull('end_shift')->exists();
 
         if ($exists) {
-            return redirect()->route('admin_shifts.index')->with('error', 'يوجد شفت مفتوح بالفعل');
+            return redirect()->route('admin_shifts.index')->with('error', 'there is open shift already');
         }
 
         $data['admin_id'] = auth()->user()->id;
@@ -74,7 +74,7 @@ class AdminShiftsController extends Controller
 
         AdminShifts::create($data);
 
-        return redirect()->route('admin_shifts.index');
+        return redirect()->route('admin_shifts.index')->with('success','the shift is opened successfully');
     }
 
     /**

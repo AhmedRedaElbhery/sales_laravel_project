@@ -5,7 +5,7 @@
 @endsection
 
 @section('contentheader')
-{{ __('accounts.financial_accounts') }}
+    {{ __('accounts.financial_accounts') }}
 @endsection
 
 @section('contentheaderlink')
@@ -14,16 +14,27 @@
 
 
 @section('contentheaderactive')
-{{ __('accounts.show') }}
+    {{ __('accounts.show') }}
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
+                @if (session('success'))
+                    <div class="alert alert-success text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="card-header">
-                    <h3 class="card-title card_title_center">{{ __('accounts.financial_accounts') }}  </h3>
+                    <h3 class="card-title card_title_center">{{ __('accounts.financial_accounts') }} </h3>
                     <a class="btn btn-success" href="{{ route('accounts.create') }}">{{ __('accounts.add_new') }} </a>
                 </div>
 
@@ -31,7 +42,8 @@
 
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="{{ __('accounts.search_by_name') }} " class="form-control mb-3">
+                            <input type="text" id="search_by_name" placeholder="{{ __('accounts.search_by_name') }} "
+                                class="form-control mb-3">
                         </div>
 
                         <div class="col-md-4">
@@ -105,9 +117,11 @@
 
                                             <td>
                                                 @if ($item->is_archived == 0)
-                                                    <span class="badge badge-success p-2">{{ __('accounts.active') }}</span>
+                                                    <span
+                                                        class="badge badge-success p-2">{{ __('accounts.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger p-2">{{ __('accounts.inactive') }}</span>
+                                                    <span
+                                                        class="badge badge-danger p-2">{{ __('accounts.inactive') }}</span>
                                                 @endif
                                             </td>
 
@@ -116,10 +130,12 @@
                                                     class="btn btn-primary">{{ __('accounts.edit') }}</a>
 
                                                 <form action="{{ route('accounts.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline" onsubmit="return confirm('{{ __('accounts.confirm_delete') }}')">
+                                                    class="d-inline"
+                                                    onsubmit="return confirm('{{ __('accounts.confirm_delete') }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">{{ __('accounts.delete') }}</button>
+                                                    <button type="submit"
+                                                        class="btn btn-danger">{{ __('accounts.delete') }}</button>
                                                 </form>
                                             </td>
                                         </tr>

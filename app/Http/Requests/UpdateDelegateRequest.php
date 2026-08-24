@@ -3,53 +3,51 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateDelegateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         return [
-            'name'=>'required',
-            'active'=> 'required',
+            'name' => [
+                'required',
+                Rule::unique('delegates', 'name')->ignore($this->route('delegate')),
+            ],
 
+            'active' => 'required',
             'commission_type' => 'required',
+
             'percent_Wholesale_commission' => 'required|numeric|max:10',
             'percent_half_wholesale_commission' => 'required|numeric|max:10',
             'percent_retail_commission' => 'required|numeric|max:10',
             'percent_collect_commission' => 'required|numeric|max:10',
         ];
     }
-    public function messages(){
-        return[
-            'name.required'=>'ادخل اسم الحساب',
-            'active.required'=> 'اختر الحاله',
 
-            'commission_type.required' => 'اختر الحاله',
+    public function messages()
+    {
+        return [
+            'name.required' => __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
 
-            'percent_Wholesale_commission.required' => 'ادخل القيمه ',
-            'percent_half_wholesale_commission.required' => 'ادخل القيمه ',
-            'percent_retail_commission.required' => 'ادخل القيمه',
-            'percent_collect_commission.required' => 'ادخل القيمه',
+            'active.required' => __('validation.active_required'),
+            'commission_type.required' => __('validation.commission_type_required'),
 
-            'percent_Wholesale_commission.max' => 'ادخل قيمه صحيحه لا تتعدى 10 ',
-            'percent_half_wholesale_commission.max' => 'ادخل قيمه صحيحه لا تتعدى 10',
-            'percent_retail_commission.max' => 'ادخل قيمه صحيحه لا تتعدى 10',
-            'percent_collect_commission.max' => 'ادخل قيمه صحيحه لا تتعدى 10',
+            'percent_Wholesale_commission.required' => __('validation.percent_Wholesale_commission_required'),
+            'percent_half_wholesale_commission.required' => __('validation.percent_half_wholesale_commission_required'),
+            'percent_retail_commission.required' => __('validation.percent_retail_commission_required'),
+            'percent_collect_commission.required' => __('validation.percent_collect_commission_required'),
+
+            'percent_Wholesale_commission.max' => __('validation.percent_Wholesale_commission_max'),
+            'percent_half_wholesale_commission.max' => __('validation.percent_half_wholesale_commission_max'),
+            'percent_retail_commission.max' => __('validation.percent_retail_commission_max'),
+            'percent_collect_commission.max' => __('validation.percent_collect_commission_max'),
         ];
     }
 }

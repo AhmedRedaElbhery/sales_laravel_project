@@ -72,7 +72,7 @@ class ExchangeController extends Controller
     public function store(TransactionsRequest $request)
     {
         if ($request->money  > $request->treasuries_balance) {
-            return redirect()->back()->with(['error' => 'الرصيد لا يسمح']);
+            return redirect()->back()->with(['error' => 'the balance not allowed']);
         }
 
         $com_code = auth()->user()->com_code;
@@ -81,7 +81,7 @@ class ExchangeController extends Controller
 
         $shift_id = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'treasuries_id' => $request->treasuries_id, 'is_finished' => 0])->whereNull('end_shift')->value('id');
         if ($shift_id == null) {
-            return redirect()->back()->with(['error' => 'حدث خطا ما']);
+            return redirect()->back()->with(['error' => 'no open shift']);
         }
 
         $data = [
@@ -133,7 +133,7 @@ class ExchangeController extends Controller
             ]);
         }
 
-        return redirect()->route('exchange_transaction.index');
+        return redirect()->route('exchange_transaction.index')->with('success','added successfully');
     }
 
     /**

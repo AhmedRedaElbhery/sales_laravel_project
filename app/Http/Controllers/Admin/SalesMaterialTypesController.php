@@ -32,7 +32,7 @@ class SalesMaterialTypesController extends Controller
         $com_code = auth()->user()->com_code;
         $checkExists = SalesMaterialType::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if ($checkExists) {
-            return redirect()->back()->with(['error' => 'هذه الخزنه موجوده بالفعل']);
+            return redirect()->back()->with(['error' => 'already exist']);
         }
         $data['name'] = $request->name;
         $data['active'] = $request->active;
@@ -40,7 +40,7 @@ class SalesMaterialTypesController extends Controller
         $data['com_code'] = $com_code;
         $data['date'] = date("Y-m-d");
         SalesMaterialType::create($data);
-        return redirect()->route('admin.sales_material.index');
+        return redirect()->route('admin.sales_material.index')->with('success','added successfully');
     }
 
     public function edit($id)
@@ -49,7 +49,7 @@ class SalesMaterialTypesController extends Controller
         if (!empty($data)) {
             return view('admin.sales_material.edit', compact('data'));
         }
-        return view('admin.sales_material.index');
+        return view('admin.sales_material.index')->with('error','there is some thing wrong');
     }
 
     public function update($id, SalesMaterialRequest $request)
@@ -61,7 +61,7 @@ class SalesMaterialTypesController extends Controller
 
         if ($nameExists) {
             return redirect()->back()
-                ->with('error', 'اسم الفئه موجود بالفعل')
+                ->with('error', 'already exist')
                 ->withInput();
         }
 
@@ -73,13 +73,13 @@ class SalesMaterialTypesController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.sales_material.index');
+            ->route('admin.sales_material.index')->with('success','updated successfully');
     }
 
     public function delete($id)
     {
         SalesMaterialType::destroy($id);
 
-        return redirect()->back();
+        return redirect()->back()->with('success','deleted successfully');
     }
 }

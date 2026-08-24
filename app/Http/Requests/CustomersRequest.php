@@ -3,40 +3,37 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CustomersRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         return [
-            'name'=>'required',
-            'active'=> 'required',
-            'start_balance_status'=> 'required',
-            'start_balance'=> 'required|numeric',
+            'name' => [
+                'required',
+                Rule::unique('customers', 'name')->ignore($this->route('customer')),
+            ],
+            'active' => 'required',
+            'start_balance_status' => 'required',
+            'start_balance' => 'required|numeric',
         ];
     }
-    public function messages(){
-        return[
-            'name.required'=>'ادخل اسم الحساب',
-            'active.required'=> 'اختر الحاله',
-            'start_balance_status.required'=> 'ادخل حاله الحساب',
-            'start_balance.required'=> 'ادخل قيمه الحساب الاوليه',
-            'start_balance.numeric'=> 'ادخل قيمه صحيحه',
+
+    public function messages()
+    {
+        return [
+            'name.required' => __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
+            'active.required' => __('validation.active_required'),
+            'start_balance_status.required' => __('validation.start_balance_status_required'),
+            'start_balance.required' => __('validation.start_balance_required'),
+            'start_balance.numeric' => __('validation.start_balance_numeric'),
         ];
     }
 }

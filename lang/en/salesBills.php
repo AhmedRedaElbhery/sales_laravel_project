@@ -139,4 +139,6 @@ return [
 'item_units' => 'Item Units',
 'no_shift' => 'there is no shift opens so we can show the data',
 
+'add_items' => 'Add Items To Sale Bill',
+
 ];

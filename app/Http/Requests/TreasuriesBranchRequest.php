@@ -29,7 +29,7 @@ class TreasuriesBranchRequest extends FormRequest
     }
     public function messages(){
         return[
-            'treasury_name.required'=>'الاسم مطلوب',
+            'treasury_name.required'=>__('validation.name_required')
         ];
     }
 }

@@ -33,7 +33,7 @@ class StoresController extends Controller
         $com_code = auth()->user()->com_code;
         $checkExists = Store::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if ($checkExists) {
-            return redirect()->back()->with(['error' => 'هذا المخزن موجود بالفعل']);
+            return redirect()->back()->with(['error' => 'this store already exist']);
         }
         $data['name'] = $request->name;
         $data['active'] = $request->active;
@@ -43,7 +43,7 @@ class StoresController extends Controller
         $data['com_code'] = $com_code;
         $data['date'] = date("Y-m-d");
         Store::create($data);
-        return redirect()->route('admin.store.index');
+        return redirect()->route('admin.store.index')->with('success','added successfully');
     }
 
     public function edit($id)
@@ -52,7 +52,7 @@ class StoresController extends Controller
         if (!empty($data)) {
             return view('admin.stores.edit', compact('data'));
         }
-        return redirect()->route('admin.store.index');
+        return redirect()->route('admin.store.index')->with('error','there is some thing wrong');
     }
 
     public function update($id, StoresRequest $request)
@@ -62,7 +62,7 @@ class StoresController extends Controller
         $exist = Store::where(['name' => $request->name, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
 
         if ($exist) {
-            return redirect()->back()->with('error', 'هذا المخزن موجود بالفعل')
+            return redirect()->back()->with('error', 'this store already exist')
                 ->withInput();
         }
 
@@ -73,13 +73,13 @@ class StoresController extends Controller
             'active' => $request->active,
             'updated_by' => auth()->user()->id,
         ]);
-        return redirect()->route('admin.store.index');
+        return redirect()->route('admin.store.index')->with('success','updated successfully');
     }
 
     public function delete($id)
     {
         Store::destroy($id);
 
-        return redirect()->back();
+        return redirect()->back()->with('success','deleted successfully');
     }
 }

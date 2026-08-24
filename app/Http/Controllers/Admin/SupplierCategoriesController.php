@@ -51,7 +51,7 @@ class SupplierCategoriesController extends Controller
         $com_code = auth()->user()->com_code;
         $checkExists = SupplierCategory::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if ($checkExists) {
-            return redirect()->back()->with(['error' => 'هذه الفئه موجوده بالفعل'])->withInput();
+            return redirect()->back()->with(['error' => 'this is already exist'])->withInput();
         }
         $data['name'] = $request->name;
         $data['active'] = $request->active;
@@ -59,7 +59,7 @@ class SupplierCategoriesController extends Controller
         $data['com_code'] = $com_code;
         $data['date'] = date("Y-m-d");
         SupplierCategory::create($data);
-        return redirect()->route('suppliers_category.index');
+        return redirect()->route('suppliers_category.index')->with('success','added successfully');;
     }
 
     /**
@@ -111,13 +111,13 @@ class SupplierCategoriesController extends Controller
             'updated_by'          => auth()->user()->id,
         ]);
 
-        return redirect()->route('suppliers_category.index');
+        return redirect()->route('suppliers_category.index')->with('success','updated successfully');;
     }
 
     public function destroy($id)
     {
         SupplierCategory::destroy($id);
 
-        return redirect()->route('suppliers_category.index');
+        return redirect()->route('suppliers_category.index')->with('success','deleted successfully');;
     }
 }

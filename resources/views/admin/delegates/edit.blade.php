@@ -18,7 +18,17 @@
 
 @section('content')
     <div class="card">
+        @if (session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
+        </div>
+    @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger text-center">
+            {{ session('error') }}
+        </div>
+    @endif
         <div class="card-header">
             <h3 class="card-title card_title_center">{{ __('delegates.edit_delegate_account') }}</h3>
         </div>
@@ -67,7 +77,6 @@
                             <label> {{ __('delegates.commission_type') }}</label>
                             <select name="commission_type" class="form-control">
                                 <option value="" disabled>{{ __('delegates.choose_commission_type') }} </option>
-                                <option value="0" @selected(old('commission_type') === '0')> {{ __('delegates.conistant_money') }} </option>
                                 <option value="1" @selected(old('commission_type') == 1)> {{ __('delegates.percant') }}
                                 </option>
                             </select>

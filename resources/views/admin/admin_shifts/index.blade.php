@@ -22,6 +22,17 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                @if (session('success'))
+                    <div class="alert alert-success text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">
@@ -34,20 +45,7 @@
                 </div>
 
                 <div class="card-body">
-                    {{-- <div class="row">
-                        <div class="col-md-4">
-                            <input type="text" id="search_by_name" placeholder="بحث بالاسم" class="form-control mb-3">
-                        </div>
 
-                        <div class="col-md-4">
-                            <form action="{{ route('unit.filter') }}" method="POST">
-                                @csrf
-                                <select name="type" class="form-control" onchange="this.form.submit()">
-                                    ...
-                                </select>
-                            </form>
-                        </div>
-                    </div> --}}
 
                     @if (session('error'))
                         <div class="alert alert-danger alert-dismissible fade show">

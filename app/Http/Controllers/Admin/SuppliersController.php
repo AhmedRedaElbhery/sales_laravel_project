@@ -67,7 +67,7 @@ class SuppliersController extends Controller
         $exist = Suppliers::where(['name' => $request->name])->exists();
 
         if ($exist) {
-            return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'name already exist')->withInput();
         }
 
         $data['supplier_code'] = ($supplier_code ?? 0) + 1;
@@ -78,7 +78,7 @@ class SuppliersController extends Controller
 
 
         if (( $request->start_balance_status == BalanceStatus::Debtor->value || $request->start_balance_status == BalanceStatus::Creditor->value ) && $request->start_balance == 0) {
-            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
+            return redirect()->back()->with('error', 'enter valid number')->withInput();
         }
 
         if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
@@ -119,7 +119,7 @@ class SuppliersController extends Controller
         $data['parent_account_number'] = AdminPanalSettings::select('supplier_parent_account_number')->where('com_code', $data['com_code'])->value('supplier_parent_account_number');
         Accounts::create($data);
 
-        return redirect()->route('suppliers.index');
+        return redirect()->route('suppliers.index')->with('success','added successfully');;
     }
 
     /**
@@ -159,7 +159,7 @@ class SuppliersController extends Controller
         $exists = Suppliers::where(['name' => $request->name])->where('id', '!=', $id)->first();
 
         if ($exists) {
-            return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['name'] = $request->name;
@@ -180,7 +180,7 @@ class SuppliersController extends Controller
                 'updated_by' => auth()->user()->id,
             ]);
 
-        return redirect()->route('suppliers.index');
+        return redirect()->route('suppliers.index')->with('success','updated successfully');;
     }
 
     /**
@@ -195,6 +195,6 @@ class SuppliersController extends Controller
         $id_account = Accounts::select('id')->where(['other_table_fk' => $code['supplier_code'], 'account_type' => AccountTypes::Supplier->value, 'account_number' => $code['account_number'], 'com_code' => $code['com_code']])->value('id');
         Suppliers::destroy($id);
         Accounts::destroy($id_account);
-        return redirect()->route('suppliers.index');
+        return redirect()->route('suppliers.index')->with('success','deleted successfully');;
     }
 }

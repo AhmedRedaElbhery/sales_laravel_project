@@ -62,7 +62,7 @@ class DelegateController extends Controller
         $exist = Delegate::where(['name' => $request->name])->exists();
 
         if ($exist) {
-            return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['delegate_code'] = $delegate_code ? $delegate_code + 1 : 1;
@@ -74,7 +74,7 @@ class DelegateController extends Controller
         $data['start_balance'] = 0;
 
         if (($request->start_balance_status == 1 || $request->start_balance_status == 2) && $request->start_balance == 0) {
-            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
+            return redirect()->back()->with('error', 'enter valid numbers')->withInput();
         }
 
         if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
@@ -121,7 +121,7 @@ class DelegateController extends Controller
         $data['parent_account_number'] = AdminPanalSettings::select('delegate_parent_account_number')->where('com_code', $data['com_code'])->value('delegate_parent_account_number');
         Accounts::create($data);
 
-        return redirect()->route('delegate.index');
+        return redirect()->route('delegate.index')->with('success','added successfully');
     }
 
     /**
@@ -160,7 +160,7 @@ class DelegateController extends Controller
         $data = Delegate::find($id);
         $exists = Delegate::where(['name' => $request->name])->where('id', '!=', $id)->first();
         if ($exists) {
-            return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data->update([
@@ -187,7 +187,7 @@ class DelegateController extends Controller
             ]);
 
 
-        return redirect()->route('delegate.index');
+        return redirect()->route('delegate.index')->with('success','updated successfully');
     }
 
     /**
@@ -202,6 +202,6 @@ class DelegateController extends Controller
         $id_account = Accounts::select('id')->where(['other_table_fk' => $code['delegate_code'], 'account_type' => 4, 'account_number' => $code['account_number'], 'com_code' => $code['com_code']])->value('id');
         Delegate::destroy($id);
         Accounts::destroy($id_account);
-        return redirect()->route('delegate.index');
+        return redirect()->route('delegate.index')->with('success','deleted successfully');
     }
 }

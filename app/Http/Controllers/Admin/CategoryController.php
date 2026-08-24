@@ -48,7 +48,7 @@ class CategoryController extends Controller
         $com_code = auth()->user()->com_code;
         $exists = Category::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if ($exists) {
-            return redirect()->route('category.index');
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['name'] = $request->name;
@@ -57,7 +57,7 @@ class CategoryController extends Controller
         $data['date'] = date('Y-m-d');
         $data['added_by'] = auth()->user()->id;
         Category::create($data);
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('success','added successfully');
     }
 
     /**
@@ -83,7 +83,7 @@ class CategoryController extends Controller
         if (!empty($data)) {
             return view('admin.category.edit', compact('data'));
         }
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('error','no data found');
     }
 
     /**
@@ -100,7 +100,7 @@ class CategoryController extends Controller
         $exists = Category::where(['name' => $request->name, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
         if ($exists) {
 
-            return redirect()->back()->with('error', 'هذا الصنف موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this item already exist')->withInput();
         }
 
         $data['name'] = $request->name;
@@ -109,7 +109,7 @@ class CategoryController extends Controller
 
         $data->save();
 
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('success','updated successfully');
     }
 
     /**
@@ -121,6 +121,6 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         Category::destroy($id);
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('success','deleted successfully');
     }
 }

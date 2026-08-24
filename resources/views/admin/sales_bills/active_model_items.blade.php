@@ -2,7 +2,7 @@
     <div class="modal-content bg-info">
 
         <div class="modal-header">
-            <h4 class="modal-title">اضافه اصناف لفاتوره مبيعات</h4>
+            <h4 class="modal-title">{{__('salesBills.add_items')}}</h4>
             <button type="button" class="close text-white" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>

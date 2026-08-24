@@ -3,25 +3,32 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCustomerRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+    public function authorize()
+    {
+        return true;
+    }
+
     public function rules()
     {
         return [
-            'name'=>'required',
-            'active'=> 'required',
+            'name' => [
+                'required',
+                Rule::unique('customers', 'name')->ignore($this->route('customer')),
+            ],
+            'active' => 'required',
         ];
     }
-    public function messages(){
-        return[
-            'name.required'=>'ادخل اسم الحساب',
-            'active.required'=> 'اختر الحاله',
+
+    public function messages()
+    {
+        return [
+            'name.required' => __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
+            'active.required' => __('validation.active_required'),
         ];
     }
 }

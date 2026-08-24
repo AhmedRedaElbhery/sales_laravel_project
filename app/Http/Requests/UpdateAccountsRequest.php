@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAccountsRequest extends FormRequest
 {
@@ -24,16 +25,20 @@ class UpdateAccountsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required',
+            'name' => [
+            'required',
+            Rule::unique('accounts', 'name')->ignore($this->route('account')),
+        ],
             'is_archived'=> 'required',
             'parent_account_number'=> 'required',
         ];
     }
     public function messages(){
         return[
-            'name.required'=>'ادخل اسم الحساب',
-            'is_archived.required'=> 'اختر الحاله',
-            'parent_account_number.required'=> 'ادخل نوع الحساب',
+            'name.required'=>__('validation.name_required'),
+            'name.unique'=> __('validation.name_unique'),
+            'is_archived.required'=>__('validation.is_archived_required'),
+            'parent_account_number.required'=> __('validation.parent_account_number_required'),
         ];
     }
 }

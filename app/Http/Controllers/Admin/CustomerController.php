@@ -61,7 +61,7 @@ class CustomerController extends Controller
         $exist = Customer::where(['name' => $request->name])->exists();
 
         if ($exist) {
-            return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['customer_code'] = ($customer_code ?? 0) + 1;
@@ -71,7 +71,7 @@ class CustomerController extends Controller
         $data['start_balance'] = BalanceStatus::Balanced->value;
 
         if (($request->start_balance_status == BalanceStatus::Debtor->value || $request->start_balance_status == BalanceStatus::Creditor->value) && $request->start_balance == 0) {
-            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
+            return redirect()->back()->with('error', 'enter valid number')->withInput();
         }
 
         if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
@@ -109,7 +109,7 @@ class CustomerController extends Controller
         $data['parent_account_number'] = AdminPanalSettings::where('com_code', $data['com_code'])->value('customer_parent_account_number');
         Accounts::create($data);
 
-        return redirect()->route('customers.index');
+        return redirect()->route('customers.index')->with('success','added successfully');
     }
 
     /**
@@ -147,7 +147,7 @@ class CustomerController extends Controller
         $data = Customer::find($id);
         $exists = Customer::where(['name' => $request->name])->where('id', '!=', $id)->first();
         if ($exists) {
-            return redirect()->back()->with('error', 'هذا الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['name'] = $request->name;
@@ -167,7 +167,7 @@ class CustomerController extends Controller
                 'updated_by' => auth()->user()->id,
             ]);
 
-        return redirect()->route('customers.index');
+        return redirect()->route('customers.index')->with('success','updated successfully');
     }
 
     /**
@@ -182,6 +182,6 @@ class CustomerController extends Controller
         $id_account = Accounts::where(['other_table_fk' => $code['customer_code'], 'account_type' => AccountTypes::Customer->value, 'account_number' => $code['account_number'], 'com_code' => $code['com_code']])->value('id');
         Customer::destroy($id);
         Accounts::destroy($id_account);
-        return redirect()->route('customers.index');
+        return redirect()->route('customers.index')->with('success','deleted successfully');
     }
 }

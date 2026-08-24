@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class GeneralReturnOrdersRequest extends FormRequest
 {
@@ -24,7 +25,11 @@ class GeneralReturnOrdersRequest extends FormRequest
     public function rules()
     {
         return [
-            'supplier_code' => 'required',
+            'supplier_code' => [
+                'required',
+                Rule::exists('suppliers', 'supplier_code')
+                    ->where('com_code', session('com_code')),
+            ],
             'pill_type' => 'required',
             'store' => 'required',
             'order_date' => 'required',
@@ -33,10 +38,11 @@ class GeneralReturnOrdersRequest extends FormRequest
 
     public function messages(){
         return [
-            'supplier_code.required' => 'اختر حساب المورد',
-            'pill_type.required' => 'اختر نوع الفاتوره',
-            'store.required' => 'اختر المخزن',
-            'order_date.required' => 'اختر التاريخ',
+            'supplier_code.required' =>__('validation.supplier_code_required'),
+            'supplier_code.exists' => __('validation.supplier_code_exists'),
+            'pill_type.required' =>__('validation.pill_type_required'),
+            'store.required' => __('validation.store_required'),
+            'order_date.required' => __('validation.order_date_required'),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SuppliersRequest extends FormRequest
 {
@@ -14,7 +15,12 @@ class SuppliersRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required',
+            'name' => [
+            'required',
+            Rule::unique('suppliers', 'name')
+                ->where('com_code', auth()->user()->com_code)
+                ->ignore($this->route('id')),
+        ],
             'active'=> 'required',
             'category_id'=> 'required',
             'start_balance_status'=> 'required',
@@ -23,12 +29,13 @@ class SuppliersRequest extends FormRequest
     }
     public function messages(){
         return[
-            'name.required'=>'ادخل اسم الحساب',
-            'active.required'=> 'اختر الحاله',
-            'category_id.required'=> 'اختر الفئه',
-            'start_balance_status.required'=> 'ادخل حاله الحساب',
-            'start_balance.required'=> 'ادخل قيمه الحساب الاوليه',
-            'start_balance.numeric'=> 'ادخل قيمه صحيحه',
+            'name.required'=>__('validation.name_required'),
+            'name.unique'=>__('validation.name_unique'),
+            'active.required'=> __('validation.active_required'),
+            'category_id.required'=> __('validation.category_id_required'),
+            'start_balance_status.required'=>__('validation.start_balance_status_required'),
+            'start_balance.required'=> __('validation.start_balance_required'),
+            'start_balance.numeric'=> __('validation.start_balance_numeric'),
         ];
     }
 }

@@ -76,7 +76,7 @@ class ItemCardController extends Controller
         //check for barcode and if not exist will make it automaticlly
         $exists = ItemCard::where(['barcode' => $request->barcode, 'com_code' => $com_code])->exists();
         if ($exists) {
-            return redirect()->back()->with('error', 'هذا الباركود موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this barcode already exist')->withInput();
         }
 
         $barcode = $request->barcode;
@@ -89,7 +89,7 @@ class ItemCardController extends Controller
         //check for name to make sure each company have only 1 and the item not doublicated
         $nameexists = ItemCard::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if ($nameexists) {
-            return redirect()->back()->with('error', 'هذا الصنف موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this item already exist')->withInput();
         }
 
         $photo = null;
@@ -142,7 +142,7 @@ class ItemCardController extends Controller
         }
 
         ItemCard::create($data);
-        return redirect()->route('itemcard.index');
+        return redirect()->route('itemcard.index')->with('success','added successfully');
     }
 
     /**
@@ -206,13 +206,13 @@ class ItemCardController extends Controller
 
         $exists = ItemCard::where(['barcode' => $request->barcode, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
         if ($exists) {
-            return redirect()->back()->with('error', 'هذا الباركود موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this barcode already exist')->withInput();
         }
 
         //check for name to make sure each company have only 1 and the item not doublicated
         $nameexists = ItemCard::where(['name' => $request->name, 'com_code' => $com_code])->where('id', '!=', $id)->exists();
         if ($nameexists) {
-            return redirect()->back()->with('error', 'هذا الصنف موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this item already exist')->withInput();
         }
 
         if ($request->delete_photo == '1') {
@@ -283,7 +283,7 @@ class ItemCardController extends Controller
         }
 
         $data->save();
-        return redirect()->route('itemcard.index');
+        return redirect()->route('itemcard.index')->with('success', 'updated successfully');
     }
 
     /**
@@ -295,6 +295,6 @@ class ItemCardController extends Controller
     public function destroy($id)
     {
         ItemCard::destroy($id);
-        return redirect()->route('itemcard.index');
+        return redirect()->route('itemcard.index')->with('success','deleted successfully');
     }
 }

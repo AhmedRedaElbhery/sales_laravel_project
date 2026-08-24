@@ -36,13 +36,13 @@ class AdminPanelSettingRequest extends FormRequest
     }
     public function messages(){
         return[
-            'system_name.required'=>'اسم المستخدم مطلوب',
-            'address.required'=>' العنوان مطلوب',
-            'phone.required'=>' الهاتف مطلوب',
-            'supplier_parent_account_number.required'=>'  اختر الحساب',
-            'customer_parent_account_number.required'=>'  اختر الحساب',
-            'delegate_parent_account_number.required'=>'  اختر الحساب',
-            'employess_parent_account_number.required'=>'  اختر الحساب',
+            'system_name.required'=>__('validation.system_name_required'),
+            'address.required'=>__('validation.address_required'),
+            'phone.required'=>__('validation.phone_required'),
+            'supplier_parent_account_number.required'=>__('validation.supplier_parent_account_number_required'),
+            'customer_parent_account_number.required'=>__('validation.customer_parent_account_number_required'),
+            'delegate_parent_account_number.required'=>__('validation.delegate_parent_account_number_required'),
+            'employess_parent_account_number.required'=>__('validation.employess_parent_account_number_required'),
         ];
     }
 }

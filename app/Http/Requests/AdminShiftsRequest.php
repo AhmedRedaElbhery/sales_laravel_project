@@ -29,7 +29,7 @@ class AdminShiftsRequest extends FormRequest
     }
     public function messages(){
         return[
-            'treasuries_id.required'=>'اختر الخزنه ',
+            'treasuries_id.required'=>__('validation.treasuries_id_required'),
         ];
     }
 }

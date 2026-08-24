@@ -81,6 +81,6 @@ class AdminPanelSettingsController extends Controller
         $data->save();
 
         return redirect()
-            ->route('admin.adminpanelsettings.index');
+            ->route('admin.adminpanelsettings.index')->with('success','updated successfully');
     }
 }

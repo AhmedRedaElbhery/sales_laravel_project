@@ -71,12 +71,11 @@ class GeneralReturnOrdersController extends Controller
     {
         $comCode = auth()->user()->com_code;
         $serial = SupplierOrders::where(['order_type' => 2])->max('auto_serial');
-
-
         $accountNumber = Suppliers::where(['supplier_code' => $request->supplier_code, 'com_code' => $comCode])->value('account_number');
 
         if ($accountNumber == null) {
-            return redirect()->back();
+            return redirect()->back()->with('error','this supplier not exist');
+
         }
 
         $orderData = [
@@ -93,7 +92,7 @@ class GeneralReturnOrdersController extends Controller
         ];
 
         SupplierOrders::create($orderData);
-        return redirect()->route('general_return_orders.index');
+        return redirect()->route('general_return_orders.index')->with('success','added successfully');
     }
 
     /**
@@ -108,7 +107,7 @@ class GeneralReturnOrdersController extends Controller
         $data = SupplierOrders::find($id);
 
         if (empty($data)) {
-            return redirect()->route('supplier_orders.index');
+            return redirect()->route('general_return_orders.index')->with('error','no data found');
         }
 
         $data['supplier_name'] = Suppliers::where('account_number', $data['account_number'])->value('name');
@@ -186,7 +185,7 @@ class GeneralReturnOrdersController extends Controller
             'account_number' => $accountNumber,
             'updated_by' => auth()->user()->id,
         ]);
-        return redirect()->route('general_return_orders.show', $id);
+        return redirect()->route('general_return_orders.show', $id)->with('success','updated successfully');
     }
 
     /**
@@ -202,7 +201,7 @@ class GeneralReturnOrdersController extends Controller
         if (!$items) {
             SupplierOrders::destroy($id);
         }
-        return redirect()->route('general_return_orders.index');
+        return redirect()->route('general_return_orders.index')->with('success','deleted successfully');
     }
 
     public function getUnits(Request $request)
@@ -475,7 +474,7 @@ class GeneralReturnOrdersController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('error','تم الحذف بنجاح');
     }
 
 
@@ -503,7 +502,7 @@ class GeneralReturnOrdersController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'هذه الفاتورة معتمدة من قبل',
-                'redirect' => route('supplier_orders.show', $data->id),
+                'redirect' => route('general_return_orders.show', $data->id),
             ]);
         }
 
@@ -557,7 +556,7 @@ class GeneralReturnOrdersController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'لا يمكن اعتماد هذه الفاتوره لانها لاتحتوى على اصناف ',
-                'redirect' => route('supplier_orders.show', $data->id),
+                'redirect' => route('general_return_orders.show', $data->id),
             ]);
         }
 
@@ -585,7 +584,7 @@ class GeneralReturnOrdersController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => ' لا يوجد شفت مفتوح',
-                'redirect' => route('supplier_orders.show', $data->id),
+                'redirect' => route('general_return_orders.show', $data->id),
             ]);
         }
 

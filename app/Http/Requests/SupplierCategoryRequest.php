@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SupplierCategoryRequest extends FormRequest
 {
@@ -24,14 +25,22 @@ class SupplierCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required',
-            'active'=>'required',
+            'name' => [
+                'required',
+                Rule::unique('suppliercategory', 'name')
+                    ->where('com_code', auth()->user()->com_code)
+                    ->ignore($this->route('id')),
+            ],
+
+            'active' => 'required',
         ];
     }
-    public function messages(){
-        return[
-            'name.required'=>'الاسم مطلوب',
-            'active.required'=>'  يجب اختيار النوع'
+    public function messages()
+    {
+        return [
+            'name.required' => __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
+            'active.required' => __('validation.active_required'),
         ];
     }
 }

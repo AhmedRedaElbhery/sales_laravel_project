@@ -24,7 +24,7 @@ class AccountsRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required',
+            'name'=>'required|unique:accounts,name',
             'account_type'=> 'required',
             'is_archived'=> 'required',
             'parent_account_number'=> 'required',
@@ -34,13 +34,14 @@ class AccountsRequest extends FormRequest
     }
     public function messages(){
         return[
-            'name.required'=>'ادخل اسم الحساب',
-            'account_type.required'=> 'اختر نوع الحساب',
-            'is_archived.required'=> 'اختر الحاله',
-            'parent_account_number.required'=> 'ادخل نوع الحساب',
-            'start_balance_status.required'=> 'ادخل حاله الحساب',
-            'start_balance.required'=> 'ادخل قيمه الحساب الاوليه',
-            'start_balance.numeric'=> 'ادخل قيمه صحيحه',
+            'name.required'=> __('validation.name_required'),
+            'name.unique'=> __('validation.name_unique'),
+            'account_type.required'=> __('validation.account_type_required'),
+            'is_archived.required'=>__('validation.is_archived_required'),
+            'parent_account_number.required'=>__('validation.parent_account_number_required'),
+            'start_balance_status.required'=> __('validation.start_balance_status_required'),
+            'start_balance.required'=> __('validation.start_balance_required'),
+            'start_balance.numeric'=>__('validation.start_balance_numeric'),
         ];
     }
 }

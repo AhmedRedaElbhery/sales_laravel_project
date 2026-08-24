@@ -74,7 +74,7 @@ class AccountsController extends Controller
 
 
         if ($exist) {
-            return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['account_number'] = ($account_number ?? 0) + 1;
@@ -86,7 +86,7 @@ class AccountsController extends Controller
         $data['start_balance'] = 0;
 
         if (($request->start_balance_status == BalanceStatus::Creditor->value || $request->start_balance_status == BalanceStatus::Debtor->value) && $request->start_balance == 0) {
-            return redirect()->back()->with('error', 'ادخل قيمه صحيحه لرصيد الحساب')->withInput();
+            return redirect()->back()->with('error', 'enter valid number')->withInput();
         }
 
         if ($request->start_balance_status == BalanceStatus::Creditor->value && $request->start_balance > 0) {
@@ -121,7 +121,7 @@ class AccountsController extends Controller
 
         Accounts::create($data);
 
-        return redirect()->route('accounts.index');
+        return redirect()->route('accounts.index')->with('success','added successfully');
     }
 
     /**
@@ -163,7 +163,7 @@ class AccountsController extends Controller
         $exist = Accounts::where(['name' => $request->name])->where('id', '!=', $id)->exists();
 
         if ($exist) {
-            return redirect()->back()->with('error', 'الاسم موجود بالفعل')->withInput();
+            return redirect()->back()->with('error', 'this name already exist')->withInput();
         }
 
         $data['is_parent'] = $request->parent_account_number == 0 ? 1 : 1;
@@ -210,7 +210,7 @@ class AccountsController extends Controller
             $delegate_data->save();
         }
 
-        return redirect()->route('accounts.index');
+        return redirect()->route('accounts.index')->with('success','updated successfully');;
     }
 
     /**
@@ -253,7 +253,7 @@ class AccountsController extends Controller
         }
 
         Accounts::destroy($id);
-        return redirect()->route('accounts.index');
+        return redirect()->route('accounts.index')->with('success','deleted successfully');;
     }
 
     public function filter(Request $request)

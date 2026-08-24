@@ -18,6 +18,17 @@
 
 @section('content')
     <div class="card">
+        @if (session('success'))
+                    <div class="alert alert-success text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
         <div class="card-header">
             <h3 class="card-title card_title_center">{{ __('items.add_new_item') }}</h3>
@@ -92,7 +103,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('category_id')
+                            @error('parent_id')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>

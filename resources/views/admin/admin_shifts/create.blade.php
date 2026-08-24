@@ -22,6 +22,17 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                @if (session('success'))
+                    <div class="alert alert-success text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="card-header">
                     <h3 class="card-title card_title_center">
@@ -35,7 +46,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    @if($treasuries > 0)
+
                     <form action="{{ route('admin_shifts.store') }}" method="POST">
                         @csrf
 
@@ -70,8 +81,7 @@
                         </a>
 
                     </form>
-                    @else
-                    @endif
+
 
                 </div>
 

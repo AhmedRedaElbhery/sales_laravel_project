@@ -36,14 +36,12 @@ class SalesBillsController extends Controller
         $com_code = auth()->user()->com_code;
         $data = SalesBills::where(['com_code' => $com_code])->orderby('id', 'DESC')->paginate(11);
 
-        if (!empty($data)) {
-            foreach ($data as $item) {
-                $item['sales_material_name'] = SalesMaterialType::where('id', $item['sales_material_type_id'])->value('name');
-                $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
-                $item['customer_name'] = Customer::where(['customer_code' => $item->customer_code, 'com_code' => $com_code])->value('name');
-                if ($item->updated_at && $item->updated_at  != null) {
-                    $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
-                }
+        foreach ($data as $item) {
+            $item['sales_material_name'] = SalesMaterialType::where('id', $item['sales_material_type_id'])->value('name');
+            $item['added_by_admin'] = Admin::where(['id' => $item->added_by])->value('name');
+            $item['customer_name'] = Customer::where(['customer_code' => $item->customer_code, 'com_code' => $com_code])->value('name');
+            if ($item->updated_at && $item->updated_at  != null) {
+                $item['updated_by_admin'] = Admin::where(['id' => $item->updated_by])->value('name');
             }
         }
 

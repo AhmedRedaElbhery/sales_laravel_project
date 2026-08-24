@@ -27,12 +27,12 @@ class TreasuriesController extends Controller
         $com_code = auth()->user()->com_code;
         $checkExists = Treasuries::where(['name' => $request->name, 'com_code' => $com_code])->exists();
         if ($checkExists) {
-            return redirect()->back()->with(['error' => 'هذه الخزنه موجوده بالفعل']);
+            return redirect()->back()->with(['error' => 'name already exist']);
         }
 
         $checkExists = Treasuries::where(['is_master' => 1, 'com_code' => $com_code])->exists();
         if ($request->is_master && $checkExists) {
-            return redirect()->back()->with('error', 'هناك خزنه رئيسيه موجوده بالفعل');
+            return redirect()->back()->with('error', 'there is already a master treasury');
         }
 
         $data['name'] = $request->name;
@@ -44,7 +44,7 @@ class TreasuriesController extends Controller
         $data['com_code'] = $com_code;
         $data['date'] = date("Y-m-d");
         Treasuries::create($data);
-        return redirect()->route('admin.treasuries.index');
+        return redirect()->route('admin.treasuries.index')->with('success','added successfully');;
     }
 
     public function edit($id)
@@ -65,7 +65,7 @@ class TreasuriesController extends Controller
 
         if ($nameExists) {
             return redirect()->back()
-                ->with('error', 'اسم الخزنة موجود بالفعل')
+                ->with('error', 'name already exist')
                 ->withInput();
         }
 
@@ -88,7 +88,7 @@ class TreasuriesController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.treasuries.index');
+            ->route('admin.treasuries.index')->with('success','updated successfully');;
     }
 
     public function details($id)
@@ -121,7 +121,7 @@ class TreasuriesController extends Controller
     {
         TreasuryDelivery::destroy($id);
 
-        return redirect()->back();
+        return redirect()->back()->with('success','deleted successfully');;
     }
 
 
@@ -130,9 +130,9 @@ class TreasuriesController extends Controller
         $com_code = auth()->user()->com_code;
         $data = Treasuries::select('id', 'name')->where(['com_code' => $com_code, 'active' => 1, 'is_master' => 0])->get();
         if (empty($data)) {
-            return redirect()->route('admin.treasuries.index');
+            return redirect()->route('admin.treasuries.index')->with('error','no data found');
         }
-        return view('admin.treasuries.create_treasuries_branch', compact('id', 'data'));
+        return view('admin.treasuries.create_treasuries_branch', compact('id', 'data'))->with('success','added successfully');
     }
 
     public function store_treasuries_branch(TreasuriesBranchRequest $request, $id)
@@ -153,6 +153,6 @@ class TreasuriesController extends Controller
             $data['added_by'] = auth()->user()->id;
             TreasuryDelivery::create($data);
         }
-        return redirect()->route('admin.treasuries.details', $id);
+        return redirect()->route('admin.treasuries.details', $id)->with('success','added successfully');;
     }
 }
