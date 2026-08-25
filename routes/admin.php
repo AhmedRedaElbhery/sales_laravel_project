@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DelegateController as AdminDelegateController;
 use App\Http\Controllers\Admin\ExchangeController;
 use App\Http\Controllers\Admin\GeneralReturnOrdersController;
+use App\Http\Controllers\Admin\GeneralReturnSalesOrders;
+use App\Http\Controllers\Admin\ItemCardBalanceController;
 use App\Http\Controllers\Admin\ItemCardController as AdminItemCardController;
 use App\Http\Controllers\Admin\SalesBillsController;
 use App\Http\Controllers\Admin\SupplierCategoriesController;
@@ -170,6 +172,22 @@ Route::group([
     Route::post('/general_return_orders/edititem', [GeneralReturnOrdersController::class, 'editItem'])->name('general_return_orders.edititem');
     Route::post('general_return_orders/update_item', [GeneralReturnOrdersController::class, 'updateItem'])->name('general_return_orders.update_item');
     Route::post('general_return_orders/model_approve', [GeneralReturnOrdersController::class, 'modelApprove'])->name('general_return_orders.model_approve');
+
+
+    Route::get('itemCardBalance/filter', [ItemCardBalanceController::class,'filter'])->name('itemCardBalance.filter');
+    Route::resource('itemCardBalance', ItemCardBalanceController::class);
+
+
+
+    Route::get('general_return_sales_order/getUnits', [GeneralReturnSalesOrders::class, 'getUnits'])->name('general_return_sales_order.getUnits');
+    Route::get('general_return_sales_order/get_batchs', [GeneralReturnSalesOrders::class, 'get_batchs'])->name('general_return_sales_order.get_batchs');
+    Route::get('general_return_sales_order/get_price', [GeneralReturnSalesOrders::class, 'get_price'])->name('general_return_sales_order.get_price');
+    Route::get('general_return_sales_order/get_add_items', [GeneralReturnSalesOrders::class, 'get_add_items'])->name('general_return_sales_order.get_add_items');
+    Route::post('general_return_sales_order/open_active_bill', [GeneralReturnSalesOrders::class, 'open_active_bill'])->name('general_return_sales_order.open_active_bill');
+
+    Route::resource('general_return_sales_order', GeneralReturnSalesOrders::class);
+
+
 
 });
 

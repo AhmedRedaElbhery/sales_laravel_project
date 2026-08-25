@@ -30,4 +30,7 @@ return [
     'users' => 'المستخدمين',
     'reports' => 'التقارير',
     'monitoring_support' => 'المراقبه والدعم الفنى',
+    'item_card_balance' => 'بيانات الاصناف',
+
+    'general_return_sales_orders' => 'مرتجع مبيعات عام',
 ];

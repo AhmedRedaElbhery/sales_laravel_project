@@ -42,4 +42,9 @@ return [
 
     'monitoring_support'    => 'Monitoring & Technical Support',
 
+    'item_card_balance' => 'Items Details',
+
+    'general_return_sales_orders' => 'general return sales',
+
+
 ];

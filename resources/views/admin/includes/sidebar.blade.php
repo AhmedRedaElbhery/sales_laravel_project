@@ -231,9 +231,9 @@
                         </li>
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'supplier_orders.*','general_return_orders.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*', 'supplier_orders.*','general_return_orders.*','itemCardBalance.*') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'supplier_orders.*','general_return_orders.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*', 'supplier_orders.*','general_return_orders.*','itemCardBalance.*') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.inventory_transactions') }}
@@ -263,6 +263,16 @@
                                     </a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a href="{{ route('itemCardBalance.index') }}"
+                                        class="nav-link {{ request()->routeIs('itemCardBalance.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            {{ __('sidebar.item_card_balance') }}
+                                        </p>
+                                    </a>
+                                </li>
+
 
                             </ul>
 
@@ -271,9 +281,9 @@
 
 
                         <li
-                            class="nav-item has-treeview {{ request()->routeIs('admin..*','sales_bills.*') ? 'menu-open' : '' }}">
+                            class="nav-item has-treeview {{ request()->routeIs('admin..*','sales_bills.*','general_return_sales_orders') ? 'menu-open' : '' }}">
                             <a href="#"
-                                class="nav-link  {{ request()->routeIs('admin..*', 'sales_bills.*') ? 'active' : '' }} ">
+                                class="nav-link  {{ request()->routeIs('admin..*', 'sales_bills.*','general_return_sales_orders') ? 'active' : '' }} ">
 
                                 <p>
                                     {{ __('sidebar.sales') }}
@@ -289,6 +299,16 @@
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             {{ __('sidebar.sales_invoices') }}
+                                        </p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('general_return_sales_order.index') }}"
+                                        class="nav-link {{ request()->routeIs('general_return_sales_orders.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-th"></i>
+                                        <p>
+                                            {{ __('sidebar.general_return_sales_orders') }}
                                         </p>
                                     </a>
                                 </li>
