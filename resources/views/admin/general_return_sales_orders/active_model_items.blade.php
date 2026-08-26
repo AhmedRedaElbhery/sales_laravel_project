@@ -9,27 +9,27 @@
         </div>
 
         <input type="hidden" id="token_search" value="{{ csrf_token() }}">
-        <input type="hidden" id="autoserial" value="{{ $data['auto_serial'] }}">
+        <input type="hidden" id="general_return_sales_orders_autoserial" value="{{ $data['auto_serial'] }}">
 
-        <input type="hidden" id="save_active_billitems_url" value="{{ route('sales_item.save_active_billitems') }}">
+        <input type="hidden" id="general_return_sales_orders_save_active_billitems_url" value="{{ route('general_return_sales_order.save_active_billitems') }}">
 
-        <input type="hidden" id="active_add_items_url" value="{{ route('sales_item.active_add_items') }}">
+        <input type="hidden" id="general_return_sales_orders_active_add_items_url" value="{{ route('general_return_sales_order.active_add_items') }}">
 
-        <input type="hidden" id="active_delete_all_items" value="{{ route('sales_item.active_delete_all_items') }}">
-
-
-        <input type="hidden" id="approve_active_bill" value="{{ route('sales_item.approve_active_bill') }}">
+        <input type="hidden" id="general_return_sales_orders_active_delete_all_items" value="{{ route('general_return_sales_order.active_delete_all_items') }}">
 
 
+        <input type="hidden" id="general_return_sales_orders_approve_active_bill" value="{{ route('general_return_sales_order.approve_active_bill') }}">
 
 
-        <div class="modal-body bg-white text-dark" id="bill_model">
+
+
+        <div class="modal-body bg-white text-dark" id="general_return_sales_orders_bill_model">
 
             <div class="row p-3" style="border: 1px solid blue">
 
                 <div class="form-group col-md-3">
-                    <label>{{ __('salesBills.invoice_date') }}</label>
-                    <input type="date" class="form-control" id="update_invoice_date"
+                    <label> {{ __('returnSalesBills.invoice_date') }}</label>
+                    <input type="date" class="form-control" id="general_return_sales_orders_update_invoice_date"
                         value="{{ $data->invoice_date }}">
 
                     @error('invoice_date')
@@ -38,10 +38,10 @@
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label>{{ __('salesBills.invoice_categories') }}</label>
-                    <select class="form-control select2" id="update_sales_material_type">
+                    <label> {{ __('returnSalesBills.invoice_categories') }}</label>
+                    <select class="form-control select2" id="general_return_sales_orders_update_sales_material_type">
                         <option value="" selected disabled>
-                            {{ __('salesBills.select_invoice_category') }}
+                             {{ __('returnSalesBills.select_invoice_category') }}
                         </option>
                         @foreach ($sales_material_types as $sales_material_type)
                             <option value="{{ $sales_material_type->id }}"
@@ -55,15 +55,15 @@
 
                 <div class="form-group col-md-3">
                     <label>
-                        {{ __('salesBills.customer_account') }}
+                         {{ __('returnSalesBills.customer_account') }}
                         <a href="{{ route('customers.create') }}">
-                            {{ __('salesBills.add_new_customer') }}
+                             {{ __('returnSalesBills.add_new_customer') }}
                         </a>
                     </label>
 
-                    <select class="form-control select2" id="update_customer_code">
+                    <select class="form-control select2" id="general_return_sales_orders_update_customer_code">
                         <option value="" selected disabled>
-                            {{ __('salesBills.select_customer_account') }}
+                             {{ __('returnSalesBills.select_customer_account') }}
                         </option>
 
                         @foreach ($customers as $customer)
@@ -77,11 +77,11 @@
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label>{{ __('salesBills.delegate_account') }}</label>
+                    <label> {{ __('returnSalesBills.delegate_account') }}</label>
 
-                    <select class="form-control select2" id="update_delegate_code">
+                    <select class="form-control select2" id="general_return_sales_orders_update_delegate_code">
                         <option value="" selected disabled>
-                            {{ __('salesBills.select_delegate_account') }}
+                             {{ __('returnSalesBills.select_delegate_account') }}
                         </option>
 
                         @foreach ($delegates as $delegate)
@@ -100,38 +100,16 @@
 
                 <div class="row p-3" style="border: 1px solid blue">
 
-                    <div class="form-group col-md-3">
-                        <label>{{ __('salesBills.product_type_label') }}</label>
-
-                        <select class="form-control" id="normal_sale">
-                            <option value="" selected disabled>
-                                {{ __('salesBills.select_product_type') }}
-                            </option>
-
-                            <option value="0">
-                                {{ __('salesBills.normal_sale') }}
-                            </option>
-
-                            <option value="1">
-                                {{ __('salesBills.bonus') }}
-                            </option>
-
-                            <option value="2">
-                                {{ __('salesBills.advertisement') }}
-                            </option>
-                        </select>
-                    </div>
 
                     <div class="form-group col-md-4">
-                        <label>{{ __('salesBills.store') }}</label>
+                        <label> {{ __('returnSalesBills.store') }}</label>
 
-                        <select class="form-control select2" id="store_id">
+                        <select class="form-control select2" id="general_return_sales_orders_store">
                             <option value="" selected disabled>
-                                {{ __('salesBills.select_store') }}
+                                 {{ __('returnSalesBills.choose_store') }}
                             </option>
-
                             @foreach ($stores as $store)
-                                <option value="{{ $store->id }}">
+                                <option  value="{{ $store->id }}">
                                     {{ $store->name }}
                                 </option>
                             @endforeach
@@ -139,12 +117,13 @@
 
                     </div>
 
-                    <div class="form-group col-md-4">
-                        <label>{{ __('salesBills.item') }}</label>
 
-                        <select class="form-control select2" id="item_code">
+                    <div class="form-group col-md-4">
+                        <label> {{ __('returnSalesBills.item') }}</label>
+
+                        <select class="form-control select2" id="general_return_sales_orders_item_code">
                             <option value="" selected disabled>
-                                {{ __('salesBills.select_item') }}
+                                 {{ __('returnSalesBills.select_item') }}
                             </option>
 
                             @foreach ($items as $item)
@@ -156,54 +135,76 @@
 
                     </div>
 
-                    <div class="col-4 related_itemcard" style="display: none" id="unitsDiv"></div>
+                    <div class="col-4 related_itemcard" style="display: none" id="general_return_sales_orders_unitsDiv"></div>
 
-                    <div class="col-4 batchs" style="display: none" id="batchs_div"></div>
+                    <div class="form-group col-md-4 related_itemcard_date" style="display: none">
+                        <label> {{ __('returnSalesBills.production_date') }}</label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="general_return_sales_orders_production_date"
+                            name="production_date"
+                            value=""
+                        >
+                    </div>
+
+                    <div class="form-group col-md-4 related_itemcard_date" style="display: none">
+                        <label> {{ __('returnSalesBills.end_date') }}</label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="general_return_sales_orders_end_date"
+                            name="end_date"
+                            value=""
+                        >
+                    </div>
 
                     <div class="form-group col-md-4">
-                        <label>{{ __('salesBills.sale_type') }}</label>
+                        <label> {{ __('returnSalesBills.sale_type') }}</label>
 
-                        <select class="form-control" id="sale_type">
+                        <select class="form-control" id="general_return_sales_orders_sale_type">
                             <option value="" selected disabled>
-                                {{ __('salesBills.select_sale_type') }}
+                                 {{ __('returnSalesBills.select_sale_type') }}
                             </option>
 
                             <option value="0">
-                                {{ __('salesBills.wholesale') }}
+                                 {{ __('returnSalesBills.wholesale') }}
                             </option>
 
                             <option value="1">
-                                {{ __('salesBills.half_wholesale') }}
+                                 {{ __('returnSalesBills.half_wholesale') }}
                             </option>
 
                             <option value="2">
-                                {{ __('salesBills.retail') }}
+                                 {{ __('returnSalesBills.retail') }}
                             </option>
                         </select>
 
                     </div>
 
                     <div class="form-group col-md-3">
-                        <label>{{ __('salesBills.quantity') }}</label>
+                        <label> {{ __('returnSalesBills.quantity') }}</label>
 
-                        <input type="number" value="" class="form-control" id="quantity" name="quantity">
+                        <input type="number" value="" class="form-control" id="general_return_sales_orders_quantity" name="quantity">
 
                         @error('quantity')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
-                    <div style="display: none" id="price_div" class="form-group col-md-3">
-                        <label>{{ __('salesBills.price') }}</label>
+                    <div id="general_return_sales_orders_price_div" class="form-group col-md-3">
+                        <label> {{ __('returnSalesBills.price') }}</label>
 
-                        <input readonly type="number" value="" class="form-control" id="price"
+                        <input type="number" value="" class="form-control" id="general_return_sales_orders_price"
                             name="price">
                     </div>
 
                     <div class="form-group col-md-3">
-                        <label>{{ __('salesBills.final_total') }}</label>
+                        <label> {{ __('returnSalesBills.final_total') }}</label>
 
-                        <input type="number" value="" readonly name="total_price" id="total_price"
+                        <input type="number" value="" readonly name="total_price" id="general_return_sales_orders_total_price"
                             class="form-control">
 
                         @error('total_price')
@@ -215,8 +216,8 @@
                         <div class="col-12">
 
                             <div class="form-group text-center">
-                                <button type="button" class="btn btn-info" id="save_edit_item">
-                                    {{ __('salesBills.add_invoice') }}
+                                <button type="button" class="btn btn-info" id="general_return_sales_orders_save_edit_item">
+                                     {{ __('returnSalesBills.add_invoice') }}
                                 </button>
                             </div>
 
@@ -230,27 +231,29 @@
             <div class="row p-3" style="border: 1px solid blue">
 
                 <h4 class="form-control text-center">
-                    {{ __('salesBills.invoice_items') }}
+                     {{ __('returnSalesBills.invoice_items') }}
                 </h4>
 
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover text-center">
                         <thead class="custom_head">
                             <tr>
-                                <th>{{ __('salesBills.item') }}</th>
-                                <th>{{ __('salesBills.item_unit') }}</th>
-                                <th>{{ __('salesBills.sale_type') }}</th>
-                                <th>{{ __('salesBills.quantity') }}</th>
-                                <th>{{ __('salesBills.product_type') }}</th>
-                                <th>{{ __('salesBills.unit_price') }}</th>
-                                <th>{{ __('salesBills.total') }}</th>
+
+                                <th> {{ __('returnSalesBills.item') }}</th>
+                                <th> {{ __('returnSalesBills.item_unit') }}</th>
+                                <th> {{ __('returnSalesBills.production_date') }}</th>
+                                <th> {{ __('returnSalesBills.end_date') }}</th>
+                                <th> {{ __('returnSalesBills.product_type') }}</th>
+                                <th> {{ __('returnSalesBills.quantity') }}</th>
+                                <th> {{ __('returnSalesBills.unit_price') }}</th>
+                                <th> {{ __('returnSalesBills.total') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
 
-                        <tbody id="table_items">
-                            @include('admin.sales_bills.get_add_items', [
-                                'bill_details' => $bill_details,
+                        <tbody id="general_return_sales_orders_table_items">
+                            @include('admin.general_return_sales_orders.get_add_items',[
+                                 'bill_details' => $bill_details,
                             ])
                         </tbody>
                     </table>
@@ -262,67 +265,67 @@
             <div class="row p-3" style="border: 1px solid blue">
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.invoice_total_before_discount_tax') }}</label>
+                    <label> {{ __('returnSalesBills.invoice_total_before_discount_tax') }}</label>
 
-                    <input class="form-control" readonly id="total" value="{{ $total_bill_cost / 100 }}">
+                    <input class="form-control" readonly id="general_return_sales_orders_total" value="{{ $total_bill_cost / 100 }}">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.enter_tax_percent') }}</label>
+                    <label> {{ __('returnSalesBills.enter_tax_percent') }}</label>
 
-                    <input type="number" name="tax_percent" value="{{ $data->tax_percent }}" id="tax_percent"
+                    <input type="number" name="tax_percent" value="{{ $data->tax_percent }}" id="general_return_sales_orders_tax_percent"
                         class="form-control">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.tax_value') }}</label>
+                    <label> {{ __('returnSalesBills.tax_value') }}</label>
 
-                    <input type="number" readonly name="tax_value" value="{{ $data->tax_value }}" id="tax_value"
+                    <input type="number" readonly name="tax_value" value="{{ $data->tax_value }}" id="general_return_sales_orders_tax_value"
                         class="form-control">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.enter_discount_percent') }}</label>
+                    <label> {{ __('returnSalesBills.enter_discount_percent') }}</label>
 
                     <input type="number" name="discount_percent" value="{{ $data->discount_percent }}"
-                        id="discount_percent" class="form-control">
+                        id="general_return_sales_orders_discount_percent" class="form-control">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.discount_value') }}</label>
+                    <label> {{ __('returnSalesBills.discount_value') }}</label>
 
                     <input type="number" readonly name="discount_value" value="{{ $data->discount_value }}"
-                        id="discount_value" class="form-control">
+                        id="general_return_sales_orders_discount_value" class="form-control">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.final_total') }}</label>
+                    <label> {{ __('returnSalesBills.final_total') }}</label>
 
                     <input type="number" readonly name="total_value" value="{{ $data->total_cost / 100 }}"
-                        id="total_value" class="form-control">
+                        id="general_return_sales_orders_total_value" class="form-control">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.bill_type') }}</label>
+                    <label> {{ __('returnSalesBills.bill_type') }}</label>
 
-                    <select class="form-control" id="bill_type">
+                    <select class="form-control" id="general_return_sales_orders_bill_type">
 
                         <option value="" selected disabled>
-                            {{ __('salesBills.select_bill_type') }}
+                             {{ __('returnSalesBills.select_bill_type') }}
                         </option>
 
                         <option @if ($data->pill_type == 0) selected @endif value="0">
-                            {{ __('salesBills.cash') }}
+                             {{ __('returnSalesBills.cash') }}
                         </option>
 
                         <option value="1" @if ($data->pill_type == 1) selected @endif>
-                            {{ __('salesBills.credit') }}
+                             {{ __('returnSalesBills.credit') }}
                         </option>
 
                     </select>
@@ -330,9 +333,9 @@
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.current_treasury') }}</label>
+                    <label> {{ __('returnSalesBills.current_treasury') }}</label>
 
-                    <select class="form-control" id="treasuries_id" disabled>
+                    <select class="form-control" id="general_return_sales_orders_treasuries_id" disabled>
                         <option value="{{ $shift->treasuries_id }}" selected>
                             {{ $shift->treasuries_name }}
                         </option>
@@ -341,32 +344,32 @@
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.treasury_available_balance') }}</label>
+                    <label> {{ __('returnSalesBills.treasury_available_balance') }}</label>
 
-                    <input class="form-control" readonly id="treasuries_balance"
+                    <input class="form-control" readonly id="general_return_sales_orders_treasuries_balance"
                         value="{{ $shift->treasuries_balance / 100 }}">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.paid_amount') }}</label>
+                    <label> {{ __('returnSalesBills.paid_amount') }}</label>
 
-                    <input class="form-control" value="{{ $data->what_paid }}" id="what_paid" name="what_paid">
+                    <input class="form-control" value="{{ $data->what_paid }}" id="general_return_sales_orders_what_paid" name="what_paid">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.remaining_amount') }}</label>
+                    <label> {{ __('returnSalesBills.remaining_amount') }}</label>
 
-                    <input readonly class="form-control" value="{{ $data->what_remain }}" id="what_remain"
+                    <input readonly class="form-control" value="{{ $data->what_remain }}" id="general_return_sales_orders_what_remain"
                         name="what_remain">
                 </div>
 
 
                 <div class="form-group col-md-4">
-                    <label>{{ __('salesBills.notes') }}</label>
+                    <label> {{ __('returnSalesBills.notes') }}</label>
 
-                    <textarea id="notes" class="form-control">{{ $data->notes }}</textarea>
+                    <textarea id="general_return_sales_orders_notes" class="form-control">{{ $data->notes }}</textarea>
                 </div>
 
             </div>
@@ -376,9 +379,9 @@
                 <div class="col-12">
 
                     <div class="form-group text-center">
-                        <button type="button" id="approve_sale_bill" class="btn btn-success p-2 mt-3"
+                        <button type="button" id="general_return_sales_orders_approve_sale_bill" class="btn btn-success p-2 mt-3"
                             style="width: 100px">
-                            {{ __('salesBills.approve') }}
+                             {{ __('returnSalesBills.approve') }}
                         </button>
                     </div>
 

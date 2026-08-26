@@ -130,10 +130,9 @@ return [
 
     'cannot_update_archived' => 'لا يمكن تحديثها لانها مؤرشفه',
 
-    'quantity_data' => 'بيانات الكميات',
-    'choose_suitable' => 'اختر المناسب',
+    'choose_store' => 'اختر المخزن',
     'available_quantity' => 'الكميه المتاحه',
-    'with_date' => 'بتاريخ',
+    'end_date' => 'تاريخ الانتهاء',
     'item_units' => 'وحدات الصنف',
     'no_shift' => 'لا يوجد شفت مفتوح لك لا يمكن عرض البيانات',
 

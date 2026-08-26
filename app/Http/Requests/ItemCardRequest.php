@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ItemCardRequest extends FormRequest
 {
@@ -23,10 +24,24 @@ class ItemCardRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
 
-            'barcode' => 'nullable|string|max:50',
-            'name' => 'required',
+            'barcode' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('itemcards', 'barcode')
+                    ->where('com_code', auth()->user()->com_code)
+                    ->ignore($this->route('barcode')),
+            ],
+
+            'name' => [
+                'required',
+                Rule::unique('itemcards', 'name')
+                    ->where('com_code', auth()->user()->com_code)
+                    ->ignore($this->route('itemcard')),
+            ],
             'item_type' => 'required',
             'category_id' => 'required',
 
@@ -55,7 +70,9 @@ class ItemCardRequest extends FormRequest
     public function messages()
     {
         return [
+            'barcode.unique' => __('validation.barcode_unique'),
             'name.required' =>  __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
             'item_type.required' =>  __('validation.item_type_required'),
             'category_id.required' => __('validation.category_id_required'),
 
@@ -77,7 +94,7 @@ class ItemCardRequest extends FormRequest
             'retail_cost_price.required_if' =>  __('validation.retail_cost_price_required_if'),
 
 
-            'has_fixed_price.required'=> __('validation.has_fixed_price_required'),
+            'has_fixed_price.required' => __('validation.has_fixed_price_required'),
             'active.required' => __('validation.active_required'),
         ];
     }

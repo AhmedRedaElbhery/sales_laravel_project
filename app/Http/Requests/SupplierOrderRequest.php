@@ -26,9 +26,6 @@ class SupplierOrderRequest extends FormRequest
     {
         return [
             'supplier_code' => 'required',
-            Rule::unique('sales_material_types', 'name')
-                ->where('com_code', auth()->user()->com_code)
-                ->ignore($this->route('sales_material')),
             'pill_type' => 'required',
             'store' => 'required',
             'order_date' => 'required',

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateItemCardRequest extends FormRequest
 {
@@ -23,10 +24,16 @@ class UpdateItemCardRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
 
             'barcode' => 'nullable|string|max:50',
-            'name' => 'required',
+            'name' => [
+                'required',
+                Rule::unique('itemcards', 'name')
+                    ->where('com_code', auth()->user()->com_code)
+                    ->ignore($this->route('itemcard')),
+            ],
 
             'Wholesale_price' => 'required_unless:unit_parent_id,null',
             'half_Wholesale_price' => 'required_unless:unit_parent_id,null',
@@ -52,13 +59,14 @@ class UpdateItemCardRequest extends FormRequest
     {
         return [
             'name.required' => __('validation.name_required'),
+            'name.unique' => __('validation.name_unique'),
             'item_type.required' => __('validation.item_type_required'),
             'category_id.required' => __('validation.category_id_required'),
 
 
-            'unit_parent_id.required' =>__('validation.unit_parent_id_required'),
-            'Wholesale_price.required_unless' =>__('validation.Wholesale_price_required_unless'),
-            'half_Wholesale_price.required_unless' =>__('validation.half_Wholesale_price_required_unless'),
+            'unit_parent_id.required' => __('validation.unit_parent_id_required'),
+            'Wholesale_price.required_unless' => __('validation.Wholesale_price_required_unless'),
+            'half_Wholesale_price.required_unless' => __('validation.half_Wholesale_price_required_unless'),
             'price.required_unless' => __('validation.price_required_unless'),
             'cost_price.required_unless' => __('validation.cost_price_required_unless'),
 
@@ -66,14 +74,14 @@ class UpdateItemCardRequest extends FormRequest
 
             'has_retail_unit.required' => __('validation.has_retail_unit_required'),
             'retail_units.required_if' =>  __('validation.retail_units_required_if'),
-            'retail_unit_to_parent.required_if' =>__('validation.retail_unit_to_parent_required_if'),
+            'retail_unit_to_parent.required_if' => __('validation.retail_unit_to_parent_required_if'),
             'retail_Wholesale_price.required_if' => __('validation.retail_Wholesale_price_required_if'),
-            'retail_half_Wholesale_price.required_if' =>__('validation.retail_half_Wholesale_price_required_if'),
+            'retail_half_Wholesale_price.required_if' => __('validation.retail_half_Wholesale_price_required_if'),
             'retail_price.required_if' => __('validation.retail_price_required_if'),
             'retail_cost_price.required_if' =>  __('validation.retail_cost_price_required_if'),
 
 
-            'has_fixed_price.required'=>__('validation.has_fixed_price_required'),
+            'has_fixed_price.required' => __('validation.has_fixed_price_required'),
             'active.required' => __('validation.active_required'),
         ];
     }

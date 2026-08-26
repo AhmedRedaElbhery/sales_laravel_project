@@ -24,12 +24,13 @@ class SupplierCategoryRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'name' => [
                 'required',
                 Rule::unique('suppliercategory', 'name')
                     ->where('com_code', auth()->user()->com_code)
-                    ->ignore($this->route('id')),
+                    ->ignore($this->route('suppliers_category')),
             ],
 
             'active' => 'required',

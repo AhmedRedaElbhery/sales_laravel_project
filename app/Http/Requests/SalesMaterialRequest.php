@@ -24,12 +24,13 @@ class SalesMaterialRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'name' => [
                 'required',
                 Rule::unique('sales_material_types', 'name')
                     ->where('com_code', auth()->user()->com_code)
-                    ->ignore($this->route('sales_material')),
+                    ->ignore($this->route('id')),
             ],
             'active' => 'required',
         ];

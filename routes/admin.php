@@ -50,33 +50,85 @@ Route::group([
     Route::post('/adminpanelsettings/update', [AdminPanelSettingsController::class, 'update'])->name('admin.adminpanelsettings.update');
     /* Start Treasuries Routes */
 
-    Route::get('/treasuries/index', [TreasuriesController::class, 'index'])->name('admin.treasuries.index');
-    Route::get('/treasuries/create', [TreasuriesController::class, 'create'])->name('admin.treasuries.create');
-    Route::post('/treasuries/store', [TreasuriesController::class, 'store'])->name('admin.treasuries.store');
-    Route::get('/treasuries/edit/{id}', [TreasuriesController::class, 'edit'])->name('admin.treasuries.edit');
-    Route::put('/treasuries/update/{id}', [TreasuriesController::class, 'update'])->name('admin.treasuries.update');
-    Route::get('/treasuries/details/{id}', [TreasuriesController::class, 'details'])->name('admin.treasuries.details');
-    Route::delete('/treasuries/delete/{id}', [TreasuriesController::class, 'delete'])->name('admin.treasuries.delete');
-    Route::get('/treasuries/add_treasuries_branch/{id}', [TreasuriesController::class, 'add_treasuries_branch'])->name('admin.treasuries.add_treasuries_branch');
-    Route::post('/treasuries/store_treasuries_branch/{id}', [TreasuriesController::class, 'store_treasuries_branch'])->name('admin.treasuries.store_treasuries_branch');
+    Route::prefix('treasuries')
+        ->name('admin.treasuries.')
+        ->group(function () {
+
+            Route::get('index', [TreasuriesController::class, 'index'])
+                ->name('index');
+
+            Route::get('create', [TreasuriesController::class, 'create'])
+                ->name('create');
+
+            Route::post('store', [TreasuriesController::class, 'store'])
+                ->name('store');
+
+            Route::get('edit/{id}', [TreasuriesController::class, 'edit'])
+                ->name('edit');
+
+            Route::put('update/{id}', [TreasuriesController::class, 'update'])
+                ->name('update');
+
+            Route::get('details/{id}', [TreasuriesController::class, 'details'])
+                ->name('details');
+
+            Route::delete('delete/{id}', [TreasuriesController::class, 'delete'])
+                ->name('delete');
+
+            Route::get('add_treasuries_branch/{id}', [TreasuriesController::class, 'add_treasuries_branch'])
+                ->name('add_treasuries_branch');
+
+            Route::post('store_treasuries_branch/{id}', [TreasuriesController::class, 'store_treasuries_branch'])
+                ->name('store_treasuries_branch');
+        });
     /*start Sales Material */
 
-    Route::get('/sales/index', [SalesMaterialTypesController::class, 'index'])->name('admin.sales_material.index');
-    Route::get('/sales/create', [SalesMaterialTypesController::class, 'create'])->name('admin.sales_material.create');
-    Route::post('/sales/store', [SalesMaterialTypesController::class, 'store'])->name('admin.sales_material.store');
-    Route::get('/sales/edit/{id}', [SalesMaterialTypesController::class, 'edit'])->name('admin.sales_material.edit');
-    Route::put('/sales/update/{id}', [SalesMaterialTypesController::class, 'update'])->name('admin.sales_material.update');
-    Route::delete('/sales/delete/{id}', [SalesMaterialTypesController::class, 'delete'])->name('admin.sales_material.delete');
+    Route::prefix('sales')
+        ->name('admin.sales_material.')
+        ->group(function () {
 
+            Route::get('index', [SalesMaterialTypesController::class, 'index'])
+                ->name('index');
+
+            Route::get('create', [SalesMaterialTypesController::class, 'create'])
+                ->name('create');
+
+            Route::post('store', [SalesMaterialTypesController::class, 'store'])
+                ->name('store');
+
+            Route::get('edit/{id}', [SalesMaterialTypesController::class, 'edit'])
+                ->name('edit');
+
+            Route::put('update/{id}', [SalesMaterialTypesController::class, 'update'])
+                ->name('update');
+
+            Route::delete('delete/{id}', [SalesMaterialTypesController::class, 'delete'])
+                ->name('delete');
+        });
     /*start Stores */
 
-    Route::get('/store/index', [StoresController::class, 'index'])->name('admin.store.index');
-    Route::get('/store/create', [StoresController::class, 'create'])->name('admin.store.create');
-    Route::post('/store/store', [StoresController::class, 'store'])->name('admin.store.store');
-    Route::get('/store/edit/{id}', [StoresController::class, 'edit'])->name('admin.store.edit');
-    Route::put('/store/update/{id}', [StoresController::class, 'update'])->name('admin.store.update');
-    Route::delete('/store/delete/{id}', [StoresController::class, 'delete'])->name('admin.store.delete');
+    Route::prefix('store')
+        ->name('admin.store.')
+        ->group(function () {
 
+            Route::get('index', [StoresController::class, 'index'])
+                ->name('index');
+
+            Route::get('create', [StoresController::class, 'create'])
+                ->name('create');
+
+            Route::post('store', [StoresController::class, 'store'])
+                ->name('store');
+
+            Route::get('edit/{id}', [StoresController::class, 'edit'])
+                ->name('edit');
+
+            Route::put('update/{id}', [StoresController::class, 'update'])
+                ->name('update');
+
+            Route::delete('delete/{id}', [StoresController::class, 'delete'])
+                ->name('delete');
+        });
     /* start unites */
 
     Route::resource('unit', UnitController::class);
@@ -110,13 +162,29 @@ Route::group([
 
     /* start supplier orders */
     Route::resource('supplier_orders', SupplierOrdersController::class);
-    Route::post('supplier_orders/getUnits', [SupplierOrdersController::class, 'getUnits'])->name('supplier_orders.getUnits');
-    Route::post('supplier_orders/addunits', [SupplierOrdersController::class, 'addUnits'])->name('supplier_orders.addunits');
-    Route::delete('supplier_orders/destroy_details/{id}', [SupplierOrdersController::class, 'destroyDetails'])->name('supplier_orders.destroy_details');
-    Route::post('/supplier_orders/edititem', [SupplierOrdersController::class, 'editItem'])->name('supplier_orders.edititem');
-    Route::post('supplier_orders/update_item', [SupplierOrdersController::class, 'updateItem'])->name('supplier_orders.update_item');
-    Route::post('supplier_orders/model_approve', [SupplierOrdersController::class, 'modelApprove'])->name('supplier_orders.model_approve');
 
+    Route::prefix('supplier_orders')
+        ->name('supplier_orders.')
+        ->group(function () {
+
+            Route::post('getUnits', [SupplierOrdersController::class, 'getUnits'])
+                ->name('getUnits');
+
+            Route::post('addunits', [SupplierOrdersController::class, 'addUnits'])
+                ->name('addunits');
+
+            Route::delete('destroy_details/{id}', [SupplierOrdersController::class, 'destroyDetails'])
+                ->name('destroy_details');
+
+            Route::post('edititem', [SupplierOrdersController::class, 'editItem'])
+                ->name('edititem');
+
+            Route::post('update_item', [SupplierOrdersController::class, 'updateItem'])
+                ->name('update_item');
+
+            Route::post('model_approve', [SupplierOrdersController::class, 'modelApprove'])
+                ->name('model_approve');
+        });
 
     /* admin */
     Route::resource('admin_accounts', AdminController::class);
@@ -143,52 +211,116 @@ Route::group([
     //////////////////////////////////////////////////////////////////////////////////
 
     Route::resource('sales_bills', SalesBillsController::class);
-    Route::get('sales_item/getUnits', [SalesBillsController::class, 'getUnits'])->name('sales_item.getUnits');
-    Route::get('sales_item/get_batchs', [SalesBillsController::class, 'get_batchs'])->name('sales_item.get_batchs');
-    Route::get('sales_item/get_price', [SalesBillsController::class, 'get_price'])->name('sales_item.get_price');
-    Route::get('sales_item/get_add_items', [SalesBillsController::class, 'get_add_items'])->name('sales_item.get_add_items');
+
     Route::get('sales_bills/print/{auto_serial}', [SalesBillsController::class, 'print'])->name('sales_bills.print');
 
+    Route::prefix('sales_item')
+        ->name('sales_item.')
+        ->group(function () {
 
-    Route::post('sales_item/open_active_bill', [SalesBillsController::class, 'open_active_bill'])->name('sales_item.open_active_bill');
-    Route::post('sales_item/save_active_billitems', [SalesBillsController::class, 'save_active_billitems'])->name('sales_item.save_active_billitems');
-    Route::get('sales_item/get_active_bill_data', [SalesBillsController::class, 'get_active_bill_data'])->name('sales_item.get_active_bill_data');
-    Route::post('sales_item/active_add_items', [SalesBillsController::class, 'active_add_items'])->name('sales_item.active_add_items');
-    Route::delete('sales_item/delete_item', [SalesBillsController::class, 'delete_item'])->name('sales_item.delete_item');
-    Route::delete('sales_item/active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])->name('sales_item.active_delete_all_items');
-    Route::post('sales_item/approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])->name('sales_item.approve_active_bill');
+            Route::get('getUnits', [SalesBillsController::class, 'getUnits'])
+                ->name('getUnits');
 
+            Route::get('get_batchs', [SalesBillsController::class, 'get_batchs'])
+                ->name('get_batchs');
+
+            Route::get('get_price', [SalesBillsController::class, 'get_price'])
+                ->name('get_price');
+
+            Route::get('get_add_items', [SalesBillsController::class, 'get_add_items'])
+                ->name('get_add_items');
+
+            Route::post('open_active_bill', [SalesBillsController::class, 'open_active_bill'])
+                ->name('open_active_bill');
+
+            Route::post('save_active_billitems', [SalesBillsController::class, 'save_active_billitems'])
+                ->name('save_active_billitems');
+
+            Route::get('get_active_bill_data', [SalesBillsController::class, 'get_active_bill_data'])
+                ->name('get_active_bill_data');
+
+            Route::post('active_add_items', [SalesBillsController::class, 'active_add_items'])
+                ->name('active_add_items');
+
+            Route::delete('delete_item', [SalesBillsController::class, 'delete_item'])
+                ->name('delete_item');
+
+            Route::delete('active_delete_all_items', [SalesBillsController::class, 'active_delete_all_items'])
+                ->name('active_delete_all_items');
+
+            Route::post('approve_active_bill', [SalesBillsController::class, 'approve_active_bill'])
+                ->name('approve_active_bill');
+        });
 
     //general return orders
 
-    Route::get('general_return_orders/get_batchs', [GeneralReturnOrdersController::class, 'getbatchs'])->name('general_return_orders.get_batchs');
-
-
-
     Route::resource('general_return_orders', GeneralReturnOrdersController::class);
-    Route::post('general_return_orders/getUnits', [GeneralReturnOrdersController::class, 'getUnits'])->name('general_return_orders.getUnits');
-    Route::post('general_return_orders/addunits', [GeneralReturnOrdersController::class, 'addUnits'])->name('general_return_orders.addunits');
-    Route::delete('general_return_orders/destroy_details/{id}', [GeneralReturnOrdersController::class, 'destroyDetails'])->name('general_return_orders.destroy_details');
-    Route::post('/general_return_orders/edititem', [GeneralReturnOrdersController::class, 'editItem'])->name('general_return_orders.edititem');
-    Route::post('general_return_orders/update_item', [GeneralReturnOrdersController::class, 'updateItem'])->name('general_return_orders.update_item');
-    Route::post('general_return_orders/model_approve', [GeneralReturnOrdersController::class, 'modelApprove'])->name('general_return_orders.model_approve');
+
+    Route::prefix('general_return_orders')
+        ->name('general_return_orders.')
+        ->group(function () {
+
+            Route::get('get_batchs', [GeneralReturnOrdersController::class, 'getbatchs'])
+                ->name('get_batchs');
+
+            Route::post('getUnits', [GeneralReturnOrdersController::class, 'getUnits'])
+                ->name('getUnits');
+
+            Route::post('addunits', [GeneralReturnOrdersController::class, 'addUnits'])
+                ->name('addunits');
+
+            Route::delete('destroy_details/{id}', [GeneralReturnOrdersController::class, 'destroyDetails'])
+                ->name('destroy_details');
+
+            Route::post('edititem', [GeneralReturnOrdersController::class, 'editItem'])
+                ->name('edititem');
+
+            Route::post('update_item', [GeneralReturnOrdersController::class, 'updateItem'])
+                ->name('update_item');
+
+            Route::post('model_approve', [GeneralReturnOrdersController::class, 'modelApprove'])
+                ->name('model_approve');
+        });
 
 
-    Route::get('itemCardBalance/filter', [ItemCardBalanceController::class,'filter'])->name('itemCardBalance.filter');
+    /* items details */
+    Route::get('itemCardBalance/filter', [ItemCardBalanceController::class, 'filter'])->name('itemCardBalance.filter');
     Route::resource('itemCardBalance', ItemCardBalanceController::class);
 
+    /* return sales orders */
 
+    Route::prefix('general_return_sales_order')
+        ->name('general_return_sales_order.')
+        ->group(function () {
 
-    Route::get('general_return_sales_order/getUnits', [GeneralReturnSalesOrders::class, 'getUnits'])->name('general_return_sales_order.getUnits');
-    Route::get('general_return_sales_order/get_batchs', [GeneralReturnSalesOrders::class, 'get_batchs'])->name('general_return_sales_order.get_batchs');
-    Route::get('general_return_sales_order/get_price', [GeneralReturnSalesOrders::class, 'get_price'])->name('general_return_sales_order.get_price');
-    Route::get('general_return_sales_order/get_add_items', [GeneralReturnSalesOrders::class, 'get_add_items'])->name('general_return_sales_order.get_add_items');
-    Route::post('general_return_sales_order/open_active_bill', [GeneralReturnSalesOrders::class, 'open_active_bill'])->name('general_return_sales_order.open_active_bill');
+            Route::get('getUnits', [GeneralReturnSalesOrders::class, 'getUnits'])
+                ->name('getUnits');
 
+            Route::get('get_add_items', [GeneralReturnSalesOrders::class, 'get_add_items'])
+                ->name('get_add_items');
+
+            Route::post('open_active_bill', [GeneralReturnSalesOrders::class, 'open_active_bill'])
+                ->name('open_active_bill');
+
+            Route::post('save_active_billitems', [GeneralReturnSalesOrders::class, 'save_active_billitems'])
+                ->name('save_active_billitems');
+
+            Route::get('get_active_bill_data', [GeneralReturnSalesOrders::class, 'get_active_bill_data'])
+                ->name('get_active_bill_data');
+
+            Route::post('active_add_items', [GeneralReturnSalesOrders::class, 'active_add_items'])
+                ->name('active_add_items');
+
+            Route::delete('delete_item', [GeneralReturnSalesOrders::class, 'delete_item'])
+                ->name('delete_item');
+
+            Route::delete('active_delete_all_items', [GeneralReturnSalesOrders::class, 'active_delete_all_items'])
+                ->name('active_delete_all_items');
+
+            Route::post('approve_active_bill', [GeneralReturnSalesOrders::class, 'approve_active_bill'])
+                ->name('approve_active_bill');
+        });
     Route::resource('general_return_sales_order', GeneralReturnSalesOrders::class);
-
-
-
 });
 
 Route::get('/lang/{locale}', function ($locale) {

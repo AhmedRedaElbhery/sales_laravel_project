@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('sales_bills_details', function (Blueprint $table) {
             $table->id();
+            $table->integer('bill_auto_serial');
             $table->integer('com_code');
             $table->decimal('quantity', 10, 2);
             $table->boolean('isparentunit');

@@ -6,6 +6,7 @@ return [
 
     'name_required' => 'The name is required',
     'name_unique' => 'This name already exists',
+    'barcode_unique' => 'This barcode already exists',
     'is_master_required' => 'Select the unit type',
     'active_required' => 'Select the status',
 

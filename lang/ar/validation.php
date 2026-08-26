@@ -6,6 +6,7 @@ return [
 
     'name_required' => 'الاسم مطلوب',
     'name_unique' => 'هذا الاسم موجود بالفعل',
+    'barcode_unique' => 'هذا الباركود موجود بالفعل',
     'is_master_required' => 'اختر نوع الوحده',
     'active_required' => 'اختر الحاله ',
 

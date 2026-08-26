@@ -46,7 +46,7 @@
                     @if($shift)
 
                     <button type="button" class="btn btn-success edititem" data-toggle="modal"
-                        data-target="#modal_activebill">
+                        data-target="#general_return_sales_orders_modal_activebill">
                         {{ __('returnSalesBills.add_actual_invoice') }}
                     </button>
 
@@ -105,7 +105,7 @@
                                                 <td>
                                                     <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                                        <input type="hidden" id="get_active_bill_data_url"
+                                                        <input type="hidden" id="general_return_sales_orders_get_active_bill_data_url"
                                                             value="{{  route('general_return_sales_order.get_active_bill_data') }}">
 
                                                         @if ($item->is_approved == 0)
@@ -178,7 +178,7 @@
 
 
 
-    <div class="modal fade" id="modal_activebill">
+    <div class="modal fade" id="general_return_sales_orders_modal_activebill">
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-info">
 
@@ -190,13 +190,11 @@
                 </div>
 
                 <input type="hidden" id="token_search" value="{{ csrf_token() }}">
-                <input type="hidden" id="autoserialparent" value="{{ $data['auto_serial'] }}">
-                <input type="hidden" id="sales_item_return_return_getUnits_url" value="{{  route('general_return_sales_order.getUnits') }}">
-                <input type="hidden" id="sales_item_return_get_batchs_url" value="{{  route('general_return_sales_order.get_batchs') }}">
-                <input type="hidden" id="sales_item_return_getprice_url" value="{{  route('general_return_sales_order.get_price') }}">
-                <input type="hidden" id="sales_item_return_getitems_url" value="{{  route('general_return_sales_order.get_add_items') }}">
+                <input type="hidden" id="general_return_sales_orders_autoserialparent" value="{{ $data['auto_serial'] }}">
+                <input type="hidden" id="general_return_sales_order_getUnits_url" value="{{  route('general_return_sales_order.getUnits') }}">
+                <input type="hidden" id="general_return_sales_order_getitems_url" value="{{  route('general_return_sales_order.get_add_items') }}">
 
-                <input type="hidden" id="open_active_bill" value="{{  route('general_return_sales_order.open_active_bill') }}">
+                <input type="hidden" id="general_return_sales_orders_open_active_bill" value="{{  route('general_return_sales_order.open_active_bill') }}">
 
                 <div class="modal-body bg-white text-dark">
 
@@ -204,7 +202,7 @@
 
                         <div class="form-group col-md-3">
                             <label>{{ __('returnSalesBills.invoice_date') }}</label>
-                            <input type="date" class="form-control" id="invoice_date" value="">
+                            <input type="date" class="form-control" id="general_return_sales_orders_invoice_date" value="">
 
                             @error('invoice_date')
                                 <span class="text-danger">{{ $message }}</span>
@@ -213,7 +211,7 @@
 
                         <div class="form-group col-md-3">
                             <label>{{ __('returnSalesBills.invoice_categories') }}</label>
-                            <select class="form-control select2" id="sales_material_type">
+                            <select class="form-control select2" id="general_return_sales_orders_sales_material_type">
                                 <option value="" selected disabled>
                                     {{ __('returnSalesBills.select_invoice_category') }}
                                 </option>
@@ -233,7 +231,7 @@
                                 </a>
                             </label>
 
-                            <select class="form-control select2" id="customer_code">
+                            <select class="form-control select2" id="general_return_sales_orders_customer_code">
                                 <option value="" selected disabled>
                                     {{ __('returnSalesBills.select_customer_account') }}
                                 </option>
@@ -249,7 +247,7 @@
                         <div class="form-group col-md-3">
                             <label>{{ __('returnSalesBills.delegate_account') }}</label>
 
-                            <select class="form-control select2" id="delegate_code">
+                            <select class="form-control select2" id="general_return_sales_orders_delegate_code">
                                 <option value="" selected disabled>
                                     {{ __('returnSalesBills.select_delegate_account') }}
                                 </option>
@@ -264,7 +262,7 @@
 
                         <div class="col-12 mt-3">
                             <div class="form-group text-center">
-                                <button type="button" id="open_active_bill" class="btn btn-primary p-2">
+                                <button type="button" id="general_return_sales_orders_open_active_bill" class="btn btn-primary p-2">
                                     {{ __('returnSalesBills.add_invoice') }}
                                 </button>
                             </div>
@@ -286,7 +284,7 @@
     </div>
 
 
-    <div class="modal fade" id="modal_billitems">
+    <div class="modal fade" id="general_return_sales_orders_modal_billitems">
 
     </div>
 

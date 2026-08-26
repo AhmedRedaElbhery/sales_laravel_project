@@ -2,7 +2,7 @@
 
     <label>{{ __('salesBills.item_units') }}</label>
 
-    <select id="unit_id_add" name="units" class="form-control">
+    <select id="general_return_sales_orders_unit_id_add" name="units" class="form-control">
 
         <option value="" selected disabled>
             {{ __('salesBills.choose_unit') }}
