@@ -512,14 +512,14 @@ class SalesBillsController extends Controller
             $customer_name = Customer::where(['com_code' => $com_code, 'customer_code' => $request->customer_code])->value('name');
             $item_movement['date'] = date('Y-m-d');
             $item_movement['com_code'] = auth()->user()->com_code;
-            $item_movement['movement_type'] = 5;
+            $item_movement['movement_type'] = 15;
             $item_movement['added_by'] = auth()->user()->id;
             $item_movement['quantity_after_movement'] = $quantity_after_movement;
             $item_movement['quantity_before_movement'] = $quantity_before_movement;
             $item_movement['item_code'] =  $item_data->item_code;
             $item_movement['table_code'] = $batche_data->auto_serial;
             $item_movement['table_details_code'] =  $item_data->batch_id;
-            $item_movement['byan'] = "مرتجع من " . "" . $customer_name;
+            $item_movement['byan'] = "حذف من فاتوره مبيعات عميل  " . "" . $customer_name;
             ItemMovement::create($item_movement);
 
             if ($request->parent_unit == 1) {
@@ -613,7 +613,7 @@ class SalesBillsController extends Controller
 
                 $money_for_account_before_transaction = TreasuriesTransaction::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code])->sum('money_for_account');
                 $data->update([
-                    'customer_balance_after_pill' => $money_for_account_before_transaction,
+                    'customer_balance_before_pill' => $money_for_account_before_transaction,
                 ]);
 
 
@@ -628,7 +628,7 @@ class SalesBillsController extends Controller
 
                 $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $com_code])->first();
                 if ($treasuries->last_isal_collect == null) {
-                    $$treasuries->last_isal_collect = 0;
+                    $treasuries->last_isal_collect = 0;
                 }
                 $transaction_id = TreasuriesTransaction::create([
                     'treasuries_id' => $shift->treasuries_id,

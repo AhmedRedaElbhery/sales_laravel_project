@@ -60,14 +60,18 @@ $(document).ready(function () {
                         function () {
                             // Put the returned HTML into a container
                             $(
-                                "#general_return_sales_orders_modal_billitems"
+                                "#general_return_sales_orders_modal_activebill"
                             ).html(response);
 
                             // Show the modal that came from the returned HTML
 
                             $(
-                                "#general_return_sales_orders_modal_billitems"
+                                "#general_return_sales_orders_modal_activebill"
                             ).modal("show");
+
+                            $("#general_return_sales_orders_modal_activebill").on("hidden.bs.modal", function () {
+                                location.reload();
+                            });
                         }
                     );
 
@@ -378,16 +382,15 @@ $(document).ready(function () {
 
                     var item_total_price = 0;
 
-                    $(".item_total_price").each(function () {
-                        item_total_price += Number($(this).val());
-                    });
+                    $("#general_return_sales_orders_table_items")
+                        .find(".general_return_sales_orders_item_total_price")
+                        .each(function () {
+                            item_total_price += Number($(this).text().trim());
+                        });
 
-                    $("#total").val(item_total_price / 100);
-                    $("#item_code").val("");
-                    $("#unit_id_add").val("");
-                    $("#quantity_with_date").val("");
-                    $("#price").val("");
-                    $("#sale_type").val("");
+                    $("#general_return_sales_orders_total").val(
+                        item_total_price
+                    );
                 },
 
                 error: function (xhr) {
@@ -397,4 +400,296 @@ $(document).ready(function () {
         }
     );
 
+    $(document).on(
+        "click",
+        "#general_return_sales_orders_delete",
+        function (e) {
+            e.preventDefault();
+
+            let row = $(this).closest("tr");
+
+            var record_id = $("#item_record_id").val();
+            var is_parent_unit = $("#is_parent_unit").val();
+            var token_search = $("#token_search").val();
+            var ajax_deleteItem = $(
+                "#general_return_sales_orders_delete_item_url"
+            ).val();
+
+            $.ajax({
+                url: ajax_deleteItem,
+                type: "DELETE",
+                dataType: "json",
+                data: {
+                    record_id: record_id,
+                    is_parent_unit: is_parent_unit,
+                    _token: token_search,
+                },
+
+                success: function (response) {
+                    alert(response.message);
+
+                    row.remove();
+
+                    var item_total_price = 0;
+
+                    $(".item_total_price").each(function () {
+                        item_total_price += Number($(this).val());
+                    });
+
+                    $("#total").val(item_total_price);
+                },
+
+                error: function (xhr) {
+                    alert(xhr.responseJSON?.message || "يوجد خطأ ما");
+                },
+            });
+        }
+    );
+
+    $("#general_return_sales_orders_modal_billitems").on("hidden.bs.modal", function () {
+        location.reload();
+    });
+
+    $(document).on("input", "#general_return_sales_orders_tax_percent", function () {
+
+        $("#general_return_sales_orders_discount_percent").val("");
+        $("#general_return_sales_orders_discount_value").val("");
+
+        var tax_percent = $("#general_return_sales_orders_tax_percent").val();
+
+        if (tax_percent > 100 || tax_percent < 0) {
+            alert(" خطا بنسبه الضريبه ادخل نسبه صحيحه");
+            $("#general_return_sales_orders_tax_percent").val("");
+            $("#general_return_sales_orders_tax_value").val("");
+            return false;
+        }
+
+        var total = $("#general_return_sales_orders_total").val();
+
+        value = (total * tax_percent) / 100;
+
+        $("#general_return_sales_orders_tax_value").val(value);
+        var total_value = parseFloat(total) + parseFloat(value);
+
+        $("#general_return_sales_orders_total_value").val(total_value);
+
+        var what_paid = $("#general_return_sales_orders_what_paid").val();
+        if (what_paid != null && what_paid != "") {
+            $("#general_return_sales_orders_what_remain").val(total_value - what_paid);
+        }
+    });
+
+    $(document).on("input", "#general_return_sales_orders_discount_percent", function () {
+        var discount_percent = $("#general_return_sales_orders_discount_percent").val();
+        if (discount_percent > 100 || discount_percent < 0) {
+            alert(" خطا بنسبه الخصم ادخل نسبه صحيحه");
+            $("#general_return_sales_orders_discount_percent").val("");
+            $("#general_return_sales_orders_discount_value").val("");
+            return false;
+        }
+
+        var total = parseFloat($("#general_return_sales_orders_total").val());
+        var tax_value = parseFloat($("#general_return_sales_orders_tax_value").val() || 0);
+
+        value = ((total + tax_value) * discount_percent) / 100;
+
+        $("#general_return_sales_orders_discount_value").val(value);
+
+        var total_value = total + tax_value - value;
+        $("#general_return_sales_orders_total_value").val(total_value);
+
+        var what_paid = $("#general_return_sales_orders_what_paid").val();
+        if (what_paid != null && what_paid != "") {
+            console.log(total_value);
+            $("#general_return_sales_orders_what_remain").val(total_value - what_paid);
+        }
+    });
+
+    $(document).on("input", "#general_return_sales_orders_what_paid", function () {
+        var total = $("#general_return_sales_orders_total_value").val();
+
+        if (total == null || total == "") {
+            var total = $("#general_return_sales_orders_total").val();
+        }
+        var what_paid = $("#general_return_sales_orders_what_paid").val();
+
+        $("#general_return_sales_orders_what_remain").val(total - what_paid);
+    });
+
+
+    $(document).on(
+        "click",
+        "#general_return_sales_orders_approve_sale_bill",
+        function (e) {
+            var date = $(
+                "#general_return_sales_orders_update_invoice_date"
+            ).val();
+            let customer_code = $(
+                "#general_return_sales_orders_update_customer_code option:selected"
+            ).val();
+            let delegate_code = $(
+                "#general_return_sales_orders_update_delegate_code option:selected"
+            ).val();
+            let sales_material_type_id = $(
+                "#general_return_sales_orders_update_sales_material_type option:selected"
+            ).val();
+
+            if (date == null || date == "") {
+                alert("ادخل التاريخ");
+                return;
+            }
+
+            if (
+                sales_material_type_id == null ||
+                sales_material_type_id == ""
+            ) {
+                alert("اختر نوع فئه الفاتوره");
+                return;
+            }
+
+            if (customer_code == null || customer_code == "") {
+                alert("اختر العميل");
+                return;
+            }
+
+            if (delegate_code == null || delegate_code == "") {
+                alert("اختر المندوب");
+                return;
+            }
+
+            var tax_percent = $(
+                "#general_return_sales_orders_tax_percent"
+            ).val();
+            var tax_value = $("#general_return_sales_orders_tax_value").val();
+
+            if (tax_percent == null || tax_percent == "") {
+                alert("يجب ادخال نسبه الضريبه");
+                return;
+            }
+            if (tax_value == null || tax_value == "") {
+                alert("يجب ادخال قيمه الضريبه");
+                return;
+            }
+
+            var discount_percent = $(
+                "#general_return_sales_orders_discount_percent"
+            ).val();
+            var discount_value = $(
+                "#general_return_sales_orders_discount_value"
+            ).val();
+
+            if (discount_percent == null || discount_percent == "") {
+                alert("يجب ادخال نسبه الخصم");
+                return;
+            }
+            if (discount_value == null || discount_value == "") {
+                alert("يجب ادخال قيمه الخصم");
+                return;
+            }
+
+            var total_value = $(
+                "#general_return_sales_orders_total_value"
+            ).val();
+            if (total_value == null || total_value == "") {
+                alert("يجب ادخال المبلغ الكلى");
+                return;
+            }
+
+            var bill_type = $(
+                "#general_return_sales_orders_bill_type option:selected"
+            ).val();
+            if (bill_type == null || bill_type == "") {
+                alert("اختر طريقه الدفع");
+                return;
+            }
+
+            var what_paid = $("#general_return_sales_orders_what_paid").val();
+            if (what_paid == null || what_paid == "") {
+                alert("يجب ادخال المبلغ المدفوع");
+                return;
+            }
+
+            var what_remain = $(
+                "#general_return_sales_orders_what_remain"
+            ).val();
+            if (what_remain == null || what_remain == "") {
+                alert("يجب ادخال المبلغ المتبقى");
+                return;
+            }
+
+            var notes = $("#general_return_sales_orders_notes").val();
+            if (notes == null || notes == "") {
+                alert("ادخل الملاحظات على الفاتوره");
+                return;
+            }
+
+            var total_before_discount = $(
+                "#general_return_sales_orders_total"
+            ).val();
+            if (total_before_discount == null || total_before_discount == "") {
+                alert("يوجد خطا بالسعر قبل الخصم");
+                return;
+            }
+
+            if (bill_type == 0 && what_paid < total_value) {
+                alert("يجب دفع المبلغ كامل لان الفاتوره كاش");
+                return;
+            }
+
+            if (bill_type == 1 && what_paid == total_value) {
+                alert("الفاتوره اجل لا يمكن الدفع كامل");
+                return;
+            }
+
+            var auto_serial = $("#general_return_sales_orders_autoserial").val();
+
+            var url = $(
+                "#general_return_sales_orders_approve_active_bill_url"
+            ).val();
+            var token_search = $("#token_search").val();
+
+            $.ajax({
+                url: url,
+                type: "post",
+                dataType: "json",
+                cache: false,
+                data: {
+                    date: date,
+                    customer_code: customer_code,
+                    delegate_code: delegate_code,
+                    sales_material_type_id: sales_material_type_id,
+
+                    discount_percent: discount_percent,
+                    discount_value: discount_value,
+
+                    tax_percent: tax_percent,
+                    tax_value: tax_value,
+
+                    total_value: total_value,
+
+                    bill_type: bill_type,
+
+                    what_paid: what_paid,
+                    what_remain: what_remain,
+
+                    notes: notes,
+
+                    total_before_discount: total_before_discount,
+
+                    auto_serial: auto_serial,
+                    _token: token_search,
+                },
+
+                success: function (response) {
+                    alert(response.message);
+                    $("#modal_billitems").modal("hide");
+                    location.reload();
+                },
+
+                error: function (xhr) {
+                    alert("يوجد خطأ ما");
+                },
+            });
+        }
+    );
 });

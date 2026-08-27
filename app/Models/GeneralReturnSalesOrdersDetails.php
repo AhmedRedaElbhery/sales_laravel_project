@@ -27,5 +27,7 @@ class GeneralReturnSalesOrdersDetails extends Model
         'sale_type',
         'normal_sale',
         'bill_auto_serial',
+        'customer_balance_before_bill',
+        'customer_balance_after_bill',
     ];
 }

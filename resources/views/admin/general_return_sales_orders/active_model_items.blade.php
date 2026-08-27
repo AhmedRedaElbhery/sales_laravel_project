@@ -18,7 +18,7 @@
         <input type="hidden" id="general_return_sales_orders_active_delete_all_items" value="{{ route('general_return_sales_order.active_delete_all_items') }}">
 
 
-        <input type="hidden" id="general_return_sales_orders_approve_active_bill" value="{{ route('general_return_sales_order.approve_active_bill') }}">
+        <input type="hidden" id="general_return_sales_orders_approve_active_bill_url" value="{{ route('general_return_sales_order.approve_active_bill') }}">
 
 
 
@@ -354,14 +354,14 @@
                 <div class="form-group col-md-4">
                     <label> {{ __('returnSalesBills.paid_amount') }}</label>
 
-                    <input class="form-control" value="{{ $data->what_paid }}" id="general_return_sales_orders_what_paid" name="what_paid">
+                    <input class="form-control" value="{{ $data->what_paid / 100}}" id="general_return_sales_orders_what_paid" name="what_paid">
                 </div>
 
 
                 <div class="form-group col-md-4">
                     <label> {{ __('returnSalesBills.remaining_amount') }}</label>
 
-                    <input readonly class="form-control" value="{{ $data->what_remain }}" id="general_return_sales_orders_what_remain"
+                    <input readonly class="form-control" value="{{ $data->what_remain / 100}}" id="general_return_sales_orders_what_remain"
                         name="what_remain">
                 </div>
 

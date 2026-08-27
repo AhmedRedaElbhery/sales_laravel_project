@@ -125,10 +125,10 @@
                                                         @endif
 
                                                         @if ($item->is_approved == 1)
-                                                            <a href="{{ route('general_return_sales_order.print', $item->auto_serial) }}"
+                                                            {{-- <a href="{{ route('general_return_sales_order.print', $item->auto_serial) }}"
                                                                 class="btn btn-primary">
                                                                 {{ __('returnSalesBills.print') }}
-                                                            </a>
+                                                            </a> --}}
                                                         @endif
 
                                                         <form

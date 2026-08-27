@@ -319,6 +319,7 @@ Route::group([
 
             Route::post('approve_active_bill', [GeneralReturnSalesOrders::class, 'approve_active_bill'])
                 ->name('approve_active_bill');
+
         });
     Route::resource('general_return_sales_order', GeneralReturnSalesOrders::class);
 });

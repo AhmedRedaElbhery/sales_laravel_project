@@ -18,7 +18,9 @@ use App\Models\Unit;
 use Illuminate\Http\Request;
 
 use App\Enums;
+use App\Enums\MoveType;
 use App\Enums\SalesType;
+use App\Models\Accounts;
 use App\Models\Batch;
 use App\Models\ItemMovement;
 
@@ -138,15 +140,17 @@ class GeneralReturnSalesOrders extends Controller
         $date = $request->date;
         $sales_material_type_id = $request->sales_material_type_id;
 
+        $customer_account = Customer::where(['customer_code' => $customer_code])->value('account_number');
         $serial = GeneralReturnSalesOrder::max('auto_serial');
 
         $data = [
-            'auto_serial' => $serial == null ? 0 : $serial + 1,
+            'auto_serial' => $serial == null ? 1 : $serial + 1,
             'customer_code' => $customer_code,
             'delegate_code' => $delegate_code,
             'added_by' => auth()->user()->id,
             'com_code' => $com_code,
             'invoice_date' => $date,
+            'account_number' => $customer_account,
             'sales_material_type_id' => $sales_material_type_id,
         ];
 
@@ -161,6 +165,7 @@ class GeneralReturnSalesOrders extends Controller
         $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
         if ($shift != null) {
             $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+            $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id])->value('name');
         }
 
         $total_bill_cost = 0;
@@ -265,6 +270,7 @@ class GeneralReturnSalesOrders extends Controller
         $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
         if ($shift != null) {
             $shift->treasuries_balance = TreasuriesTransaction::where(['shift_id' => $shift->id, 'treasuries_id' => $shift->treasuries_id])->sum('money');
+            $shift->treasuries_name = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $com_code])->value('name');
         }
 
 
@@ -282,7 +288,7 @@ class GeneralReturnSalesOrders extends Controller
         $comCode = auth()->user()->com_code;
 
         $item_type = ItemCard::where(['item_code' => $request->item_code])->value('item_type');
-        $batch = Batch::where(['item_code' => $request->item_code, 'production_date' => $request->production_date, 'end_date' => $request->end_date, 'unit_price' => $request->price*100, 'store_id' => $request->store_id])->first();
+        $batch = Batch::where(['item_code' => $request->item_code, 'production_date' => $request->production_date, 'end_date' => $request->end_date, 'unit_price' => $request->price * 100, 'store_id' => $request->store_id])->first();
         $bill_data = GeneralReturnSalesOrder::where(['auto_serial' => $request->auto_serial])->first();
         $is_approved = $bill_data->is_approved;
 
@@ -308,7 +314,7 @@ class GeneralReturnSalesOrders extends Controller
         $this->itemmovment($request, $quantity_before_movement, $bill_details);
 
 
-       $this->updateInItemCard($request);
+        $this->updateInItemCard($request);
 
 
         $bill_details = GeneralReturnSalesOrdersDetails::where(['com_code' => $comCode, 'bill_auto_serial' => $request->auto_serial])->get();
@@ -320,15 +326,12 @@ class GeneralReturnSalesOrders extends Controller
             $item['item_name'] = ItemCard::select()->where(['item_code' => $item->item_code, 'com_code' => $comCode])->value('name');
             $item['unit_name'] = Unit::where(['id' => $item->unit_id, 'com_code' => $comCode])->value('name');
 
-            if ($item->normal_sale === "0")
-            {
+            if ($item->normal_sale === "0") {
                 $item['sale_type_name'] = 'جمله';
             }
-            if ($item->normal_sale == 1)
-            {
+            if ($item->normal_sale == 1) {
                 $item['sale_type_name'] = 'نص جمله';
-            }
-            {
+            } {
                 $item['sale_type_name'] = 'قطاعى';
             }
         }
@@ -418,8 +421,7 @@ class GeneralReturnSalesOrders extends Controller
                 'all_retail_quantity' => $new_quantity * $item_card_data->retail_unit_to_parent,
             ]);
         }
-        if ($request->parent_unit == 0)
-        {
+        if ($request->parent_unit == 0) {
             $new_quantity = $item_card_data->all_retail_quantity + $request->quantity;
 
             $item_card_data->update([
@@ -429,4 +431,210 @@ class GeneralReturnSalesOrders extends Controller
         }
     }
 
+    public function delete_item(Request $request)
+    {
+
+        if (!$request->ajax()) {
+            return;
+        }
+
+        $com_code = auth()->user()->com_code;
+        $item_data = GeneralReturnSalesOrdersDetails::find($request->record_id);
+
+        if (!$item_data) {
+            return;
+        }
+
+        $batch_data = Batch::where(['id' => $item_data->batch_id])->first();
+
+        if (!$batch_data) {
+            return;
+        }
+
+        $quantity_before_movement = Batch::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
+
+        $batch_data->update([
+            'quantity' => $batch_data->quantity - $item_data->quantity,
+            'total_cost' => ($batch_data->quantity - $item_data->quantity) * $batch_data->unit_price,
+        ]);
+
+        //movement in item table
+        $quantity_after_movement = Batch::where(['com_code' => $com_code, 'item_code' => $item_data->item_code])->sum('quantity');
+        $customer_code = GeneralReturnSalesOrder::where(['auto_serial' => $item_data->bill_auto_serial])->value('customer_code');
+        $customer_name = Customer::where(['com_code' => $com_code, 'customer_code' => $customer_code])->value('name');
+        ItemMovement::create([
+            'date' => date('Y-m-d'),
+            'com_code' => auth()->user()->com_code,
+            'movement_type' => 15,
+            'added_by' => auth()->user()->id,
+            'quantity_after_movement' => $quantity_after_movement,
+            'quantity_before_movement' => $quantity_before_movement,
+            'item_code' => $item_data->item_code,
+            'table_code' => $batch_data->auto_serial,
+            'table_details_code' => $item_data->batch_id,
+            'byan' => 'حذف من فاتوره مرتجع مبيعات عميل ' . $customer_name,
+        ]);
+
+
+        $item_card_data = ItemCard::select('id', 'retail_unit_to_parent', 'all_retail_quantity', 'quantity')->where(['item_code' => $item_data->item_code, 'com_code' => $com_code])->first();
+
+        if ($item_data->isparentunit == 1) {
+            $new_quantity = $item_card_data->quantity - $item_data->quantity;
+
+            $item_card_data->update([
+                'quantity' => $new_quantity,
+                'all_retail_quantity' => $new_quantity * $item_card_data->retail_unit_to_parent,
+            ]);
+        }
+        if ($item_data->isparentunit == 0) {
+
+            $new_quantity = $item_card_data->all_retail_quantity - $item_data->quantity;
+
+            $item_card_data->update([
+                'all_retail_quantity' => $new_quantity,
+                'quantity' => $new_quantity / $item_card_data->retail_unit_to_parent,
+            ]);
+        }
+
+
+        GeneralReturnSalesOrdersDetails::destroy($request->record_id);
+
+        return response()->json([
+            'message' => 'تم الحذف بنجاح',
+        ]);
+    }
+
+    public function approve_active_bill(Request $request)
+    {
+        $com_code = auth()->user()->com_code;
+
+        $data = GeneralReturnSalesOrder::where(['auto_serial' => $request->auto_serial, 'com_code' => $com_code])->first();
+
+        if (!$data) {
+            return response()->json([
+                'status' => false,
+                'message' => 'الفاتورة غير موجودة',
+            ], 404);
+        }
+
+        if ($data->is_approved == 1) {
+
+            return response()->json([
+                'status' => true,
+                'message' => 'الفاتوره معتمده من قبل',
+            ]);
+        }
+
+        $shift = AdminShifts::where(['com_code' => $com_code, 'admin_id' => auth()->user()->id, 'is_finished' => 0])->whereNull('end_shift')->first();
+        if ($shift == null) {
+            return response()->json([
+                'status' => false,
+                'message' => ' لا يوجد شفت مفتوح',
+                'redirect' => route('sales_bills.index'),
+            ]);
+        }
+
+        $updateData = [
+            'discount_percent' => $request->discount_percent,
+            'discount_value' => $request->discount_value * 100,
+            'tax_percent' => $request->tax_percent,
+            'tax_value' => $request->tax_value * 100,
+            'total_cost' => $request->total_value * -100,
+            'money_for_account' => $request->total_value * 100,
+            'bill_type' => $request->bill_type,
+            'what_paid' => $request->what_paid * 100,
+            'what_remain' => $request->what_remain * 100,
+            'notes' => $request->notes,
+            'invoice_date' => $request->date,
+            'customer_code' => $request->customer_code,
+            'sales_material_type_id' => $request->sales_material_type_id,
+            'delegate_code' => $request->delegate_code,
+            'total_before_discount' => $request->total_before_discount,
+            'is_approved' => 1,
+            'updated_by' => auth()->user()->id,
+        ];
+
+
+        if ($request->what_paid > 0) {
+
+            $customer_account = Customer::where(['customer_code' => $request->customer_code, 'com_code' => $com_code])->first();
+
+            if (!$customer_account) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'العميل غير موجود',
+                ], 404);
+            }
+
+            $money_for_account_before_transaction = TreasuriesTransaction::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code])->sum('money_for_account');
+
+            $updateData['customer_balance_before_bill'] = $money_for_account_before_transaction;
+
+            $this->CreateTransaction($request, $shift, $com_code, $data, $customer_account);
+
+
+
+            $this->UpdateMoneyForAccount($customer_account, $com_code, $data);
+        }
+
+        $data->update($updateData);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الاعتماد بنجاح',
+        ]);
+    }
+
+    private function CreateTransaction($request, $shift, $com_code, $data, $customer_account)
+    {
+        $treasuries = Treasuries::where(['id' => $shift->treasuries_id, 'com_code' => $com_code])->first();
+
+        $treasuries->last_isal_exchange = $treasuries->last_isal_exchange == null ? 1 : $treasuries->last_isal_exchange + 1;
+
+        $transaction_id = TreasuriesTransaction::create([
+            'treasuries_id' => $shift->treasuries_id,
+            'bill_code' => $data->auto_serial,
+            'is_approved' => 1,
+            'shift_id' => $shift->id,
+            'com_code' => $com_code,
+            'money' => $request->what_paid * (-100),
+            'isal_number' => $treasuries->last_isal_exchange,
+            'date' => date('Y-m-d'),
+            'byan' => 'مرتجع مبيعات',
+            'move_type' => MoveType::MoneyForReturnSale->value,
+            'account_number' => $customer_account->account_number,
+            'from_account' => $request->customer_code,
+            'money_for_account' => $request->what_paid * (100),
+            'added_by' => auth()->user()->id,
+        ]);
+
+        $data->update([
+            'treasuries_transaction_id' => $transaction_id->id,
+        ]);
+
+        $treasuries->update([
+            'last_isal_exchange' => $treasuries->last_isal_exchange,
+        ]);
+    }
+
+    private function UpdateMoneyForAccount($customer_account, $com_code, $data)
+    {
+        $customer_account_in_accounts = Accounts::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code, 'is_parent' => 0])->first();
+
+        $money_for_account_transaction = TreasuriesTransaction::where(['account_number' => $customer_account->account_number, 'com_code' => $com_code])->sum('money_for_account');
+
+        $the_final_balance = $customer_account->start_balance + $money_for_account_transaction;
+
+        $customer_account->update([
+            'current_balance' => $the_final_balance,
+        ]);
+
+        $customer_account_in_accounts->update([
+            'current_balance' => $the_final_balance,
+        ]);
+
+        $data->update([
+            'customer_balance_after_bill' => $the_final_balance,
+        ]);
+    }
 }
